@@ -75,8 +75,8 @@ impl EventHandler for GameState {
             }
             x += self.tile_width;
         }
-        self.tile_batch.clear();
         graphics::draw(ctx, &self.tile_batch, (Point2::new(0.0, 0.0),))?;
+        self.tile_batch.clear();
 
         // tank
         for tank in &self.tanks {
