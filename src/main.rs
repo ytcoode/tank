@@ -70,17 +70,17 @@ impl EventHandler for GameState {
         graphics::clear(ctx, graphics::WHITE);
 
         // tile
-        let (w, h) = graphics::drawable_size(ctx);
-        let mut x = 0.0;
-        while x < w {
-            let mut y = 0.0;
-            while y < h {
-                self.tile_batch.add((Point2::new(x, y),));
-                y += self.tile_height;
-            }
-            x += self.tile_width;
-        }
-        graphics::draw(ctx, &self.tile_batch, (Point2::new(0.0, 0.0),))?;
+        // let (w, h) = graphics::drawable_size(ctx);
+        // let mut x = 0.0;
+        // while x < w {
+        //     let mut y = 0.0;
+        //     while y < h {
+        //         self.tile_batch.add((Point2::new(x, y),));
+        //         y += self.tile_height;
+        //     }
+        //     x += self.tile_width;
+        // }
+        // graphics::draw(ctx, &self.tile_batch, (Point2::new(0.0, 0.0),))?;
 
         // tank
         for tank in &self.tanks {
