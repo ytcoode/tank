@@ -1,3 +1,5 @@
+mod map;
+
 use ggez;
 use ggez::event;
 use ggez::event::EventHandler;
@@ -13,7 +15,6 @@ use ggez::timer;
 use ggez::Context;
 use ggez::ContextBuilder;
 use ggez::GameResult;
-use std::time;
 
 struct Tank {
     position: Point2<f32>,
