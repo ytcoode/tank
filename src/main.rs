@@ -5,6 +5,8 @@ use ggez::graphics;
 use ggez::graphics::spritebatch::SpriteBatch;
 use ggez::graphics::DrawParam;
 use ggez::graphics::Image;
+use ggez::input::keyboard::KeyCode;
+use ggez::input::keyboard::KeyMods;
 use ggez::nalgebra::Point2;
 use ggez::nalgebra::Vector2;
 use ggez::Context;
@@ -57,6 +59,7 @@ impl GameState {
 
 impl EventHandler for GameState {
     fn update(&mut self, _ctx: &mut Context) -> GameResult {
+        // TODO tick rate
         Ok(())
     }
 
@@ -93,6 +96,23 @@ impl EventHandler for GameState {
 
         // present
         graphics::present(ctx)
+    }
+
+    fn key_down_event(
+        &mut self,
+        ctx: &mut Context,
+        keycode: KeyCode,
+        _keymods: KeyMods,
+        _repeat: bool,
+    ) {
+        let tank = self.tanks[0];
+
+        match keycode {
+            KeyCode::Up => {}
+
+            KeyCode::Escape => event::quit(ctx),
+            _ => (),
+        }
     }
 }
 
