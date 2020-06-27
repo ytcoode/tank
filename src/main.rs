@@ -9,18 +9,22 @@ use ggez::input::keyboard::KeyCode;
 use ggez::input::keyboard::KeyMods;
 use ggez::nalgebra::Point2;
 use ggez::nalgebra::Vector2;
+use ggez::timer;
 use ggez::Context;
 use ggez::ContextBuilder;
 use ggez::GameResult;
+use std::time;
 
 struct Tank {
     position: Point2<f32>,
+    velocity: Vector2<f32>,
 }
 
 impl Tank {
     fn new() -> Tank {
         Tank {
             position: Point2::new(0.0, 0.0),
+            velocity: Vector2::new(0.0, 0.0),
         }
     }
 }
@@ -59,7 +63,11 @@ impl GameState {
 
 impl EventHandler for GameState {
     fn update(&mut self, _ctx: &mut Context) -> GameResult {
-        // TODO tick rate
+        self.tanks.iter_mut().for_each(|t| {
+            t.position += t.velocity;
+            t.velocity.x = 0.0;
+            t.velocity.y = 0.0;
+        });
         Ok(())
     }
 
@@ -94,6 +102,9 @@ impl EventHandler for GameState {
         )?;
         self.tank_batch.clear();
 
+        // misc
+        graphics::set_window_title(ctx, &format!("Tanks - {:.0} FPS", timer::fps(ctx),));
+
         // present
         graphics::present(ctx)
     }
@@ -105,11 +116,12 @@ impl EventHandler for GameState {
         _keymods: KeyMods,
         _repeat: bool,
     ) {
-        let tank = self.tanks[0];
-
+        let tank = &mut self.tanks[0];
         match keycode {
-            KeyCode::Up => {}
-
+            KeyCode::Up => tank.velocity.y = -15.0,
+            KeyCode::Down => tank.velocity.y = 15.0,
+            KeyCode::Left => tank.velocity.x = -15.0,
+            KeyCode::Right => tank.velocity.x = 15.0,
             KeyCode::Escape => event::quit(ctx),
             _ => (),
         }
