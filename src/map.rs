@@ -1,3 +1,4 @@
+use crate::util;
 use ggez;
 use ggez::graphics;
 use ggez::graphics::spritebatch::SpriteBatch;
@@ -7,14 +8,21 @@ use ggez::Context;
 use ggez::GameResult;
 use rand;
 use rand::Rng;
-use std::cmp;
 
-const TILE_SIZE: u32 = 128;
-const TILE_NX: u32 = 100;
-const TILE_NY: u32 = 100;
+const BLOCK_SIZE: u32 = 128;
+const BLOCK_N_X: u32 = 100;
+const BLOCK_N_Y: u32 = 100;
+const BLOCK_N_XY: u32 = BLOCK_N_X * BLOCK_N_Y;
+
+pub const MAP_WIDTH: f32 = (BLOCK_N_X * BLOCK_SIZE) as f32;
+pub const MAP_HEIGHT: f32 = (BLOCK_N_Y * BLOCK_SIZE) as f32;
+
+fn block_idx(i: u32, j: u32) -> usize {
+    (i * BLOCK_N_Y + j) as usize
+}
 
 pub struct Map {
-    map: [u8; (TILE_NX * TILE_NY) as usize],
+    map: [u8; BLOCK_N_XY as usize],
     dirt_batch: SpriteBatch,
     grass_batch: SpriteBatch,
     sand_batch: SpriteBatch,
@@ -25,27 +33,26 @@ pub struct Map {
 impl Map {
     pub fn new(ctx: &mut Context) -> GameResult<Map> {
         let dirt_image = Image::new(ctx, "/PNG/Environment/dirt.png")?;
-        assert_eq!(dirt_image.width() as u32, TILE_SIZE);
-        assert_eq!(dirt_image.height() as u32, TILE_SIZE);
+        assert_eq!(dirt_image.width() as u32, BLOCK_SIZE);
+        assert_eq!(dirt_image.height() as u32, BLOCK_SIZE);
         let dirt_batch = SpriteBatch::new(dirt_image);
 
         let grass_image = Image::new(ctx, "/PNG/Environment/grass.png")?;
-        assert_eq!(grass_image.width() as u32, TILE_SIZE);
-        assert_eq!(grass_image.height() as u32, TILE_SIZE);
+        assert_eq!(grass_image.width() as u32, BLOCK_SIZE);
+        assert_eq!(grass_image.height() as u32, BLOCK_SIZE);
         let grass_batch = SpriteBatch::new(grass_image);
 
         let sand_image = Image::new(ctx, "/PNG/Environment/sand.png")?;
-        assert_eq!(sand_image.width() as u32, TILE_SIZE);
-        assert_eq!(sand_image.height() as u32, TILE_SIZE);
+        assert_eq!(sand_image.width() as u32, BLOCK_SIZE);
+        assert_eq!(sand_image.height() as u32, BLOCK_SIZE);
         let sand_batch = SpriteBatch::new(sand_image);
 
-        let mut map = [0; (TILE_NX * TILE_NY) as usize];
+        let mut map = [0; BLOCK_N_XY as usize];
         let mut rng = rand::thread_rng();
 
-        for i in 0..TILE_NX {
-            for j in 0..TILE_NY {
-                let ij = i * TILE_NY + j;
-                map[ij as usize] = rng.gen_range(0, 3);
+        for i in 0..BLOCK_N_X {
+            for j in 0..BLOCK_N_Y {
+                map[block_idx(i, j)] = rng.gen_range(0, 3);
             }
         }
 
@@ -64,31 +71,48 @@ impl Map {
         })
     }
 
-    pub fn draw(&mut self, ctx: &mut Context, x: f32, y: f32) -> GameResult {
+    pub fn draw(&mut self, ctx: &mut Context, mut x: f32, mut y: f32) -> GameResult {
+        // 视野长宽
         let (w, h) = graphics::drawable_size(ctx);
 
-        let w = w / 2.0;
-        let h = h / 2.0;
+        // 视野半径
+        let vx = w / 2.0;
+        let vy = h / 2.0;
 
-        let x1 = cmp::max((x - w) as i32, 0);
-        let x2 = cmp::min((x + w) as i32, (TILE_NX * TILE_SIZE) as i32);
-        let y1 = cmp::max((y - h) as i32, 0);
-        let y2 = cmp::min((y + h) as i32, (TILE_NY * TILE_SIZE) as i32);
+        // 视野锚点
+        if x < vx {
+            x = vx;
+        }
 
-        let i1 = x1 as u32 / TILE_SIZE;
-        let i2 = x2 as u32 / TILE_SIZE;
-        let j1 = y1 as u32 / TILE_SIZE;
-        let j2 = y2 as u32 / TILE_SIZE;
+        if x > MAP_WIDTH - vx {
+            x = (MAP_WIDTH - vx).max(vx);
+        }
 
-        let x0 = x - w;
-        let y0 = y - h;
+        if y < vy {
+            y = vy;
+        }
+
+        if y > MAP_HEIGHT - vy {
+            y = (MAP_HEIGHT - vy).max(vy);
+        }
+
+        // 视野范围
+        let x1 = x - vx;
+        let x2 = (x + vx).min(MAP_WIDTH);
+        let y1 = y - vy;
+        let y2 = (y + vy).min(MAP_HEIGHT);
+
+        // 视野内的block
+        let i1 = x1 as u32 / BLOCK_SIZE;
+        let i2 = (x2 as u32 / BLOCK_SIZE).min(BLOCK_N_X - 1);
+        let j1 = y1 as u32 / BLOCK_SIZE;
+        let j2 = (y2 as u32 / BLOCK_SIZE).min(BLOCK_N_Y - 1);
 
         for i in i1..=i2 {
             for j in j1..=j2 {
-                let xi = (i * TILE_SIZE) as f32 - x0;
-                let yj = (j * TILE_SIZE) as f32 - y0;
-                let ij = i * TILE_NY + j;
-                match self.map[ij as usize] {
+                let xi = (i * BLOCK_SIZE) as f32 - x1;
+                let yj = (j * BLOCK_SIZE) as f32 - y1;
+                match self.map[block_idx(i, j)] {
                     0 => &mut self.dirt_batch,
                     1 => &mut self.grass_batch,
                     2 => &mut self.sand_batch,
@@ -98,9 +122,9 @@ impl Map {
             }
         }
 
-        graphics::draw(ctx, &self.dirt_batch, (Point2::new(0.0, 0.0),))?;
-        graphics::draw(ctx, &self.grass_batch, (Point2::new(0.0, 0.0),))?;
-        graphics::draw(ctx, &self.sand_batch, (Point2::new(0.0, 0.0),))?;
+        graphics::draw(ctx, &self.dirt_batch, util::DRAW_PARAM_ZERO)?;
+        graphics::draw(ctx, &self.grass_batch, util::DRAW_PARAM_ZERO)?;
+        graphics::draw(ctx, &self.sand_batch, util::DRAW_PARAM_ZERO)?;
 
         self.dirt_batch.clear();
         self.grass_batch.clear();
