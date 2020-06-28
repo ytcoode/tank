@@ -92,13 +92,17 @@ impl EventHandler for GameState {
     ) {
         let tank = &mut self.tanks[0];
         match keycode {
-            KeyCode::Up => tank.vy = -3.0,
-            KeyCode::Down => tank.vy = 3.0,
-            KeyCode::Left => tank.vx = -3.0,
-            KeyCode::Right => tank.vx = 3.0,
+            KeyCode::Up => tank.vy = -4.0,
+            KeyCode::Down => tank.vy = 4.0,
+            KeyCode::Left => tank.vx = -4.0,
+            KeyCode::Right => tank.vx = 4.0,
             KeyCode::Escape => event::quit(ctx),
             _ => (),
         }
+
+        let (vx, vy) = util::velocity(tank.vx, tank.vy, 4.0);
+        tank.vx = vx;
+        tank.vy = vy;
     }
     /// A keyboard button was released.
     fn key_up_event(&mut self, ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods) {
@@ -111,6 +115,9 @@ impl EventHandler for GameState {
             KeyCode::Escape => event::quit(ctx),
             _ => (),
         }
+        let (vx, vy) = util::velocity(tank.vx, tank.vy, 4.0);
+        tank.vx = vx;
+        tank.vy = vy;
     }
 }
 
