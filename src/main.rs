@@ -72,9 +72,7 @@ impl EventHandler for GameState {
         graphics::draw(
             ctx,
             &self.tank_batch,
-            DrawParam::new()
-                .dest(Point2::new(0.0, 0.0))
-                .scale(Vector2::new(0.5, 0.5)),
+            DrawParam::new().dest(Point2::new(0.0, 0.0)),
         )?;
         self.tank_batch.clear();
 
