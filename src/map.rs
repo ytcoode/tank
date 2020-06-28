@@ -6,8 +6,6 @@ use ggez::graphics::Image;
 use ggez::nalgebra::Point2;
 use ggez::Context;
 use ggez::GameResult;
-use rand;
-use rand::Rng;
 
 const BLOCK_SIZE: u32 = 128;
 const BLOCK_N_X: u32 = 100;
@@ -48,11 +46,11 @@ impl Map {
         let sand_batch = SpriteBatch::new(sand_image);
 
         let mut map = [0; BLOCK_N_XY as usize];
-        let mut rng = rand::thread_rng();
-
+        let mut n = 0 as u32;
         for i in 0..BLOCK_N_X {
             for j in 0..BLOCK_N_Y {
-                map[block_idx(i, j)] = rng.gen_range(0, 3);
+                map[block_idx(i, j)] = (n % 3) as u8;
+                n += 1;
             }
         }
 
@@ -71,13 +69,13 @@ impl Map {
         })
     }
 
-    pub fn draw(&mut self, ctx: &mut Context, mut x: f32, mut y: f32) -> GameResult {
+    pub fn draw(&mut self, ctx: &mut Context, mut x: f32, mut y: f32) -> GameResult<(f32, f32)> {
         // 视野长宽
-        let (w, h) = graphics::drawable_size(ctx);
+        let (vw, vh) = graphics::drawable_size(ctx);
 
         // 视野半径
-        let vx = w / 2.0;
-        let vy = h / 2.0;
+        let vx = vw / 2.0;
+        let vy = vh / 2.0;
 
         // 视野锚点
         if x < vx {
@@ -130,6 +128,6 @@ impl Map {
         self.grass_batch.clear();
         self.sand_batch.clear();
 
-        Ok(())
+        Ok((x1, y1))
     }
 }

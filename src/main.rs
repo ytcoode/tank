@@ -3,7 +3,6 @@ use ggez::event;
 use ggez::event::EventHandler;
 use ggez::graphics;
 use ggez::graphics::spritebatch::SpriteBatch;
-use ggez::graphics::DrawParam;
 use ggez::graphics::Image;
 use ggez::input::keyboard::KeyCode;
 use ggez::input::keyboard::KeyMods;
@@ -61,20 +60,17 @@ impl EventHandler for GameState {
 
         // map
         let tank = &self.tanks[0];
-        self.map.draw(ctx, tank.x, tank.y)?;
+        let (x1, y1) = self.map.draw(ctx, tank.x, tank.y)?;
 
         // debug
         debug::draw_axis(ctx)?;
 
         // tank
         for tank in &self.tanks {
-            self.tank_batch.add((Point2::new(tank.x, tank.y),));
+            self.tank_batch
+                .add((Point2::new(tank.x - x1, tank.y - y1),));
         }
-        graphics::draw(
-            ctx,
-            &self.tank_batch,
-            DrawParam::new().dest(Point2::new(0.0, 0.0)),
-        )?;
+        graphics::draw(ctx, &self.tank_batch, util::DRAW_PARAM_ZERO)?;
         self.tank_batch.clear();
 
         // misc
