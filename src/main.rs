@@ -1,4 +1,5 @@
 mod map;
+mod tank;
 
 use ggez;
 use ggez::event;
@@ -16,20 +17,7 @@ use ggez::Context;
 use ggez::ContextBuilder;
 use ggez::GameResult;
 use map::Map;
-
-struct Tank {
-    position: Point2<f32>,
-    velocity: Vector2<f32>,
-}
-
-impl Tank {
-    fn new() -> Tank {
-        Tank {
-            position: Point2::new(0.0, 0.0),
-            velocity: Vector2::new(0.0, 0.0),
-        }
-    }
-}
+use tank::Tank;
 
 struct GameState {
     tanks: Vec<Tank>,
@@ -58,9 +46,8 @@ impl GameState {
 impl EventHandler for GameState {
     fn update(&mut self, _ctx: &mut Context) -> GameResult {
         self.tanks.iter_mut().for_each(|t| {
-            t.position += t.velocity;
-            t.velocity.x = 0.0;
-            t.velocity.y = 0.0;
+            t.x += t.vx;
+            t.y += t.vy;
         });
         Ok(())
     }
@@ -69,12 +56,14 @@ impl EventHandler for GameState {
         // clear
         graphics::clear(ctx, graphics::WHITE);
 
-        // tile
-        self.map.draw(ctx)?;
+        // map
+        let tank = &self.tanks[0];
+        self.map.draw(ctx, tank.x, tank.y)?;
 
         // tank
+        let (w, h) = graphics::drawable_size(ctx);
         for tank in &self.tanks {
-            self.tank_batch.add((tank.position,));
+            self.tank_batch.add((Point2::new(w / 2.0, h / 2.0),));
         }
         graphics::draw(
             ctx,
@@ -101,10 +90,22 @@ impl EventHandler for GameState {
     ) {
         let tank = &mut self.tanks[0];
         match keycode {
-            KeyCode::Up => tank.velocity.y = -15.0,
-            KeyCode::Down => tank.velocity.y = 15.0,
-            KeyCode::Left => tank.velocity.x = -15.0,
-            KeyCode::Right => tank.velocity.x = 15.0,
+            KeyCode::Up => tank.vy = -3.0,
+            KeyCode::Down => tank.vy = 3.0,
+            KeyCode::Left => tank.vx = -3.0,
+            KeyCode::Right => tank.vx = 3.0,
+            KeyCode::Escape => event::quit(ctx),
+            _ => (),
+        }
+    }
+    /// A keyboard button was released.
+    fn key_up_event(&mut self, ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods) {
+        let tank = &mut self.tanks[0];
+        match keycode {
+            KeyCode::Up => tank.vy = 0.0,
+            KeyCode::Down => tank.vy = 0.0,
+            KeyCode::Left => tank.vx = 0.0,
+            KeyCode::Right => tank.vx = 0.0,
             KeyCode::Escape => event::quit(ctx),
             _ => (),
         }

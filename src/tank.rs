@@ -1,13 +1,17 @@
-struct Tank {
-    position: Point2<f32>,
-    velocity: Vector2<f32>,
+pub struct Tank {
+    pub x: f32,
+    pub y: f32,
+    pub vx: f32,
+    pub vy: f32,
 }
 
 impl Tank {
-    fn new() -> Tank {
+    pub fn new() -> Tank {
         Tank {
-            position: Point2::new(0.0, 0.0),
-            velocity: Vector2::new(0.0, 0.0),
+            x: 0.0,
+            y: 0.0,
+            vx: 0.0,
+            vy: 0.0,
         }
     }
 }
