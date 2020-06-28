@@ -15,6 +15,7 @@ use ggez::timer;
 use ggez::Context;
 use ggez::ContextBuilder;
 use ggez::GameResult;
+use map::Map;
 
 struct Tank {
     position: Point2<f32>,
@@ -31,33 +32,25 @@ impl Tank {
 }
 
 struct GameState {
-    tile_width: f32,
-    tile_height: f32,
-    tile_batch: SpriteBatch,
-
     tanks: Vec<Tank>,
     tank_batch: SpriteBatch,
+    map: Map,
 }
 
 impl GameState {
     fn new(ctx: &mut Context) -> GameResult<GameState> {
-        let tile_texture = Image::new(ctx, "/PNG/Environment/sand.png")?;
-        let tile_width = tile_texture.width() as f32;
-        let tile_height = tile_texture.height() as f32;
-        let tile_batch = SpriteBatch::new(tile_texture);
-
         let mut tanks = Vec::new();
         tanks.push(Tank::new());
 
         let tank_texture = Image::new(ctx, "/PNG/Tanks/tankGreen.png")?;
         let tank_batch = SpriteBatch::new(tank_texture);
 
+        let map = Map::new(ctx)?;
+
         Ok(GameState {
-            tile_width,
-            tile_height,
-            tile_batch,
             tanks,
             tank_batch,
+            map,
         })
     }
 }
@@ -77,18 +70,7 @@ impl EventHandler for GameState {
         graphics::clear(ctx, graphics::WHITE);
 
         // tile
-        let (w, h) = graphics::drawable_size(ctx);
-        let mut x = 0.0;
-        while x < w {
-            let mut y = 0.0;
-            while y < h {
-                self.tile_batch.add((Point2::new(x, y),));
-                y += self.tile_height;
-            }
-            x += self.tile_width;
-        }
-        graphics::draw(ctx, &self.tile_batch, (Point2::new(0.0, 0.0),))?;
-        self.tile_batch.clear();
+        self.map.draw(ctx)?;
 
         // tank
         for tank in &self.tanks {
