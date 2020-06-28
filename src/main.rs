@@ -1,5 +1,6 @@
 mod map;
 mod tank;
+mod util;
 
 use ggez;
 use ggez::event;
@@ -62,9 +63,12 @@ impl EventHandler for GameState {
 
         // tank
         let (w, h) = graphics::drawable_size(ctx);
-        for tank in &self.tanks {
-            self.tank_batch.add((Point2::new(w / 2.0, h / 2.0),));
-        }
+        util::draw_line(ctx, 10.0, h / 2.0, w - 10.0, h / 2.0)?;
+        util::draw_line(ctx, w / 2.0, 10.0, w / 2.0, h - 10.0)?;
+
+        //        for tank in &self.tanks {
+        self.tank_batch.add((Point2::new(w / 2.0, h / 2.0),));
+        //      }
         graphics::draw(
             ctx,
             &self.tank_batch,
