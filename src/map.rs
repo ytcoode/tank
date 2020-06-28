@@ -8,8 +8,8 @@ use ggez::Context;
 use ggez::GameResult;
 
 const BLOCK_SIZE: u32 = 128;
-const BLOCK_N_X: u32 = 100;
-const BLOCK_N_Y: u32 = 100;
+const BLOCK_N_X: u32 = 10;
+const BLOCK_N_Y: u32 = 10;
 const BLOCK_N_XY: u32 = BLOCK_N_X * BLOCK_N_Y;
 
 pub const MAP_WIDTH: f32 = (BLOCK_N_X * BLOCK_SIZE) as f32;
