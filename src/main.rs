@@ -46,12 +46,12 @@ impl GameState {
 
 impl EventHandler for GameState {
     fn update(&mut self, _ctx: &mut Context) -> GameResult {
-        self.tanks.iter_mut().for_each(|t| {
-            t.x += t.vx;
-            t.y += t.vy;
-            t.x = t.x.max(0.0).min(map::MAP_WIDTH - 1.0);
-            t.y = t.y.max(0.0).min(map::MAP_HEIGHT - 1.0);
-        });
+        // self.tanks.iter_mut().for_each(|t| {
+        //     t.x += t.vx;
+        //     t.y += t.vy;
+        //     t.x = t.x.max(0.0).min(map::MAP_WIDTH - 1.0);
+        //     t.y = t.y.max(0.0).min(map::MAP_HEIGHT - 1.0);
+        // });
         Ok(())
     }
 
@@ -59,67 +59,74 @@ impl EventHandler for GameState {
         // clear
         graphics::clear(ctx, graphics::WHITE);
 
-        // map
-        let tank = &self.tanks[0];
-        let (x1, y1) = self.map.draw(ctx, tank.x, tank.y)?;
+        self.map.draw(ctx, 10, 1000, 10, 1000)?;
 
-        // debug
-        debug::draw_axis(ctx)?;
+        // // vision
+        // let tank = &self.tanks[0];
+        // let (vw, vh) = graphics::drawable_size(ctx);
+        // let vision = vision::range(self.map.width, self.map.height, vw, vh, tank.x, tank.y);
 
-        // tank
-        for tank in &self.tanks {
-            self.tank_batch
-                .add((Point2::new(tank.x - x1 - 37.5, tank.y - y1 - 35.0),));
-        }
-        graphics::draw(ctx, &self.tank_batch, util::DRAW_PARAM_ZERO)?;
-        self.tank_batch.clear();
+        // // map
 
-        // misc
-        graphics::set_window_title(ctx, &format!("Tanks - {:.0} FPS", timer::fps(ctx),));
+        // let (x1, y1) = self.map.draw(ctx, tank.x, tank.y)?;
+
+        // // debug
+        // debug::draw_axis(ctx)?;
+
+        // // tank
+        // for tank in &self.tanks {
+        //     self.tank_batch
+        //         .add((Point2::new(tank.x - x1 - 37.5, tank.y - y1 - 35.0),));
+        // }
+        // graphics::draw(ctx, &self.tank_batch, util::DRAW_PARAM_ZERO)?;
+        // self.tank_batch.clear();
+
+        // // misc
+        // graphics::set_window_title(ctx, &format!("Tanks - {:.0} FPS", timer::fps(ctx),));
 
         // present
         graphics::present(ctx)
     }
 
-    fn key_down_event(
-        &mut self,
-        _ctx: &mut Context,
-        keycode: KeyCode,
-        _keymods: KeyMods,
-        _repeat: bool,
-    ) {
-        let tank = &mut self.tanks[0];
-        match keycode {
-            KeyCode::Up => tank.vy = -4.0,
-            KeyCode::Down => tank.vy = 4.0,
-            KeyCode::Left => tank.vx = -4.0,
-            KeyCode::Right => tank.vx = 4.0,
-            _ => (),
-        }
+    // fn key_down_event(
+    //     &mut self,
+    //     _ctx: &mut Context,
+    //     keycode: KeyCode,
+    //     _keymods: KeyMods,
+    //     _repeat: bool,
+    // ) {
+    //     let tank = &mut self.tanks[0];
+    //     match keycode {
+    //         KeyCode::Up => tank.vy = -4.0,
+    //         KeyCode::Down => tank.vy = 4.0,
+    //         KeyCode::Left => tank.vx = -4.0,
+    //         KeyCode::Right => tank.vx = 4.0,
+    //         _ => (),
+    //     }
 
-        let (vx, vy) = util::velocity(tank.vx, tank.vy, 4.0);
-        tank.vx = vx;
-        tank.vy = vy;
-    }
+    //     let (vx, vy) = util::velocity(tank.vx, tank.vy, 4.0);
+    //     tank.vx = vx;
+    //     tank.vy = vy;
+    // }
 
-    fn key_up_event(&mut self, ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods) {
-        let tank = &mut self.tanks[0];
-        match keycode {
-            KeyCode::Up => tank.vy = 0.0,
-            KeyCode::Down => tank.vy = 0.0,
-            KeyCode::Left => tank.vx = 0.0,
-            KeyCode::Right => tank.vx = 0.0,
-            KeyCode::Escape => event::quit(ctx),
-            _ => (),
-        }
-        let (vx, vy) = util::velocity(tank.vx, tank.vy, 4.0);
-        tank.vx = vx;
-        tank.vy = vy;
-    }
+    // fn key_up_event(&mut self, ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods) {
+    //     let tank = &mut self.tanks[0];
+    //     match keycode {
+    //         KeyCode::Up => tank.vy = 0.0,
+    //         KeyCode::Down => tank.vy = 0.0,
+    //         KeyCode::Left => tank.vx = 0.0,
+    //         KeyCode::Right => tank.vx = 0.0,
+    //         KeyCode::Escape => event::quit(ctx),
+    //         _ => (),
+    //     }
+    //     let (vx, vy) = util::velocity(tank.vx, tank.vy, 4.0);
+    //     tank.vx = vx;
+    //     tank.vy = vy;
+    // }
 }
 
 pub fn main() -> GameResult {
-    let (mut ctx, mut event_loop) = ContextBuilder::new("tank", "bunny")
+    let (mut ctx, mut event_loop) = ContextBuilder::new("tank", "crazybunny")
         .add_resource_path("./resources")
         .build()?;
 
