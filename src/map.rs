@@ -76,8 +76,8 @@ impl Map {
             for j in j1..=j2 {
                 let x = (i * self.block_size) as f32 - x1 as f32;
                 let y = (j * self.block_size) as f32 - y1 as f32;
-                let b = self.block(i, j);
-                self.block_tiles[b as usize].add(([x as f32, y as f32],));
+                let t = self.block(i, j) as usize;
+                self.block_tiles[t].add(([x, y],));
             }
         }
 
