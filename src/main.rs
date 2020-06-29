@@ -18,6 +18,7 @@ mod debug;
 mod map;
 mod tank;
 mod util;
+mod vision;
 
 struct GameState {
     tanks: Vec<Tank>,
