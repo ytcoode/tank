@@ -31,8 +31,8 @@ impl EventHandler for GameState {
         let t = &mut self.tank;
         t.x += t.vx;
         t.y += t.vy;
-        t.x = t.x.max(0.0).min((self.map.width - 1) as f32);
-        t.y = t.y.max(0.0).min((self.map.height - 1) as f32);
+        t.x = t.x.max(0.0).min((self.map.width - t.width) as f32);
+        t.y = t.y.max(0.0).min((self.map.height - t.height) as f32);
         Ok(())
     }
 

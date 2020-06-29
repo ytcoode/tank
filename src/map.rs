@@ -96,6 +96,8 @@ impl Map {
 
     pub fn vision(&self, ctx: &Context, x: u32, y: u32) -> (u32, u32, u32, u32) {
         let (vw, vh) = graphics::drawable_size(ctx);
-        vision::range(self.width, self.height, vw as u32, vh as u32, x, y)
+        let vw = vw.ceil() as u32;
+        let vh = vh.ceil() as u32;
+        vision::range(self.width, self.height, vw, vh, x, y)
     }
 }
