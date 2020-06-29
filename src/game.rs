@@ -31,8 +31,13 @@ impl EventHandler for GameState {
         let t = &mut self.tank;
         t.x += t.vx;
         t.y += t.vy;
-        t.x = t.x.max(0.0).min((self.map.width - t.width) as f32);
-        t.y = t.y.max(0.0).min((self.map.height - t.height) as f32);
+        t.x =
+            t.x.max(t.width as f32 / 2.0)
+                .min((self.map.width - t.width / 2) as f32);
+        t.y =
+            t.y.max(t.height as f32 / 2.0)
+                .min((self.map.height - t.height / 2) as f32);
+
         Ok(())
     }
 
@@ -46,11 +51,11 @@ impl EventHandler for GameState {
         // map
         self.map.draw(ctx, x1, x2, y1, y2)?;
 
-        // debug
-        debug::draw_axis(ctx)?;
-
         // tank
         self.tank.draw(ctx, x1, y1)?;
+
+        // debug
+        debug::draw_axis(ctx)?;
 
         // misc
         graphics::set_window_title(ctx, &format!("Tanks - {:.0} FPS", timer::fps(ctx),));

@@ -1,7 +1,7 @@
-use crate::debug;
 use crate::util;
 use ggez::graphics;
 use ggez::graphics::spritebatch::SpriteBatch;
+use ggez::graphics::DrawParam;
 use ggez::graphics::Image;
 use ggez::Context;
 use ggez::GameResult;
@@ -36,12 +36,11 @@ impl Tank {
     }
 
     pub fn draw(&mut self, ctx: &mut Context, x1: u32, y1: u32) -> GameResult {
-        let x1 = x1 as f32;
-        let y1 = y1 as f32;
+        let x = self.x - x1 as f32;
+        let y = self.y - y1 as f32;
 
-        let x = self.x - x1;
-        let y = self.y - y1;
-        self.batch.add(([x, y],));
+        self.batch
+            .add(DrawParam::new().dest([x, y]).offset([0.5, 0.5]));
 
         graphics::draw(ctx, &self.batch, util::DRAW_PARAM_ZERO)?;
         self.batch.clear();

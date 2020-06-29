@@ -42,7 +42,7 @@ impl Map {
             block_size = b;
         }
 
-        let block_nx = 7 as u32;
+        let block_nx = 10 as u32;
         let block_ny = 8 as u32;
         let mut blocks = Vec::with_capacity((block_nx * block_ny) as usize);
         for _ in 0..block_nx {
