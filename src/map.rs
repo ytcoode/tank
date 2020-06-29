@@ -1,4 +1,5 @@
 use crate::util;
+use crate::vision;
 use ggez;
 use ggez::graphics;
 use ggez::graphics::spritebatch::SpriteBatch;
@@ -16,8 +17,8 @@ pub struct Map {
     block_tiles: Vec<SpriteBatch>,
     block_size: u32,
 
-    width: u32,
-    height: u32,
+    pub width: u32,
+    pub height: u32,
 }
 
 impl Map {
@@ -41,8 +42,8 @@ impl Map {
             block_size = b;
         }
 
-        let block_nx = 10 as u32;
-        let block_ny = 10 as u32;
+        let block_nx = 7 as u32;
+        let block_ny = 8 as u32;
         let mut blocks = Vec::with_capacity((block_nx * block_ny) as usize);
         for _ in 0..block_nx {
             for _ in 0..block_ny {
@@ -91,5 +92,10 @@ impl Map {
 
     fn block(&self, i: u32, j: u32) -> u8 {
         self.blocks[block::idx(i, j, self.block_ny)]
+    }
+
+    pub fn vision(&self, ctx: &Context, x: u32, y: u32) -> (u32, u32, u32, u32) {
+        let (vw, vh) = graphics::drawable_size(ctx);
+        vision::range(self.width, self.height, vw as u32, vh as u32, x, y)
     }
 }
