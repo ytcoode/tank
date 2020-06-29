@@ -68,7 +68,7 @@ impl EventHandler for GameState {
         // tank
         for tank in &self.tanks {
             self.tank_batch
-                .add((Point2::new(tank.x - x1, tank.y - y1),));
+                .add((Point2::new(tank.x - x1 - 37.5, tank.y - y1 - 35.0),));
         }
         graphics::draw(ctx, &self.tank_batch, util::DRAW_PARAM_ZERO)?;
         self.tank_batch.clear();
