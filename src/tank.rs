@@ -12,6 +12,14 @@ pub struct Tank {
     pub vx: f32,
     pub vy: f32,
 
+    pub x1: f32,
+    pub y1: f32,
+
+    pub x0: f32,
+    pub y0: f32,
+    pub dx: f32,
+    pub dy: f32,
+
     pub width: u32,
     pub height: u32,
     pub batch: SpriteBatch,
@@ -29,6 +37,12 @@ impl Tank {
             y: 0.0,
             vx: 0.0,
             vy: 0.0,
+            x1: 0.0,
+            y1: 0f32,
+            dx: 0.0,
+            dy: 0.0,
+            x0: 0.0,
+            y0: 0.0,
             width,
             height,
             batch,
