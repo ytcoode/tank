@@ -1,4 +1,5 @@
 #![feature(option_unwrap_none)]
+#![feature(option_expect_none)]
 
 use ggez::event;
 use ggez::ContextBuilder;

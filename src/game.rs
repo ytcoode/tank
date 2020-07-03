@@ -12,6 +12,8 @@ use ggez::timer;
 use ggez::Context;
 use ggez::GameResult;
 
+mod config;
+
 pub struct GameState {
     map: Map,
     tank: Tank,
