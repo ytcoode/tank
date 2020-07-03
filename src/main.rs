@@ -14,6 +14,8 @@ mod util;
 mod vision;
 
 fn main() -> GameResult {
+    let cfgs = game::load_cfgs().unwrap();
+
     let (mut ctx, mut event_loop) = ContextBuilder::new("CrazyTank", "CrazyBunny")
         .add_resource_path("./resources")
         .build()?;

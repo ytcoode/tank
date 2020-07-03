@@ -17,14 +17,15 @@ impl Config for Cfg {
 
 pub fn load<P: AsRef<Path>>(path: P) -> io::Result<Vec<impl Config>> {
     let s = fs::read_to_string(path)?;
-    let v = s.split('\n').fold(Vec::<Vec<&str>>::new(), |mut v, l| {
-        v.push(l.split('\t').map(|f| f.trim()).collect());
-        v
-    });
+    let mut v = Vec::<Vec<&str>>::new();
+    s.split('\n')
+        .map(|l| l.trim())
+        .filter(|l| l.len() > 0)
+        .for_each(|l| v.push(l.split('\t').map(|f| f.trim()).collect()));
 
     let mut r = vec![];
     if v.len() > 2 {
-        let keys = &v[1]; // TODO check for duplicates?
+        let keys = &v[1]; // TODO check for duplicates? Check that all keys are not empty
         v.iter().skip(2).for_each(|vals| {
             assert!(
                 vals.len() <= keys.len(),

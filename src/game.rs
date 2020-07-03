@@ -13,21 +13,19 @@ use ggez::Context;
 use ggez::GameResult;
 
 mod config;
+pub use config::*;
 
 pub struct GameState {
-    cfgs: config::GameCfgs,
     map: Map,
     tank: Tank,
 }
 
 impl GameState {
     pub fn new(ctx: &mut Context) -> GameResult<GameState> {
-        let cfgs = config::load_cfgs().unwrap();
-
         let map = Map::new(ctx)?;
         let tank = Tank::new(ctx)?;
 
-        Ok(GameState { cfgs, map, tank })
+        Ok(GameState { map, tank })
     }
 }
 
