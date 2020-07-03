@@ -7,6 +7,6 @@ pub trait Config {
     fn get(&self, key: &str) -> Option<&str>;
 }
 
-pub fn load<P: AsRef<Path>>(file: String) -> io::Result<Vec<impl Config>> {
-    tsv::load(file)
+pub fn load<P: AsRef<Path>>(path: P) -> io::Result<Vec<impl Config>> {
+    tsv::load(path)
 }
