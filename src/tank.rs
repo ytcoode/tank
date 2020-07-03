@@ -6,7 +6,8 @@ use ggez::graphics::Image;
 use ggez::Context;
 use ggez::GameResult;
 
-pub mod config;
+mod config;
+pub use config::*;
 
 pub struct Tank {
     pub x: f32,

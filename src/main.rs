@@ -13,13 +13,7 @@ mod tank;
 mod util;
 mod vision;
 
-use config::Config;
-
 fn main() -> GameResult {
-    //    let c = config::load("".to_string());
-    // let c = c.get("");
-    // println!("{:?}", c);
-
     let (mut ctx, mut event_loop) = ContextBuilder::new("CrazyTank", "CrazyBunny")
         .add_resource_path("./resources")
         .build()?;

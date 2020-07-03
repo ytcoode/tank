@@ -1,11 +1,11 @@
-use crate::config;
-use crate::tank::config::TankCfgs;
+use crate::tank;
 use std::io;
 
-struct GameCfgs {
-    tanks: TankCfgs,
+pub struct GameCfgs {
+    tanks: tank::TankCfgs,
 }
 
-// pub fn load() -> io::Result<GameCfgs> {
-
-// }
+pub fn load_cfgs() -> io::Result<GameCfgs> {
+    let tanks = tank::load_cfgs()?;
+    Ok(GameCfgs { tanks })
+}

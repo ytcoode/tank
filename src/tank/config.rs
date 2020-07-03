@@ -28,10 +28,10 @@ impl fmt::Debug for TankCfg {
     }
 }
 
-pub fn load() -> io::Result<TankCfgs> {
+pub fn load_cfgs() -> io::Result<TankCfgs> {
     let mut map = HashMap::new();
 
-    config::load("./config/tank.txt")?
+    config::load("./config/tank.txt")
         .into_iter()
         .map(|c| TankCfg::new(c))
         .for_each(|t| map.insert(t.id, t).expect_none("Duplicate tank id"));
