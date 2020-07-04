@@ -40,7 +40,7 @@ where
     }
 
     let keys = &lines[1];
-    keys.iter().zip((1..)).for_each(|(k, c)| {
+    keys.iter().zip(1..).for_each(|(k, c)| {
         assert!(
             k.len() > 0,
             "The key must not be empty: {}:{}:{}",
@@ -51,7 +51,7 @@ where
     });
 
     let mut cfgs = Vec::with_capacity(lines.len() - 2);
-    lines.iter().skip(2).zip((3..)).for_each(|(vals, line)| {
+    lines.iter().skip(2).zip(3..).for_each(|(vals, line)| {
         assert!(
             vals.len() <= keys.len(),
             "The number of values must be less than or equal to the number of keys: {}, {}",
