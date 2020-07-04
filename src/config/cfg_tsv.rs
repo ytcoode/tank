@@ -19,7 +19,6 @@ impl fmt::Display for Cfg {
 
 impl Config for Cfg {
     fn str<'a>(&'a self, key: &'a str) -> Str<'a> {
-        self.key(key);
         Str::new(
             self,
             key,

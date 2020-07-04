@@ -32,6 +32,6 @@ fn main() {
     let c = &v[0];
 
     use crate::config::Config;
-    let id = c.str("id").not_empty().get();
+    let id = c.str("id0").not_empty().get();
     println!("id: {}", id);
 }
