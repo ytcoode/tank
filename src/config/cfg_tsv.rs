@@ -1,9 +1,9 @@
 use super::Config;
+use super::Str;
 use std::collections::HashMap;
 use std::fmt;
 use std::fs;
 use std::io;
-use std::iter;
 use std::path::Path;
 
 struct Cfg {
@@ -18,8 +18,13 @@ impl fmt::Display for Cfg {
 }
 
 impl Config for Cfg {
-    fn str(&self, key: &str) -> &str {
-        self.map.get(key).map(|s| s.as_ref()).unwrap_or("")
+    fn str<'a>(&'a self, key: &'a str) -> Str<'a> {
+        self.key(key);
+        Str::new(
+            self,
+            key,
+            self.map.get(key).map(|s| s.as_str()).unwrap_or(""),
+        )
     }
 }
 

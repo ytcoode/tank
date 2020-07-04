@@ -4,7 +4,6 @@ use ggez::graphics::Image;
 use ggez::Context;
 use std::collections::HashMap;
 use std::fmt;
-use std::io;
 
 pub struct TankCfgs {
     map: HashMap<u32, TankCfg>,
