@@ -1,4 +1,5 @@
 use super::Config;
+use super::U32;
 use std::fmt;
 
 pub struct Str<'a> {
@@ -13,8 +14,17 @@ impl<'a> Str<'a> {
     }
 
     pub fn not_empty(self) -> Self {
-        assert!(self.val.len() > 0, "{} must not be empty!", self);
+        assert!(
+            self.val.len() > 0,
+            "The value of [{}:{}] must not be empty!",
+            self.cfg,
+            self.key
+        );
         self
+    }
+
+    pub fn to_u32(self) -> U32 {
+        U32::new(self)
     }
 
     pub fn get(self) -> &'a str {

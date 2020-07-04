@@ -1,27 +1,17 @@
 use super::Config;
+use super::Str;
 
 pub struct U32<'a> {
-    cfg: &'a dyn Config,
-    key: &'a str,
-    val: &'a str,
+    str: Str<'a>,
+    val: u32,
 }
 
 impl<'a> U32<'a> {
-    pub fn new(cfg: &'a dyn Config, key: &'a str, val: &'a str) -> U32<'a> {
-        U32 { cfg, key, val }
+    pub fn new(str: Str<'a>) -> U32<'a> {
+        U32 { str, val }
     }
 
-    pub fn not_empty(self) -> Self {
-        assert!(
-            self.val.len() == 0,
-            "The value of [{}:{}] must not be empty!",
-            self.cfg,
-            self.key,
-        );
-        self
-    }
-
-    pub fn get(self) -> &'a str {
+    pub fn get(self) -> u32 {
         self.val
     }
 }

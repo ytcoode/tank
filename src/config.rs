@@ -11,7 +11,9 @@ pub use val_u32::*;
 pub trait Config: fmt::Display {
     fn str<'a>(&'a self, key: &'a str) -> Str<'a>;
 
-    fn u32(&self) {}
+    fn u32(&self, key: &'a str) {
+        self.str(key)
+    }
 
     // fn get_and_parse<T>(&self, key: &str) -> T
     // where
