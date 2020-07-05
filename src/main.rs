@@ -26,12 +26,19 @@
 // }
 
 mod config;
+use crate::config::Config;
 
 fn main() {
     let v = config::load("config/tank.txt");
     let c = &v[0];
 
-    use crate::config::Config;
-    let id = c.str("id0").not_empty().get();
+    let id = c
+        .str("id")
+        .not_empty()
+        .to::<i32>()
+        .ge(0)
+        .le(20)
+        .range(10, 20)
+        .get();
     println!("id: {}", id);
 }

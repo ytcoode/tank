@@ -1,6 +1,7 @@
 use super::Config;
-use super::U32;
+use super::Val;
 use std::fmt;
+use std::str::FromStr;
 
 pub struct Str<'a> {
     cfg: &'a dyn Config,
@@ -23,11 +24,15 @@ impl<'a> Str<'a> {
         self
     }
 
-    pub fn to_u32(self) -> U32 {
-        U32::new(self)
+    pub fn to<T>(self) -> Val<'a, T>
+    where
+        T: FromStr,
+        <T as FromStr>::Err: fmt::Debug,
+    {
+        Val::new(self)
     }
 
-    pub fn get(self) -> &'a str {
+    pub fn get(&self) -> &'a str {
         self.val
     }
 }
