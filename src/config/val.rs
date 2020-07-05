@@ -6,23 +6,23 @@ use std::cmp::PartialOrd;
 use std::fmt::Debug;
 use std::str::FromStr;
 
-pub struct Val<'a, C: Config, T> {
-    str: Str<'a, C>,
+pub struct Val<K: Debug, T> {
+    key: K,
     val: T,
 }
 
-impl<'a, C: Config, T> Val<'a, C, T> {
+impl<K: Debug, T> Val<C, T> {
     pub fn get(self) -> T {
         self.val
     }
 }
 
-impl<'a, C: Config, T> Val<'a, C, T>
+impl<K: Debug, T> Val<K, T> {
 where
     T: FromStr,
     <T as FromStr>::Err: Debug,
 {
-    pub fn new(str: Str<'a, C>) -> Val<'a, C, T> {
+    pub fn new<'a, C:Config> (str: Str<'a, C>) -> Val<Str<'a,C>, T> {
         let val = str.get().parse().expect(
             format!(
                 "{} could not be parsed into type [{}]",
@@ -35,7 +35,7 @@ where
     }
 }
 
-impl<'a, C: Config, T: PartialOrd + Debug> Val<'a, C, T> {
+impl<K:Debug, T: PartialOrd + Debug> Val<K, T> {
     pub fn ge<B: Borrow<T>>(self, b: B) -> Self {
         let b = b.borrow();
         assert!(

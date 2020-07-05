@@ -38,7 +38,12 @@ impl<'a, C: Config> Str<'a, C> {
 }
 
 impl<C: Config> fmt::Display for Str<'_, C> {
-    // TODO ?
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "The value [{}] of [{}:{}]", self.val, self.cfg, self.key)
+    }
+}
+
+impl<C: Config> fmt::Debug for Str<'_, C> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "The value [{}] of [{}:{}]", self.val, self.cfg, self.key)
     }
