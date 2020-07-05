@@ -32,13 +32,8 @@ fn main() {
     let v = config::load("config/tank.txt");
     let c = &v[0];
 
-    let id = c
-        .str("id")
-        .not_empty()
-        .to::<i32>()
-        .ge(0)
-        .le(20)
-        .range(10, 20)
-        .get();
+    let id = c.str("id").not_empty();
+    let id = id.to::<i32>().ge(0).le(20).range(10, 20).get();
+
     println!("id: {}", id);
 }

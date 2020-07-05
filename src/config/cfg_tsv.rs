@@ -2,23 +2,20 @@ use super::Config;
 use super::Str;
 use std::collections::HashMap;
 use std::fmt;
+use std::fmt::Debug;
+use std::fmt::Display;
 use std::fs;
 use std::io;
 use std::path::Path;
 
 struct Cfg {
     file: String,
+    line: String,
     map: HashMap<String, String>,
 }
 
-impl fmt::Display for Cfg {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.file)
-    }
-}
-
 impl Config for Cfg {
-    fn str<'a>(&'a self, key: &'a str) -> Str<'a, Cfg> {
+    fn str<'a>(&'a self, key: &'a str) -> Str<'a, Self> {
         Str::new(
             self,
             key,
@@ -27,9 +24,15 @@ impl Config for Cfg {
     }
 }
 
+impl Debug for Cfg {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}:{}", self.file, self.line)
+    }
+}
+
 pub fn load<P>(path: P) -> io::Result<Vec<impl Config>>
 where
-    P: AsRef<Path> + fmt::Display + Copy,
+    P: AsRef<Path> + Display + Copy,
 {
     let mut lines = Vec::<Vec<&str>>::new();
     let s = fs::read_to_string(path)?;
@@ -63,14 +66,15 @@ where
             vals.len()
         );
 
-        let mut map = HashMap::new();
+        let mut map = HashMap::new(); // allow duplicate keys?
 
         keys.iter()
-            .zip(vals.iter()) // allow duplicate keys?
+            .zip(vals.iter())
             .for_each(|(key, val)| map.insert(key.to_string(), val.to_string()).unwrap_none());
 
         cfgs.push(Cfg {
-            file: format!("{}:{}", path, line),
+            file: path.to_string(),
+            line: line.to_string(),
             map,
         });
     });

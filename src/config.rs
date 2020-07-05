@@ -1,4 +1,5 @@
-use std::fmt;
+use std::fmt::Debug;
+use std::fmt::Display;
 use std::marker::Sized;
 use std::path::Path;
 
@@ -9,7 +10,7 @@ mod val_str;
 pub use val::*;
 pub use val_str::*;
 
-pub trait Config: fmt::Display {
+pub trait Config: Debug {
     fn str<'a>(&'a self, key: &'a str) -> Str<'a, Self>
     where
         Self: Sized;
@@ -17,7 +18,7 @@ pub trait Config: fmt::Display {
 
 pub fn load<P>(path: P) -> Vec<impl Config>
 where
-    P: AsRef<Path> + Copy + fmt::Display,
+    P: AsRef<Path> + Display + Copy,
 {
     println!("load: {}", path);
     cfg_tsv::load(path).expect(format!("Failed to load config file {}", path).as_str())

@@ -1,6 +1,7 @@
 use super::Config;
 use super::Val;
 use std::fmt;
+use std::fmt::Debug;
 use std::str::FromStr;
 
 pub struct Str<'a, C: Config> {
@@ -17,19 +18,19 @@ impl<'a, C: Config> Str<'a, C> {
     pub fn not_empty(self) -> Self {
         assert!(
             self.val.len() > 0,
-            "The value of [{}:{}] must not be empty!",
+            "The value of [{:?}:{}] must not be empty!",
             self.cfg,
             self.key
         );
         self
     }
 
-    pub fn to<T>(self) -> Val<'a, C, T>
+    pub fn to<T>(self) -> Val<Self, T>
     where
         T: FromStr,
-        <T as FromStr>::Err: fmt::Debug,
+        <T as FromStr>::Err: Debug,
     {
-        Val::new(self)
+        Val::<Self, T>::new(self)
     }
 
     pub fn get(&self) -> &'a str {
@@ -37,14 +38,12 @@ impl<'a, C: Config> Str<'a, C> {
     }
 }
 
-impl<C: Config> fmt::Display for Str<'_, C> {
+impl<C: Config> Debug for Str<'_, C> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "The value [{}] of [{}:{}]", self.val, self.cfg, self.key)
-    }
-}
-
-impl<C: Config> fmt::Debug for Str<'_, C> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "The value [{}] of [{}:{}]", self.val, self.cfg, self.key)
+        write!(
+            f,
+            "The value [{}] of [{:?}:{}]",
+            self.val, self.cfg, self.key
+        )
     }
 }
