@@ -1,6 +1,6 @@
 tank id	tank image
 id	image
-0	/PNG/Tanks/tankBeigh.png
+0	/PNG/Tanks/tankBeige.png
 1	/PNG/Tanks/tankBlack.png
 2	/PNG/Tanks/tankBlue.png
 3	/PNG/Tanks/tankGreen.png

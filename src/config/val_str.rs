@@ -10,6 +10,16 @@ pub struct Str<'a, C: Config> {
     val: &'a str,
 }
 
+impl<C: Config> fmt::Display for Str<'_, C> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "The value [{}] of the [{}:{}] field",
+            self.val, self.cfg, self.key
+        )
+    }
+}
+
 impl<'a, C: Config> Str<'a, C> {
     pub fn new(cfg: &'a C, key: &'a str, val: &'a str) -> Self {
         Str { cfg, key, val }
@@ -23,10 +33,6 @@ impl<'a, C: Config> Str<'a, C> {
             self.key
         );
         self
-    }
-
-    pub fn map<K: fmt::Display>(self) -> Val<K, u32> {
-        Val::new("", 1)
     }
 
     pub fn to<T>(self) -> Val<Self, T>
@@ -45,13 +51,15 @@ impl<'a, C: Config> Str<'a, C> {
         Val::new(self, val)
     }
 
-    pub fn get(self) -> &'a str {
-        self.val
+    pub fn map<T, F>(self, f: F) -> Val<Self, T>
+    where
+        F: FnOnce(&Self) -> T,
+    {
+        let val = f(&self);
+        Val::new(self, val)
     }
-}
 
-impl<C: Config> fmt::Display for Str<'_, C> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "The value [{}] of [{}:{}]", self.val, self.cfg, self.key)
+    pub fn get(&self) -> &'a str {
+        self.val
     }
 }

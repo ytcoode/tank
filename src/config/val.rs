@@ -1,10 +1,17 @@
 use std::borrow::Borrow;
 use std::cmp::PartialOrd;
+use std::fmt;
 use std::fmt::Display;
 
 pub struct Val<K: Display, T> {
     key: K,
     val: T,
+}
+
+impl<K: Display, T> Display for Val<K, T> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.key)
+    }
 }
 
 impl<K: Display, T> Val<K, T> {

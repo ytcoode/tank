@@ -2,7 +2,6 @@ use super::Config;
 use super::Str;
 use std::collections::HashMap;
 use std::fmt;
-use std::fmt::Display;
 use std::fs;
 use std::io;
 use std::path::Path;
@@ -11,6 +10,12 @@ struct Cfg {
     file: String,
     line: String,
     map: HashMap<String, String>,
+}
+
+impl fmt::Display for Cfg {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}:{}", self.file, self.line)
+    }
 }
 
 impl Config for Cfg {
@@ -23,15 +28,9 @@ impl Config for Cfg {
     }
 }
 
-impl Display for Cfg {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}:{}", self.file, self.line)
-    }
-}
-
 pub fn load<P>(path: P) -> io::Result<Vec<impl Config>>
 where
-    P: AsRef<Path> + Display + Copy,
+    P: AsRef<Path> + fmt::Display + Copy,
 {
     let mut lines = Vec::<Vec<&str>>::new();
     let s = fs::read_to_string(path)?;

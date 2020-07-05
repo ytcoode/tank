@@ -5,11 +5,19 @@ use ggez::Context;
 use std::collections::HashMap;
 use std::fmt;
 
+#[derive(Debug)]
 pub struct TankCfgs {
     map: HashMap<u32, TankCfg>,
 }
 
-struct TankCfg {
+impl TankCfgs {
+    pub fn get(&self, id: u32) -> Option<&TankCfg> {
+        self.map.get(&id)
+    }
+}
+
+#[derive(Debug)]
+pub struct TankCfg {
     id: u32,
     width: u32,
     height: u32,
@@ -18,10 +26,16 @@ struct TankCfg {
 
 impl TankCfg {
     fn new(c: impl Config, ctx: &mut Context) -> TankCfg {
-        let id = c.u32("id").ge(0).get();
+        let id = c.u32("id").get();
 
-        let image = c.str("image").not_empty().get();
-        let image = Image::new(ctx, image).expect("Image not found");
+        let image = c
+            .str("image")
+            .not_empty()
+            .map(|s| {
+                Image::new(ctx, s.get())
+                    .expect(format!("TankCfg{{id: {}}} image not found", id).as_str())
+            })
+            .get();
 
         let width = image.width() as u32;
         let height = image.height() as u32;
@@ -35,7 +49,7 @@ impl TankCfg {
     }
 }
 
-impl fmt::Debug for TankCfg {
+impl fmt::Display for TankCfg {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("TankCfg").field("id", &self.id).finish()
     }
