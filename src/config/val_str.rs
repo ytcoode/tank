@@ -1,5 +1,6 @@
 use super::Config;
 use super::Val;
+use std::any;
 use std::fmt;
 use std::fmt::Debug;
 use std::str::FromStr;
@@ -11,7 +12,7 @@ pub struct Str<'a, C: Config> {
 }
 
 impl<'a, C: Config> Str<'a, C> {
-    pub fn new(cfg: &'a C, key: &'a str, val: &'a str) -> Str<'a, C> {
+    pub fn new(cfg: &'a C, key: &'a str, val: &'a str) -> Self {
         Str { cfg, key, val }
     }
 
@@ -30,10 +31,18 @@ impl<'a, C: Config> Str<'a, C> {
         T: FromStr,
         <T as FromStr>::Err: Debug,
     {
-        Val::<Self, T>::new(self)
+        let val = self.val.parse().expect(
+            format!(
+                "{:?} could not be parsed into type [{}]",
+                self,
+                any::type_name::<T>()
+            )
+            .as_str(),
+        );
+        Val::new(self, val)
     }
 
-    pub fn get(&self) -> &'a str {
+    pub fn get(self) -> &'a str {
         self.val
     }
 }
