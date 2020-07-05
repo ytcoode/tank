@@ -25,6 +25,10 @@ impl<'a, C: Config> Str<'a, C> {
         self
     }
 
+    pub fn map<K: fmt::Display>(self) -> Val<K, u32> {
+        Val::new("", 1)
+    }
+
     pub fn to<T>(self) -> Val<Self, T>
     where
         T: FromStr,

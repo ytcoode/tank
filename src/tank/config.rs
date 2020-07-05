@@ -17,13 +17,10 @@ struct TankCfg {
 }
 
 impl TankCfg {
-    fn new<C: Config>(c: C, ctx: &mut Context) -> TankCfg {
-        let id = c.str("id");
-        let id = id
-            .parse()
-            .expect(format!("Failed to parse {} as tank id", id).as_str());
+    fn new(c: impl Config, ctx: &mut Context) -> TankCfg {
+        let id = c.u32("id").ge(0).get();
 
-        let image = c.str("image");
+        let image = c.str("image").not_empty().get();
         let image = Image::new(ctx, image).expect("Image not found");
 
         let width = image.width() as u32;

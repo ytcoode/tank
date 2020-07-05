@@ -1,5 +1,7 @@
-tankID
-id
-0
-1
-2
+tank id	tank image
+id	image
+0	/PNG/Tanks/tankBeigh.png
+1	/PNG/Tanks/tankBlack.png
+2	/PNG/Tanks/tankBlue.png
+3	/PNG/Tanks/tankGreen.png
+4	/PNG/Tanks/tankRed.png
