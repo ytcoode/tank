@@ -3,14 +3,14 @@ use super::Val;
 use std::fmt;
 use std::str::FromStr;
 
-pub struct Str<'a> {
-    cfg: &'a dyn Config,
+pub struct Str<'a, C: Config> {
+    cfg: &'a C,
     key: &'a str,
     val: &'a str,
 }
 
-impl<'a> Str<'a> {
-    pub fn new(cfg: &'a dyn Config, key: &'a str, val: &'a str) -> Str<'a> {
+impl<'a, C: Config> Str<'a, C> {
+    pub fn new(cfg: &'a C, key: &'a str, val: &'a str) -> Str<'a, C> {
         Str { cfg, key, val }
     }
 
@@ -24,7 +24,7 @@ impl<'a> Str<'a> {
         self
     }
 
-    pub fn to<T>(self) -> Val<'a, T>
+    pub fn to<T>(self) -> Val<'a, C, T>
     where
         T: FromStr,
         <T as FromStr>::Err: fmt::Debug,
@@ -37,7 +37,8 @@ impl<'a> Str<'a> {
     }
 }
 
-impl fmt::Display for Str<'_> {
+impl<C: Config> fmt::Display for Str<'_, C> {
+    // TODO ?
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "The value [{}] of [{}:{}]", self.val, self.cfg, self.key)
     }

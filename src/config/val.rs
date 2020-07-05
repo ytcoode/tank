@@ -1,3 +1,4 @@
+use super::Config;
 use super::Str;
 use std::any;
 use std::borrow::Borrow;
@@ -5,23 +6,23 @@ use std::cmp::PartialOrd;
 use std::fmt::Debug;
 use std::str::FromStr;
 
-pub struct Val<'a, T> {
-    str: Str<'a>,
+pub struct Val<'a, C: Config, T> {
+    str: Str<'a, C>,
     val: T,
 }
 
-impl<'a, T> Val<'a, T> {
+impl<'a, C: Config, T> Val<'a, C, T> {
     pub fn get(self) -> T {
         self.val
     }
 }
 
-impl<'a, T> Val<'a, T>
+impl<'a, C: Config, T> Val<'a, C, T>
 where
     T: FromStr,
     <T as FromStr>::Err: Debug,
 {
-    pub fn new(str: Str<'a>) -> Val<'a, T> {
+    pub fn new(str: Str<'a, C>) -> Val<'a, C, T> {
         let val = str.get().parse().expect(
             format!(
                 "{} could not be parsed into type [{}]",
@@ -34,7 +35,7 @@ where
     }
 }
 
-impl<'a, T: PartialOrd + Debug> Val<'a, T> {
+impl<'a, C: Config, T: PartialOrd + Debug> Val<'a, C, T> {
     pub fn ge<B: Borrow<T>>(self, b: B) -> Self {
         let b = b.borrow();
         assert!(

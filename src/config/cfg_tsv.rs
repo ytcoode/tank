@@ -18,7 +18,7 @@ impl fmt::Display for Cfg {
 }
 
 impl Config for Cfg {
-    fn str<'a>(&'a self, key: &'a str) -> Str<'a> {
+    fn str<'a>(&'a self, key: &'a str) -> Str<'a, Cfg> {
         Str::new(
             self,
             key,

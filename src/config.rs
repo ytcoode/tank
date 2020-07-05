@@ -1,4 +1,5 @@
 use std::fmt;
+use std::marker::Sized;
 use std::path::Path;
 
 mod cfg_tsv;
@@ -9,7 +10,9 @@ pub use val::*;
 pub use val_str::*;
 
 pub trait Config: fmt::Display {
-    fn str<'a>(&'a self, key: &'a str) -> Str<'a>;
+    fn str<'a>(&'a self, key: &'a str) -> Str<'a, Self>
+    where
+        Self: Sized;
 }
 
 pub fn load<P>(path: P) -> Vec<impl Config>
