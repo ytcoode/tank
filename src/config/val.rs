@@ -1,13 +1,13 @@
 use std::borrow::Borrow;
 use std::cmp::PartialOrd;
-use std::fmt::Debug;
+use std::fmt::Display;
 
-pub struct Val<K: Debug, T> {
+pub struct Val<K: Display, T> {
     key: K,
     val: T,
 }
 
-impl<K: Debug, T> Val<K, T> {
+impl<K: Display, T> Val<K, T> {
     pub fn new(key: K, val: T) -> Self {
         Val { key, val }
     }
@@ -17,12 +17,12 @@ impl<K: Debug, T> Val<K, T> {
     }
 }
 
-impl<K: Debug, T: PartialOrd + Debug> Val<K, T> {
+impl<K: Display, T: PartialOrd + Display> Val<K, T> {
     pub fn ge<B: Borrow<T>>(self, b: B) -> Self {
         let b = b.borrow();
         assert!(
             self.val.ge(b),
-            "{:?} must be greater than or equal to {:?}",
+            "{} must be greater than or equal to {}",
             self.key,
             b
         );
@@ -33,7 +33,7 @@ impl<K: Debug, T: PartialOrd + Debug> Val<K, T> {
         let b = b.borrow();
         assert!(
             self.val.le(b),
-            "{:?} must be less than or equal to {:?}",
+            "{} must be less than or equal to {}",
             self.key,
             b
         );
@@ -45,7 +45,7 @@ impl<K: Debug, T: PartialOrd + Debug> Val<K, T> {
         let max = max.borrow();
         assert!(
             self.val.ge(min) && self.val.le(max),
-            "{:?} must be in the range {:?} to {:?} inclusive",
+            "{} must be in the range {} to {} inclusive",
             self.key,
             min,
             max

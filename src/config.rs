@@ -1,4 +1,3 @@
-use std::fmt::Debug;
 use std::fmt::Display;
 use std::marker::Sized;
 use std::path::Path;
@@ -10,7 +9,7 @@ mod val_str;
 pub use val::*;
 pub use val_str::*;
 
-pub trait Config: Debug {
+pub trait Config: Display {
     fn str<'a>(&'a self, key: &'a str) -> Str<'a, Self>
     where
         Self: Sized;

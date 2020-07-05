@@ -2,7 +2,6 @@ use super::Config;
 use super::Str;
 use std::collections::HashMap;
 use std::fmt;
-use std::fmt::Debug;
 use std::fmt::Display;
 use std::fs;
 use std::io;
@@ -24,7 +23,7 @@ impl Config for Cfg {
     }
 }
 
-impl Debug for Cfg {
+impl Display for Cfg {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}:{}", self.file, self.line)
     }
