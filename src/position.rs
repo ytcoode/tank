@@ -1,3 +1,4 @@
+use path::Path;
 use std::time::Instant;
 
 mod path;
@@ -5,7 +6,7 @@ mod path;
 pub struct Position {
     x: u32,
     y: u32,
-    path: Option<path::Path>,
+    path: Option<Path>,
 }
 
 impl Position {
@@ -13,7 +14,20 @@ impl Position {
         Position { x, y, path: None }
     }
 
-    pub fn update(&mut self, now: Instant) {}
+    pub fn move_to(&mut self, x: u32, y: u32, speed: u16, now: Instant) {
+        self.path = Some(Path::new(self.x, self.y, x, y, speed, now));
+    }
+
+    pub fn update(&mut self, now: Instant) {
+        if let Some(p) = &self.path {
+            let (x, y) = p.position(now);
+            self.x = x;
+            self.y = y;
+            if p.is_destination(x, y) {
+                self.path = None;
+            }
+        }
+    }
 
     pub fn x(&self) -> u32 {
         self.x
