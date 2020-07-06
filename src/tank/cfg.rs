@@ -66,3 +66,5 @@ pub fn load_cfgs(ctx: &mut Context) -> TankCfgs {
 
     TankCfgs { cfgs }
 }
+
+struct A {}

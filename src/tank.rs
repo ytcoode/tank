@@ -1,3 +1,4 @@
+use crate::position::Position;
 use crate::util;
 use ggez::graphics;
 use ggez::graphics::spritebatch::SpriteBatch;
@@ -6,19 +7,26 @@ use ggez::graphics::Image;
 use ggez::Context;
 use ggez::GameResult;
 use std::rc::Rc;
+use std::time::Instant;
 
 mod cfg;
 pub use cfg::*;
 
 pub struct Tank {
     pub cfg: Rc<TankCfg>,
-    pub x: u32,
-    pub y: u32,
+    pub position: Position,
 }
 
 impl Tank {
-    pub fn new(cfg: Rc<TankCfg>) -> Tank {
-        Tank { cfg, x: 0, y: 0 }
+    pub fn new(cfg: Rc<TankCfg>, x: u32, y: u32) -> Tank {
+        Tank {
+            cfg,
+            position: Position::new(x, y),
+        }
+    }
+
+    pub fn update(&mut self, now: Instant) {
+        self.position.update(now);
     }
 
     pub fn draw(&mut self, ctx: &mut Context, x1: u32, y1: u32) -> GameResult {

@@ -34,7 +34,7 @@ impl GameState {
             .get(0)
             .expect("Tank config file cannot be empty!");
 
-        let tank = Tank::new(tankCfg.clone());
+        let tank = Tank::new(tankCfg.clone(), 0, 0);
 
         let tank_sprites = cfgs
             .tanks

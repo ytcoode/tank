@@ -8,6 +8,7 @@ mod config;
 mod debug;
 mod game;
 mod map;
+mod position;
 mod tank;
 mod util;
 mod vision;
