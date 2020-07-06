@@ -15,6 +15,8 @@ pub use cfg::*;
 pub struct Tank {
     cfg: Rc<TankCfg>,
     position: Position,
+    pub x1: u32,
+    pub y1: u32,
 }
 
 impl Tank {
@@ -22,6 +24,8 @@ impl Tank {
         Tank {
             cfg,
             position: Position::new(x, y),
+            x1: 0, // TODO
+            y1: 0,
         }
     }
 

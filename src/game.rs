@@ -83,8 +83,8 @@ impl EventHandler for GameState {
 
         // vision
         let (x1, x2, y1, y2) = self.map.vision(ctx, self.tank.x(), self.tank.y());
-        // self.tank.x1 = x1 as f32;
-        // self.tank.y1 = y1 as f32;
+        self.tank.x1 = x1;
+        self.tank.y1 = y1;
 
         // map
         self.map.draw(ctx, x1, x2, y1, y2)?;
@@ -93,7 +93,7 @@ impl EventHandler for GameState {
         self.tank.draw(ctx, x1, y1)?;
 
         // debug
-        debug::draw_axis(ctx)?;
+        //        debug::draw_axis(ctx)?;
         //debug::draw_circle(ctx, self.tank.dx - x1 as f32, self.tank.dy - y1 as f32, 5.0)?;
 
         // misc
@@ -151,7 +151,10 @@ impl EventHandler for GameState {
 
     /// A mouse button was released
     fn mouse_button_up_event(&mut self, _ctx: &mut Context, _button: MouseButton, x: f32, y: f32) {
-        self.tank.move_to(x as u32, y as u32, Instant::now());
+        let x = self.tank.x1 + x as u32;
+        let y = self.tank.y1 + y as u32;
+
+        self.tank.move_to(x, y, Instant::now());
 
         // let x = x + self.tank.x1;
         // let y = y + self.tank.y1;
