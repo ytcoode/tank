@@ -6,10 +6,12 @@ use ggez::graphics::Image;
 use ggez::Context;
 use ggez::GameResult;
 
-mod config;
-pub use config::*;
+mod cfg;
+pub use cfg::*;
 
 pub struct Tank {
+    pub cfg: TankCfg,
+
     pub x: f32,
     pub y: f32,
     pub vx: f32,
@@ -22,17 +24,10 @@ pub struct Tank {
     pub y0: f32,
     pub dx: f32,
     pub dy: f32,
-
-    pub width: u32,
-    pub height: u32,
-    pub batch: SpriteBatch,
 }
 
 impl Tank {
-    pub fn new(ctx: &mut Context) -> GameResult<Tank> {
-        let image = Image::new(ctx, "/PNG/Tanks/tankRed.png")?;
-        let width = image.width() as u32;
-        let height = image.height() as u32;
+    pub fn new(cfg: TankCfg) -> Tank {
         let batch = SpriteBatch::new(image);
 
         Ok(Tank {
@@ -46,9 +41,6 @@ impl Tank {
             dy: 0.0,
             x0: 0.0,
             y0: 0.0,
-            width,
-            height,
-            batch,
         })
     }
 

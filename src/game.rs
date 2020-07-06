@@ -6,26 +6,33 @@ use ggez::event;
 use ggez::event::EventHandler;
 use ggez::event::MouseButton;
 use ggez::graphics;
+use ggez::graphics::spritebatch::SpriteBatch;
 use ggez::input::keyboard::KeyCode;
 use ggez::input::keyboard::KeyMods;
 use ggez::timer;
 use ggez::Context;
 use ggez::GameResult;
 
-mod config;
-pub use config::*;
+mod cfg;
+use cfg::*;
 
 pub struct GameState {
+    cfgs: GameCfgs,
+    tank_sprites: Vec<SpriteBatch>,
+
     map: Map,
     tank: Tank,
 }
 
 impl GameState {
     pub fn new(ctx: &mut Context) -> GameResult<GameState> {
+        let cfgs = cfg::load_cfgs(ctx);
         let map = Map::new(ctx)?;
-        let tank = Tank::new(ctx)?;
 
-        Ok(GameState { map, tank })
+        let tankCfg = cfgs.tanks.get(0).unwrap();
+        let tank = Tank::new(tankCfg);
+
+        Ok(GameState { cfgs, map, tank })
     }
 }
 

@@ -6,8 +6,8 @@ use ggez::ContextBuilder;
 
 mod config;
 mod debug;
-// mod game;
-// mod map;
+mod game;
+mod map;
 mod tank;
 mod util;
 mod vision;
@@ -17,17 +17,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .add_resource_path("./resources")
         .build()?;
 
-    let cfgs = tank::load_cfgs(&mut ctx);
-    println!("{:#?}", cfgs);
+    let mut state = game::GameState::new(&mut ctx)?;
 
-    let cfg = cfgs.get(1).unwrap();
-    println!("{:#}", cfg);
+    event::run(&mut ctx, &mut event_loop, &mut state)?;
 
     Ok(())
-
-    // let _cfgs = game::load_cfgs(&mut ctx);
-
-    // let mut state = game::GameState::new(&mut ctx)?;
-
-    // event::run(&mut ctx, &mut event_loop, &mut state)
 }

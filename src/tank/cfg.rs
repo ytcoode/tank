@@ -2,12 +2,28 @@ use crate::config;
 use crate::config::Config;
 use ggez::graphics::Image;
 use ggez::Context;
-use std::collections::HashMap;
 use std::fmt;
+
+pub fn load_cfgs(ctx: &mut Context) -> TankCfgs {
+    let cfgs = config::load("config/tank.txt")
+        .into_iter()
+        .map(|c| TankCfg::new(c, ctx))
+        .enumerate()
+        .inspect(|(i, t)| {
+            assert_eq!(
+                t.id, i,
+                "Tank id must start at zero and increase sequentially!"
+            )
+        })
+        .map(|(_, t)| t)
+        .collect();
+
+    TankCfgs { cfgs }
+}
 
 #[derive(Debug)]
 pub struct TankCfgs {
-    map: HashMap<u32, TankCfg>,
+    cfgs: Vec<TankCfg>,
 }
 
 impl TankCfgs {
@@ -53,15 +69,4 @@ impl fmt::Display for TankCfg {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("TankCfg").field("id", &self.id).finish()
     }
-}
-
-pub fn load_cfgs(ctx: &mut Context) -> TankCfgs {
-    let mut map = HashMap::new();
-
-    config::load("config/tank.txt")
-        .into_iter()
-        .map(|c| TankCfg::new(c, ctx))
-        .for_each(|t| map.insert(t.id, t).expect_none("Duplicate tank id"));
-
-    TankCfgs { map }
 }
