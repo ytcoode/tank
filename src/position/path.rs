@@ -8,7 +8,7 @@ pub struct Path {
     x2: u32,
     y2: u32,
 
-    dt: f64,     // seconds
+    dt: f64,     // seconds needed to reach destination
     st: Instant, // start time
 }
 
@@ -44,6 +44,6 @@ impl Path {
     }
 
     pub fn is_destination(&self, x: u32, y: u32) -> bool {
-        return self.x == x && self.y == y;
+        return self.x2 == x && self.y2 == y;
     }
 }

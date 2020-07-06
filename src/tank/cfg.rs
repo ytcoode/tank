@@ -18,7 +18,7 @@ pub struct TankCfg {
     width: u32,
     height: u32,
     pub image: Image,
-    ms: u16, // movement speed
+    pub ms: u16, // movement speed
 }
 
 impl TankCfg {

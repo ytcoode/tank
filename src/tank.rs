@@ -13,8 +13,8 @@ mod cfg;
 pub use cfg::*;
 
 pub struct Tank {
-    pub cfg: Rc<TankCfg>,
-    pub position: Position,
+    cfg: Rc<TankCfg>,
+    position: Position,
 }
 
 impl Tank {
@@ -25,20 +25,41 @@ impl Tank {
         }
     }
 
+    pub fn move_to(&mut self, x: u32, y: u32, now: Instant) {
+        self.position.move_to(x, y, self.cfg.ms, now);
+    }
+
     pub fn update(&mut self, now: Instant) {
         self.position.update(now);
     }
 
     pub fn draw(&mut self, ctx: &mut Context, x1: u32, y1: u32) -> GameResult {
-        // let x = self.x - x1 as f32;
-        // let y = self.y - y1 as f32;
+        let dx = self.x() as f64 - x1 as f64;
+        let dy = self.y() as f64 - y1 as f64;
 
-        // self.batch
-        //     .add(DrawParam::new().dest([x, y]).offset([0.5, 0.5]));
+        // self.batch.add(
+        //     DrawParam::new()
+        //         .dest([dx as f32, dy as f32])
+        //         .offset([0.5, 0.5]),
+        // );
 
-        // graphics::draw(ctx, &self.batch, util::DRAW_PARAM_ZERO)?;
+        graphics::draw(
+            ctx,
+            &self.cfg.image,
+            DrawParam::new()
+                .dest([dx as f32, dy as f32])
+                .offset([0.5, 0.5]),
+        )?;
         // self.batch.clear();
 
         Ok(())
+    }
+
+    pub fn x(&self) -> u32 {
+        self.position.x()
+    }
+
+    pub fn y(&self) -> u32 {
+        self.position.y()
     }
 }

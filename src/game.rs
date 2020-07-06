@@ -12,6 +12,7 @@ use ggez::input::keyboard::KeyMods;
 use ggez::timer;
 use ggez::Context;
 use ggez::GameResult;
+use std::time::Instant;
 
 mod cfg;
 use cfg::*;
@@ -54,6 +55,10 @@ impl GameState {
 
 impl EventHandler for GameState {
     fn update(&mut self, _ctx: &mut Context) -> GameResult {
+        let now = Instant::now();
+
+        self.tank.update(now);
+
         // let t = &mut self.tank;
         // t.x += t.vx;
         // t.y += t.vy;
@@ -76,20 +81,20 @@ impl EventHandler for GameState {
         // clear
         graphics::clear(ctx, graphics::WHITE);
 
-        // // vision
-        // let (x1, x2, y1, y2) = self.map.vision(ctx, self.tank.x as u32, self.tank.y as u32);
+        // vision
+        let (x1, x2, y1, y2) = self.map.vision(ctx, self.tank.x(), self.tank.y());
         // self.tank.x1 = x1 as f32;
         // self.tank.y1 = y1 as f32;
 
-        // // map
-        // self.map.draw(ctx, x1, x2, y1, y2)?;
+        // map
+        self.map.draw(ctx, x1, x2, y1, y2)?;
 
-        // // tank
-        // self.tank.draw(ctx, x1, y1)?;
+        // tank
+        self.tank.draw(ctx, x1, y1)?;
 
-        // // debug
-        // debug::draw_axis(ctx)?;
-        // debug::draw_circle(ctx, self.tank.dx - x1 as f32, self.tank.dy - y1 as f32, 5.0)?;
+        // debug
+        debug::draw_axis(ctx)?;
+        //debug::draw_circle(ctx, self.tank.dx - x1 as f32, self.tank.dy - y1 as f32, 5.0)?;
 
         // misc
         graphics::set_window_title(ctx, &format!("Tanks - {:.0} FPS", timer::fps(ctx),));
@@ -146,6 +151,8 @@ impl EventHandler for GameState {
 
     /// A mouse button was released
     fn mouse_button_up_event(&mut self, _ctx: &mut Context, _button: MouseButton, x: f32, y: f32) {
+        self.tank.move_to(x as u32, y as u32, Instant::now());
+
         // let x = x + self.tank.x1;
         // let y = y + self.tank.y1;
 
