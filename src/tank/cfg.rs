@@ -2,34 +2,14 @@ use crate::config;
 use crate::config::Config;
 use ggez::graphics::Image;
 use ggez::Context;
+use std::convert::TryFrom;
+use std::convert::TryInto;
 use std::fmt;
-
-pub fn load_cfgs(ctx: &mut Context) -> TankCfgs {
-    let cfgs = config::load("config/tank.txt")
-        .into_iter()
-        .map(|c| TankCfg::new(c, ctx))
-        .enumerate()
-        .inspect(|(i, t)| {
-            assert_eq!(
-                t.id, i,
-                "Tank id must start at zero and increase sequentially!"
-            )
-        })
-        .map(|(_, t)| t)
-        .collect();
-
-    TankCfgs { cfgs }
-}
+use std::rc::Rc;
 
 #[derive(Debug)]
 pub struct TankCfgs {
-    cfgs: Vec<TankCfg>,
-}
-
-impl TankCfgs {
-    pub fn get(&self, id: u32) -> Option<&TankCfg> {
-        self.map.get(&id)
-    }
+    pub cfgs: Vec<Rc<TankCfg>>,
 }
 
 #[derive(Debug)]
@@ -37,11 +17,12 @@ pub struct TankCfg {
     id: u32,
     width: u32,
     height: u32,
-    image: Image,
+    pub image: Image,
+    ms: u16, // movement speed
 }
 
 impl TankCfg {
-    fn new(c: impl Config, ctx: &mut Context) -> TankCfg {
+    fn new(c: impl Config, ctx: &mut Context) -> Rc<TankCfg> {
         let id = c.u32("id").get();
 
         let image = c
@@ -53,20 +34,35 @@ impl TankCfg {
             })
             .get();
 
-        let width = image.width() as u32;
-        let height = image.height() as u32;
+        let width = image.width().into();
+        let height = image.height().into();
 
-        TankCfg {
+        let ms = c.u16("ms").ge(1).get();
+
+        Rc::new(TankCfg {
             id,
             width,
             height,
             image,
-        }
+            ms,
+        })
     }
 }
 
-impl fmt::Display for TankCfg {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("TankCfg").field("id", &self.id).finish()
-    }
+pub fn load_cfgs(ctx: &mut Context) -> TankCfgs {
+    let cfgs = config::load("config/tank.txt")
+        .into_iter()
+        .map(|c| TankCfg::new(c, ctx))
+        .enumerate()
+        .map(|(i, t)| {
+            assert_eq!(
+                usize::try_from(t.id).unwrap(),
+                i,
+                "Tank id must start at zero and increase sequentially!"
+            );
+            t
+        })
+        .collect();
+
+    TankCfgs { cfgs }
 }

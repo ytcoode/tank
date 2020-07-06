@@ -1,7 +1,7 @@
-tank id	tank image
-id	image
-0	/PNG/Tanks/tankBeige.png
-1	/PNG/Tanks/tankBlack.png
-2	/PNG/Tanks/tankBlue.png
-3	/PNG/Tanks/tankGreen.png
-4	/PNG/Tanks/tankRed.png
+tank id	tank image	movement speed
+id	image	ms
+0	/PNG/Tanks/tankBeige.png	200
+1	/PNG/Tanks/tankBlack.png	200
+2	/PNG/Tanks/tankBlue.png	200
+3	/PNG/Tanks/tankGreen.png	200
+4	/PNG/Tanks/tankRed.png	200

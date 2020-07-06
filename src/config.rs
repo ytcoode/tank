@@ -20,6 +20,13 @@ pub trait Config: fmt::Display {
     {
         self.str(key).not_empty().to::<u32>()
     }
+
+    fn u16<'a>(&'a self, key: &'a str) -> Val<Str<'a, Self>, u16>
+    where
+        Self: Sized,
+    {
+        self.str(key).not_empty().to::<u16>()
+    }
 }
 
 pub fn load<P>(path: P) -> Vec<impl Config>

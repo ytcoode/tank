@@ -2,7 +2,7 @@ use crate::tank;
 use ggez::Context;
 
 pub struct GameCfgs {
-    tanks: tank::TankCfgs,
+    pub tanks: tank::TankCfgs,
 }
 
 pub fn load_cfgs(ctx: &mut Context) -> GameCfgs {
