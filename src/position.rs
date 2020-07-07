@@ -18,14 +18,18 @@ impl Position {
         self.path = Some(Path::new(self.x, self.y, x, y, speed, now));
     }
 
-    pub fn update(&mut self, now: Instant) {
-        if let Some(p) = &self.path {
-            let (x, y) = p.position(now);
-            self.x = x;
-            self.y = y;
-            if p.is_destination(x, y) {
-                self.path = None;
+    pub fn update(&mut self, now: Instant) -> bool {
+        match self.path {
+            Some(ref p) => {
+                let (x, y) = p.position(now);
+                self.x = x;
+                self.y = y;
+                if p.is_destination(x, y) {
+                    self.path = None;
+                }
+                true
             }
+            None => false,
         }
     }
 

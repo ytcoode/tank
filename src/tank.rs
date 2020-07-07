@@ -12,8 +12,6 @@ pub use cfg::*;
 pub struct Tank {
     cfg: Rc<TankCfg>,
     position: Position,
-    pub x1: u32,
-    pub y1: u32,
 }
 
 impl Tank {
@@ -21,8 +19,6 @@ impl Tank {
         Tank {
             cfg,
             position: Position::new(x, y),
-            x1: 0, // TODO
-            y1: 0,
         }
     }
 
@@ -30,8 +26,8 @@ impl Tank {
         self.position.move_to(x, y, self.cfg.ms, now);
     }
 
-    pub fn update(&mut self, now: Instant) {
-        self.position.update(now);
+    pub fn update(&mut self, now: Instant) -> bool {
+        self.position.update(now)
     }
 
     pub fn draw(&mut self, ctx: &mut Context, x1: u32, y1: u32) -> GameResult {

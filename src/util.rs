@@ -1,5 +1,4 @@
 pub mod debug;
-pub mod vision;
 
 pub const POINT_ZERO: [f32; 2] = [0.0, 0.0];
 pub const DRAW_PARAM_ZERO: ([f32; 2],) = (POINT_ZERO,);
