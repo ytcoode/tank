@@ -84,9 +84,11 @@ impl Tank {
             &self.cfg.barrel,
             DrawParam::new()
                 .dest([dx as f32, dy as f32])
-                .offset([0.5, 0.5])
+                .offset([0.5, 0.1])
                 .rotation(self.barrel_angle),
         )?;
+
+        //        crate::util::debug::draw_circle(ctx, dx as f32, dy as f32, 1.0)?;
 
         // flag
         if let Some(p) = &self.path {
