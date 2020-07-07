@@ -6,6 +6,8 @@ use ggez::event::EventHandler;
 use ggez::event::MouseButton;
 use ggez::graphics;
 use ggez::graphics::spritebatch::SpriteBatch;
+use ggez::input::keyboard::KeyCode;
+use ggez::input::keyboard::KeyMods;
 use ggez::timer;
 use ggez::Context;
 use ggez::GameResult;
@@ -94,6 +96,30 @@ impl EventHandler for GameState {
 
         // present
         graphics::present(ctx)
+    }
+
+    fn key_down_event(
+        &mut self,
+        ctx: &mut Context,
+        keycode: KeyCode,
+        _keymods: KeyMods,
+        _repeat: bool,
+    ) {
+        match keycode {
+            KeyCode::Key1 => self.tank.barrel_rotation = -0.03,
+            KeyCode::Key2 => self.tank.barrel_rotation = 0.03,
+            KeyCode::Escape => ggez::event::quit(ctx),
+            _ => (),
+        }
+    }
+
+    /// A keyboard button was released.
+    fn key_up_event(&mut self, _ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods) {
+        match keycode {
+            KeyCode::Key1 => self.tank.barrel_rotation = 0.0,
+            KeyCode::Key2 => self.tank.barrel_rotation = 0.0,
+            _ => (),
+        }
     }
 
     fn mouse_button_down_event(

@@ -17,6 +17,8 @@ pub struct Tank {
     y: u32,
     path: Option<Path>,
     angle: f32,
+    barrel_angle: f32,
+    pub barrel_rotation: f32,
 }
 
 impl Tank {
@@ -27,6 +29,8 @@ impl Tank {
             y,
             path: None,
             angle: 0.0,
+            barrel_angle: 0.0,
+            barrel_rotation: 0.0,
         }
     }
 
@@ -38,6 +42,8 @@ impl Tank {
     }
 
     pub fn update(&mut self, now: Instant) -> bool {
+        self.barrel_angle += self.barrel_rotation;
+
         match self.path {
             Some(ref p) => {
                 let (x, y) = p.position(now);
@@ -78,8 +84,8 @@ impl Tank {
             &self.cfg.barrel,
             DrawParam::new()
                 .dest([dx as f32, dy as f32])
-                .offset([0.5, 0.85])
-                .rotation(self.angle),
+                .offset([0.5, 0.5])
+                .rotation(self.barrel_angle),
         )?;
 
         // flag
