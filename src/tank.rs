@@ -62,6 +62,7 @@ impl Tank {
         //         .offset([0.5, 0.5]),
         // );
 
+        // tank
         graphics::draw(
             ctx,
             &self.cfg.image,
@@ -71,6 +72,17 @@ impl Tank {
                 .rotation(self.angle),
         )?;
 
+        // barrel
+        graphics::draw(
+            ctx,
+            &self.cfg.barrel,
+            DrawParam::new()
+                .dest([dx as f32, dy as f32])
+                .offset([0.5, 0.85])
+                .rotation(self.angle),
+        )?;
+
+        // flag
         if let Some(p) = &self.path {
             let fx = p.x2 as f64 - x1 as f64;
             let fy = p.y2 as f64 - y1 as f64;

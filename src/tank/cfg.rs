@@ -16,6 +16,7 @@ pub struct TankCfg {
     width: u32,
     height: u32,
     pub image: Image,
+    pub barrel: Image,
     pub ms: u16, // movement speed
 }
 
@@ -32,6 +33,15 @@ impl TankCfg {
             })
             .get();
 
+        let barrel = c
+            .str("barrel")
+            .not_empty()
+            .map(|s| {
+                Image::new(ctx, s.get())
+                    .expect(format!("TankCfg{{id: {}}} barrel not found", id).as_str())
+            })
+            .get();
+
         let width = image.width().into();
         let height = image.height().into();
 
@@ -42,6 +52,7 @@ impl TankCfg {
             width,
             height,
             image,
+            barrel,
             ms,
         })
     }

@@ -1,7 +1,4 @@
-tank id	tank image	movement speed
-id	image	ms
-0	/a/PNG/Tanks/tankBeige.png	250
-1	/a/PNG/Tanks/tankBlack.png	250
-2	/a/PNG/Tanks/tankBlue.png	250
-3	/a/PNG/Tanks/tankGreen.png	250
-4	/a/PNG/Tanks/tankRed.png	250
+tank id	tank image	tank barrel	movement speed
+id	image	barrel	ms
+0	/a/PNG/Tanks/tankBeige.png	/a/PNG/Tanks/barrelBeige.png	250
+1	/a/PNG/Tanks/tankBlack.png	/a/PNG/Tanks/barrelBlack.png	250
