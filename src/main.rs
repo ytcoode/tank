@@ -5,6 +5,7 @@ use ggez::event;
 use ggez::ContextBuilder;
 
 mod game;
+mod image;
 mod map;
 mod position;
 mod tank;

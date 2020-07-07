@@ -59,7 +59,7 @@ impl Tank {
                 flag,
                 DrawParam::new()
                     .dest([fx as f32, fy as f32])
-                    .offset([0.5, 0.5]),
+                    .offset([0.5, 1.0]),
             )?;
         }
 

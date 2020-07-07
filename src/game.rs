@@ -1,3 +1,5 @@
+use crate::image;
+use crate::image::Images;
 use crate::map::Map;
 use crate::tank::Tank;
 use ggez::event::EventHandler;
@@ -17,16 +19,18 @@ use vision::*;
 
 pub struct GameState {
     _cfgs: GameCfgs,
+    images: Images,
     map: Map,
     tank: Tank,
     _tank_sprites: Vec<SpriteBatch>,
     vision: Vision,
-    flag: ggez::graphics::Image,
 }
 
 impl GameState {
     pub fn new(ctx: &mut Context) -> GameResult<GameState> {
-        let cfgs = cfg::load_cfgs(ctx);
+        let cfgs = cfg::load(ctx);
+        let images = image::load(ctx);
+
         let map = Map::new(ctx)?;
 
         let tank_cfg = cfgs
@@ -46,15 +50,13 @@ impl GameState {
 
         let vision = Vision::new(tank.x(), tank.y(), &map, ctx);
 
-        let flag = ggez::graphics::Image::new(ctx, "/b/PNG/Black/1x/flag.png").unwrap();
-
         Ok(GameState {
             _cfgs: cfgs,
+            images,
             map,
             tank,
             _tank_sprites: tank_sprites,
             vision,
-            flag,
         })
     }
 }
@@ -83,7 +85,8 @@ impl EventHandler for GameState {
             .draw(ctx, vision.x1, vision.x2, vision.y1, vision.y2)?;
 
         // tank
-        self.tank.draw(ctx, vision.x1, vision.y1, &self.flag)?;
+        self.tank
+            .draw(ctx, vision.x1, vision.y1, &self.images.flag)?;
 
         // debug
         //        debug::draw_axis(ctx)?;
