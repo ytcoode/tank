@@ -4,14 +4,13 @@
 use ggez::event;
 use ggez::ContextBuilder;
 
-mod config;
-mod debug;
 mod game;
 mod map;
 mod position;
 mod tank;
-mod util;
-mod vision;
+
+pub mod deps; // The 'pub' keyword is to suppress unused warnings
+pub mod util; // Same as above
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let (mut ctx, mut event_loop) = ContextBuilder::new("CrazyTank", "CrazyBunny")

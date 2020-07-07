@@ -1,14 +1,9 @@
-use crate::debug;
 use crate::map::Map;
 use crate::tank::Tank;
-use crate::util;
-use ggez::event;
 use ggez::event::EventHandler;
 use ggez::event::MouseButton;
 use ggez::graphics;
 use ggez::graphics::spritebatch::SpriteBatch;
-use ggez::input::keyboard::KeyCode;
-use ggez::input::keyboard::KeyMods;
 use ggez::timer;
 use ggez::Context;
 use ggez::GameResult;
@@ -18,10 +13,10 @@ mod cfg;
 use cfg::*;
 
 pub struct GameState {
-    cfgs: GameCfgs,
+    _cfgs: GameCfgs,
     map: Map,
     tank: Tank,
-    tank_sprites: Vec<SpriteBatch>,
+    _tank_sprites: Vec<SpriteBatch>,
 }
 
 impl GameState {
@@ -29,13 +24,13 @@ impl GameState {
         let cfgs = cfg::load_cfgs(ctx);
         let map = Map::new(ctx)?;
 
-        let tankCfg = cfgs
+        let tank_cfg = cfgs
             .tanks
             .cfgs
             .get(0)
             .expect("Tank config file cannot be empty!");
 
-        let tank = Tank::new(tankCfg.clone(), 0, 0);
+        let tank = Tank::new(tank_cfg.clone(), 0, 0);
 
         let tank_sprites = cfgs
             .tanks
@@ -45,10 +40,10 @@ impl GameState {
             .collect();
 
         Ok(GameState {
-            cfgs,
+            _cfgs: cfgs,
             map,
             tank,
-            tank_sprites,
+            _tank_sprites: tank_sprites,
         })
     }
 }
@@ -101,42 +96,6 @@ impl EventHandler for GameState {
 
         // present
         graphics::present(ctx)
-    }
-
-    fn key_down_event(
-        &mut self,
-        _ctx: &mut Context,
-        keycode: KeyCode,
-        _keymods: KeyMods,
-        _repeat: bool,
-    ) {
-        // let t = &mut self.tank;
-        // match keycode {
-        //     KeyCode::Up => t.vy = -4.0,
-        //     KeyCode::Down => t.vy = 4.0,
-        //     KeyCode::Left => t.vx = -4.0,
-        //     KeyCode::Right => t.vx = 4.0,
-        //     _ => (),
-        // }
-
-        // let (vx, vy) = util::velocity(t.vx, t.vy, 4.0);
-        // t.vx = vx;
-        // t.vy = vy;
-    }
-
-    fn key_up_event(&mut self, ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods) {
-        // let t = &mut self.tank;
-        // match keycode {
-        //     KeyCode::Up => t.vy = 0.0,
-        //     KeyCode::Down => t.vy = 0.0,
-        //     KeyCode::Left => t.vx = 0.0,
-        //     KeyCode::Right => t.vx = 0.0,
-        //     KeyCode::Escape => event::quit(ctx),
-        //     _ => (),
-        // }
-        // let (vx, vy) = util::velocity(t.vx, t.vy, 4.0);
-        // t.vx = vx;
-        // t.vy = vy;
     }
 
     /// A mouse button was pressed

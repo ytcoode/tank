@@ -1,5 +1,5 @@
 use crate::util;
-use crate::vision;
+use crate::util::vision;
 use ggez;
 use ggez::graphics;
 use ggez::graphics::spritebatch::SpriteBatch;

@@ -1,10 +1,8 @@
-use crate::config;
-use crate::config::Config;
+use crate::deps::config;
+use crate::deps::config::Config;
 use ggez::graphics::Image;
 use ggez::Context;
 use std::convert::TryFrom;
-use std::convert::TryInto;
-use std::fmt;
 use std::rc::Rc;
 
 #[derive(Debug)]
@@ -66,5 +64,3 @@ pub fn load_cfgs(ctx: &mut Context) -> TankCfgs {
 
     TankCfgs { cfgs }
 }
-
-struct A {}

@@ -8,12 +8,12 @@ pub struct Path {
     x2: u32,
     y2: u32,
 
-    dt: f64,     // seconds needed to reach destination
+    dt: f64,     // seconds needed to reach the destination
     st: Instant, // start time
 }
 
 impl Path {
-    pub fn new(x1: u32, y1: u32, x2: u32, y2: u32, speed: u16, now: Instant) -> Path {
+    pub fn new(x1: u32, y1: u32, x2: u32, y2: u32, speed: u16, st: Instant) -> Path {
         let dp = util::distance(x1, y1, x2, y2);
         let dt = dp / speed as f64;
         Path {
@@ -22,7 +22,7 @@ impl Path {
             x2,
             y2,
             dt,
-            st: Instant::now(),
+            st,
         }
     }
 

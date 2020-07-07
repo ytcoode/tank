@@ -1,9 +1,6 @@
 use crate::position::Position;
-use crate::util;
 use ggez::graphics;
-use ggez::graphics::spritebatch::SpriteBatch;
 use ggez::graphics::DrawParam;
-use ggez::graphics::Image;
 use ggez::Context;
 use ggez::GameResult;
 use std::rc::Rc;
