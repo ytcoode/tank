@@ -1,6 +1,7 @@
 use crate::position::Position;
 use ggez::graphics;
 use ggez::graphics::DrawParam;
+use ggez::graphics::Image;
 use ggez::Context;
 use ggez::GameResult;
 use std::rc::Rc;
@@ -30,7 +31,7 @@ impl Tank {
         self.position.update(now)
     }
 
-    pub fn draw(&mut self, ctx: &mut Context, x1: u32, y1: u32) -> GameResult {
+    pub fn draw(&mut self, ctx: &mut Context, x1: u32, y1: u32, flag: &Image) -> GameResult {
         let dx = self.x() as f64 - x1 as f64;
         let dy = self.y() as f64 - y1 as f64;
 
@@ -48,6 +49,19 @@ impl Tank {
                 .offset([0.5, 0.5]),
         )?;
         // self.batch.clear();
+
+        if let Some((fx, fy)) = self.position.destination() {
+            let fx = fx as f64 - x1 as f64;
+            let fy = fy as f64 - y1 as f64;
+
+            graphics::draw(
+                ctx,
+                flag,
+                DrawParam::new()
+                    .dest([fx as f32, fy as f32])
+                    .offset([0.5, 0.5]),
+            )?;
+        }
 
         Ok(())
     }

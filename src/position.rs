@@ -40,4 +40,8 @@ impl Position {
     pub fn y(&self) -> u32 {
         self.y
     }
+
+    pub fn destination(&self) -> Option<(u32, u32)> {
+        self.path.as_ref().map(|p| (p.x2, p.y2))
+    }
 }

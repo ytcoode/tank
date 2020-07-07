@@ -5,8 +5,8 @@ use std::time::Instant;
 pub struct Path {
     x1: u32,
     y1: u32,
-    x2: u32,
-    y2: u32,
+    pub x2: u32,
+    pub y2: u32,
 
     dt: f64,     // seconds needed to reach the destination
     st: Instant, // start time

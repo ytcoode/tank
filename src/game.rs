@@ -21,6 +21,7 @@ pub struct GameState {
     tank: Tank,
     _tank_sprites: Vec<SpriteBatch>,
     vision: Vision,
+    flag: ggez::graphics::Image,
 }
 
 impl GameState {
@@ -45,12 +46,15 @@ impl GameState {
 
         let vision = Vision::new(tank.x(), tank.y(), &map, ctx);
 
+        let flag = ggez::graphics::Image::new(ctx, "/b/PNG/Black/1x/flag.png").unwrap();
+
         Ok(GameState {
             _cfgs: cfgs,
             map,
             tank,
             _tank_sprites: tank_sprites,
             vision,
+            flag,
         })
     }
 }
@@ -79,7 +83,7 @@ impl EventHandler for GameState {
             .draw(ctx, vision.x1, vision.x2, vision.y1, vision.y2)?;
 
         // tank
-        self.tank.draw(ctx, vision.x1, vision.y1)?;
+        self.tank.draw(ctx, vision.x1, vision.y1, &self.flag)?;
 
         // debug
         //        debug::draw_axis(ctx)?;

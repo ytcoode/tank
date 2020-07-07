@@ -23,9 +23,9 @@ pub struct Map {
 impl Map {
     pub fn new(ctx: &mut Context) -> GameResult<Map> {
         let tiles = [
-            "/PNG/Environment/dirt.png",
-            "/PNG/Environment/grass.png",
-            "/PNG/Environment/sand.png",
+            "/a/PNG/Environment/dirt.png",
+            "/a/PNG/Environment/grass.png",
+            "/a/PNG/Environment/sand.png",
         ];
 
         assert!(tiles.len() <= 0xf);
