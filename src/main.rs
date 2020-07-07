@@ -7,7 +7,7 @@ use ggez::ContextBuilder;
 mod game;
 mod image;
 mod map;
-mod position;
+mod path;
 mod tank;
 
 pub mod deps; // The 'pub' keyword is to suppress the dead code warnings

@@ -1,9 +1,10 @@
-use crate::position::Position;
+use crate::path::Path;
 use ggez::graphics;
 use ggez::graphics::DrawParam;
 use ggez::graphics::Image;
 use ggez::Context;
 use ggez::GameResult;
+use std::f64;
 use std::rc::Rc;
 use std::time::Instant;
 
@@ -12,28 +13,48 @@ pub use cfg::*;
 
 pub struct Tank {
     cfg: Rc<TankCfg>,
-    position: Position,
+    x: u32,
+    y: u32,
+    path: Option<Path>,
+    angle: f32,
 }
 
 impl Tank {
     pub fn new(cfg: Rc<TankCfg>, x: u32, y: u32) -> Tank {
         Tank {
             cfg,
-            position: Position::new(x, y),
+            x,
+            y,
+            path: None,
+            angle: 0.0,
         }
     }
 
     pub fn move_to(&mut self, x: u32, y: u32, now: Instant) {
-        self.position.move_to(x, y, self.cfg.ms, now);
+        let path = Path::new(self.x, self.y, x, y, self.cfg.ms, now);
+        let angle = path.angle() + f64::consts::FRAC_PI_2;
+        self.path = Some(path);
+        self.angle = angle as f32;
     }
 
     pub fn update(&mut self, now: Instant) -> bool {
-        self.position.update(now)
+        match self.path {
+            Some(ref p) => {
+                let (x, y) = p.position(now);
+                self.x = x;
+                self.y = y;
+                if p.is_destination(x, y) {
+                    self.path = None;
+                }
+                true
+            }
+            None => false,
+        }
     }
 
     pub fn draw(&mut self, ctx: &mut Context, x1: u32, y1: u32, flag: &Image) -> GameResult {
-        let dx = self.x() as f64 - x1 as f64;
-        let dy = self.y() as f64 - y1 as f64;
+        let dx = self.x as f64 - x1 as f64;
+        let dy = self.y as f64 - y1 as f64;
 
         // self.batch.add(
         //     DrawParam::new()
@@ -46,20 +67,20 @@ impl Tank {
             &self.cfg.image,
             DrawParam::new()
                 .dest([dx as f32, dy as f32])
-                .offset([0.5, 0.5]),
+                .offset([0.5, 0.5])
+                .rotation(self.angle),
         )?;
-        // self.batch.clear();
 
-        if let Some((fx, fy)) = self.position.destination() {
-            let fx = fx as f64 - x1 as f64;
-            let fy = fy as f64 - y1 as f64;
+        if let Some(p) = &self.path {
+            let fx = p.x2 as f64 - x1 as f64;
+            let fy = p.y2 as f64 - y1 as f64;
 
             graphics::draw(
                 ctx,
                 flag,
                 DrawParam::new()
                     .dest([fx as f32, fy as f32])
-                    .offset([0.5, 1.0]),
+                    .offset([0.5, 0.5]),
             )?;
         }
 
@@ -67,10 +88,10 @@ impl Tank {
     }
 
     pub fn x(&self) -> u32 {
-        self.position.x()
+        self.x
     }
 
     pub fn y(&self) -> u32 {
-        self.position.y()
+        self.y
     }
 }
