@@ -11,6 +11,9 @@ use std::time::Instant;
 mod cfg;
 pub use cfg::*;
 
+mod bullet;
+use bullet::*;
+
 pub struct Tank {
     cfg: Rc<TankCfg>,
     x: u32,
@@ -19,6 +22,7 @@ pub struct Tank {
     angle: f32,
     barrel_angle: f32,
     pub barrel_rotation: f32,
+    bullet: Option<Bullet>,
 }
 
 impl Tank {
@@ -31,6 +35,7 @@ impl Tank {
             angle: 0.0,
             barrel_angle: 0.0,
             barrel_rotation: 0.0,
+            bullet: None,
         }
     }
 
@@ -41,8 +46,16 @@ impl Tank {
         self.angle = angle as f32;
     }
 
+    pub fn fire(&mut self, now: Instant) {
+        self.bullet = Some(Bullet::new(self.x, self.y, self.barrel_angle as f64, now));
+    }
+
     pub fn update(&mut self, now: Instant) -> bool {
         self.barrel_angle += self.barrel_rotation;
+
+        if let Some(ref mut b) = self.bullet {
+            b.update(now);
+        }
 
         match self.path {
             Some(ref p) => {
@@ -87,6 +100,11 @@ impl Tank {
                 .offset([0.5, 0.1])
                 .rotation(self.barrel_angle),
         )?;
+
+        // bullet
+        if let Some(ref mut b) = self.bullet {
+            b.draw(ctx, x1, y1, &self.cfg.bullet)?;
+        }
 
         //        crate::util::debug::draw_circle(ctx, dx as f32, dy as f32, 1.0)?;
 

@@ -108,6 +108,7 @@ impl EventHandler for GameState {
         match keycode {
             KeyCode::Key1 => self.tank.barrel_rotation = -0.03,
             KeyCode::Key2 => self.tank.barrel_rotation = 0.03,
+            KeyCode::Space => self.tank.fire(Instant::now()),
             KeyCode::Escape => ggez::event::quit(ctx),
             _ => (),
         }
