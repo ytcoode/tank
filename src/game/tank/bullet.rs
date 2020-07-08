@@ -1,4 +1,3 @@
-use super::tank;
 use ggez::graphics;
 use ggez::graphics::DrawParam;
 use ggez::graphics::Image;
@@ -7,6 +6,10 @@ use ggez::GameResult;
 use std::rc::Rc;
 use std::time::Instant;
 
+use crate::deps::config::Config;
+use super::Tank;
+
+#[derive(Debug)]
 pub struct BulletCfg {
     image: Image,
     speed: u16,
@@ -43,6 +46,7 @@ impl Bullet {
             y,
             angle,
             time,
+	    destroyed: false,
         }
     }
 
@@ -56,12 +60,12 @@ impl Bullet {
         let cx = self.x as f64 + dx;
         let cy = self.y as f64 + dy;
 
-        let dx = cx - x1 as f64;
-        let dy = cy - y1 as f64;
+        let dx = cx - vx as f64;
+        let dy = cy - vy as f64;
 
         graphics::draw(
             ctx,
-            bullet,
+            &self.tank.cfg.bullet.image,
             DrawParam::new()
                 .dest([dx as f32, dy as f32])
                 .offset([0.5, 0.5])

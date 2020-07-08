@@ -1,12 +1,14 @@
-use super::path::Path;
 use crate::deps::config;
 use crate::deps::config::Config;
+use crate::game::path::Path;
+use crate::game::Game;
 use ggez::graphics;
 use ggez::graphics::DrawParam;
 use ggez::graphics::Image;
 use ggez::Context;
 use ggez::GameResult;
 use std::convert::TryFrom;
+use std::convert::TryInto;
 use std::f64;
 use std::rc::Rc;
 use std::time::Instant;
@@ -16,7 +18,7 @@ use bullet::*;
 
 #[derive(Debug)]
 pub struct TankCfgs {
-    cfgs: Vec<Rc<TankCfg>>,
+    pub cfgs: Vec<Rc<TankCfg>>,
 }
 
 impl TankCfgs {
@@ -39,7 +41,7 @@ impl TankCfgs {
     }
 
     pub fn get(&self, id: u16) -> Option<&Rc<TankCfg>> {
-        self.cfgs.get(id)
+        self.cfgs.get(usize::try_from(id).unwrap())
     }
 }
 
@@ -70,7 +72,7 @@ impl TankCfg {
 
         let speed = c.u16("speed").ge(1).get();
 
-        let bullet = BulletCfg::new(&c, id, ctx);
+        let bullet = BulletCfg::new(&c, ctx);
 
         Rc::new(TankCfg {
             id,
@@ -99,29 +101,25 @@ impl Tank {
             y,
             path: None,
             angle: 0.0,
-            barrel_angle: 0.0,
-            barrel_rotation: 0.0,
-            bullet: None,
+            destroyed: false,
         }
     }
 
     pub fn move_to(&mut self, x: u32, y: u32, now: Instant) {
-        let path = Path::new(self.x, self.y, x, y, self.cfg.ms, now);
+        let path = Path::new(self.x, self.y, x, y, self.cfg.speed, now);
         let angle = path.angle() + f64::consts::FRAC_PI_2;
         self.path = Some(path);
         self.angle = angle as f32;
     }
 
     pub fn fire(&mut self, now: Instant) {
-        self.bullet = Some(Bullet::new(self.x, self.y, self.barrel_angle as f64, now));
+        //        self.bullet = Some(Bullet::new(self.x, self.y, self.barrel_angle as f64, now));
     }
 
     pub fn update(&mut self, game: &Game, now: Instant) {
-        self.barrel_angle += self.barrel_rotation;
-
-        if let Some(ref mut b) = self.bullet {
-            b.update(now);
-        }
+        // if let Some(ref mut b) = self.bullet {
+        //     b.update(now);
+        // }
 
         match self.path {
             Some(ref p) => {
@@ -134,7 +132,7 @@ impl Tank {
                 true
             }
             None => false,
-        }
+        };
     }
 
     pub fn draw(&mut self, ctx: &mut Context, x1: u32, y1: u32, flag: &Image) -> GameResult {
@@ -160,17 +158,17 @@ impl Tank {
         // barrel
         graphics::draw(
             ctx,
-            &self.cfg.barrel,
+            &self.cfg.image_barrel,
             DrawParam::new()
                 .dest([dx as f32, dy as f32])
                 .offset([0.5, 0.1])
-                .rotation(self.barrel_angle),
+                .rotation(self.angle),
         )?;
 
         // bullet
-        if let Some(ref mut b) = self.bullet {
-            b.draw(ctx, x1, y1, &self.cfg.bullet)?;
-        }
+        // if let Some(ref mut b) = self.bullet {
+        //     b.draw(ctx, x1, y1, &self.cfg.bullet)?;
+        // }
 
         //        crate::util::debug::draw_circle(ctx, dx as f32, dy as f32, 1.0)?;
 
