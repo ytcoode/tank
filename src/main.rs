@@ -4,13 +4,8 @@
 use ggez::event;
 use ggez::ContextBuilder;
 
-mod game;
-mod image;
-mod map;
-mod path;
-mod tank;
-
 pub mod deps; // The 'pub' keyword is to suppress the dead code warnings
+mod game;
 pub mod util; // Same as above
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -18,9 +13,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .add_resource_path("./resources")
         .build()?;
 
-    let mut state = game::GameState::new(&mut ctx)?;
+    let mut game = game::Game::new(&mut ctx)?;
 
-    event::run(&mut ctx, &mut event_loop, &mut state)?;
+    event::run(&mut ctx, &mut event_loop, &mut game)?;
 
     Ok(())
 }

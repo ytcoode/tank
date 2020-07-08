@@ -79,7 +79,9 @@ impl TankCfg {
 }
 
 pub struct Tank {
+    map: Rc<Map>,
     cfg: Rc<TankCfg>,
+
     x: u32,
     y: u32,
     path: Option<Path>,

@@ -1,11 +1,19 @@
-use crate::tank;
+use super::tank::TankCfgs;
+use ggez::graphics::Image;
 use ggez::Context;
+use misc::MiscCfgs;
+
+pub mod misc;
 
 pub struct GameCfgs {
-    pub tanks: tank::TankCfgs,
+    pub tanks: TankCfgs,
+    pub misc: MiscCfgs,
 }
 
-pub fn load(ctx: &mut Context) -> GameCfgs {
-    let tanks = tank::load_cfgs(ctx);
-    GameCfgs { tanks }
+impl GameCfgs {
+    pub fn load(ctx: &mut Context) -> GameCfgs {
+        let tanks = TankCfgs::load(ctx);
+        let misc = MiscCfgs::load(ctx);
+        GameCfgs { tanks, misc }
+    }
 }

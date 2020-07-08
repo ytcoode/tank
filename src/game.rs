@@ -19,19 +19,22 @@ use cfg::*;
 mod vision;
 use vision::*;
 
-pub struct GameState {
-    _cfgs: GameCfgs,
-    images: Images,
+pub struct Game {
+    cfgs: GameCfgs,
     map: Map,
-    tank: Tank,
+
+    tanks: Vec<Rc<Tank>>,
+    tank: Rc<Tank>, // player-controlled tank
     _tank_sprites: Vec<SpriteBatch>,
+
+    bullets: Vec<Bullet>,
+
     vision: Vision,
 }
 
-impl GameState {
-    pub fn new(ctx: &mut Context) -> GameResult<GameState> {
-        let cfgs = cfg::load(ctx);
-        let images = image::load(ctx);
+impl Game {
+    pub fn new(ctx: &mut Context) -> GameResult<Game> {
+        let cfgs = GameCfgs::load(ctx);
 
         let map = Map::new(ctx)?;
 
@@ -52,7 +55,7 @@ impl GameState {
 
         let vision = Vision::new(tank.x(), tank.y(), &map, ctx);
 
-        Ok(GameState {
+        Ok(Game {
             _cfgs: cfgs,
             images,
             map,
@@ -63,7 +66,7 @@ impl GameState {
     }
 }
 
-impl EventHandler for GameState {
+impl EventHandler for Game {
     fn update(&mut self, _ctx: &mut Context) -> GameResult {
         let now = Instant::now();
         if self.tank.update(now) {
