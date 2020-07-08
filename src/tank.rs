@@ -1,18 +1,82 @@
+use crate::deps::config;
+use crate::deps::config::Config;
 use crate::path::Path;
 use ggez::graphics;
 use ggez::graphics::DrawParam;
 use ggez::graphics::Image;
 use ggez::Context;
 use ggez::GameResult;
+use std::convert::TryFrom;
 use std::f64;
 use std::rc::Rc;
 use std::time::Instant;
 
-mod cfg;
-pub use cfg::*;
-
 mod bullet;
 use bullet::*;
+
+#[derive(Debug)]
+pub struct TankCfgs {
+    pub cfgs: Vec<Rc<TankCfg>>,
+}
+
+impl TankCfgs {
+    pub fn load(ctx: &mut Context) -> TankCfgs {
+        let cfgs = config::load("config/tank.txt")
+            .into_iter()
+            .map(|c| TankCfg::new(c, ctx))
+            .enumerate()
+            .map(|(i, t)| {
+                assert_eq!(
+                    usize::try_from(t.id).unwrap(),
+                    i,
+                    "Tank id must start at zero and increase sequentially!"
+                );
+                t
+            })
+            .collect();
+
+        TankCfgs { cfgs }
+    }
+}
+
+#[derive(Debug)]
+pub struct TankCfg {
+    id: u16,
+    image: Image,
+    image_barrel: Image,
+    speed: u16,
+    bullet: BulletCfg,
+}
+
+impl TankCfg {
+    fn new(c: impl Config, ctx: &mut Context) -> Rc<TankCfg> {
+        let id = c.u16("id").get();
+
+        let image = c
+            .str("image")
+            .not_empty()
+            .map(|s| Image::new(ctx, s.get()).expect(format!("{} not found", s).as_str()))
+            .get();
+
+        let image_barrel = c
+            .str("image_barrel")
+            .not_empty()
+            .map(|s| Image::new(ctx, s.get()).expect(format!("{} not found", s).as_str()))
+            .get();
+
+        let speed = c.u16("speed").ge(1).get();
+
+        let bullet = BulletCfg::new(&c, id, ctx);
+
+        Rc::new(TankCfg {
+            id,
+            image,
+            image_barrel,
+            speed,
+            bullet,
+        })
+    }
+}
 
 pub struct Tank {
     cfg: Rc<TankCfg>,

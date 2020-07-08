@@ -12,10 +12,14 @@ pub struct Str<'a, C: Config> {
 
 impl<C: Config> fmt::Display for Str<'_, C> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let id = self.str("id").get();
+        if id.len() > 0 {
+            id = format!("[id={}]", id);
+        }
         write!(
             f,
-            "The value [{}] of the [{}:{}] field",
-            self.val, self.cfg, self.key
+            "The value [{}] of the field [{}:{}]{}",
+            self.val, self.cfg, self.key, id
         )
     }
 }
