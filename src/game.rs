@@ -1,7 +1,3 @@
-use crate::image;
-use crate::image::Images;
-use crate::map::Map;
-use crate::tank::Tank;
 use ggez::event::EventHandler;
 use ggez::event::MouseButton;
 use ggez::graphics;
@@ -11,10 +7,20 @@ use ggez::input::keyboard::KeyMods;
 use ggez::timer;
 use ggez::Context;
 use ggez::GameResult;
+use std::rc::Rc;
 use std::time::Instant;
 
 mod cfg;
 use cfg::*;
+
+mod map;
+use map::*;
+
+mod path;
+
+mod tank;
+use tank::bullet::Bullet;
+use tank::Tank;
 
 mod vision;
 use vision::*;
@@ -25,27 +31,20 @@ pub struct Game {
 
     tanks: Vec<Rc<Tank>>,
     tank: Rc<Tank>, // player-controlled tank
-    _tank_sprites: Vec<SpriteBatch>,
+    tank_sprites: Vec<SpriteBatch>,
 
     bullets: Vec<Bullet>,
-
     vision: Vision,
 }
 
 impl Game {
     pub fn new(ctx: &mut Context) -> GameResult<Game> {
         let cfgs = GameCfgs::load(ctx);
-
         let map = Map::new(ctx)?;
 
-        let tank_cfg = cfgs
-            .tanks
-            .cfgs
-            .get(0)
-            .expect("Tank config file cannot be empty!");
-
+        let tanks = Vec::new();
+        let tank_cfg = cfgs.tanks.get(0).expect("Tank{id: 0} not found!");
         let tank = Tank::new(tank_cfg.clone(), 100, 100);
-
         let tank_sprites = cfgs
             .tanks
             .cfgs
@@ -53,14 +52,18 @@ impl Game {
             .map(|c| SpriteBatch::new(c.image.clone()))
             .collect();
 
+        let bullets = Vec::new();
         let vision = Vision::new(tank.x(), tank.y(), &map, ctx);
 
         Ok(Game {
-            _cfgs: cfgs,
-            images,
+            cfgs,
             map,
+
+            tanks,
             tank,
-            _tank_sprites: tank_sprites,
+            tank_sprites,
+
+            bullets,
             vision,
         })
     }
@@ -69,6 +72,15 @@ impl Game {
 impl EventHandler for Game {
     fn update(&mut self, _ctx: &mut Context) -> GameResult {
         let now = Instant::now();
+
+        for i in (0..self.tanks.len()).rev() {
+            let tank = self.tanks[i];
+            if tank.destroyed() {
+            } else {
+                self.tanks[i].update(self, now);
+            }
+        }
+
         if self.tank.update(now) {
             self.vision.update(self.tank.x(), self.tank.y(), &self.map);
         }

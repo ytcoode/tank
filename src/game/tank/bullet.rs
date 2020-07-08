@@ -32,6 +32,7 @@ pub struct Bullet {
     y: u32,
     angle: f64,
     time: Instant, // start time
+    destroyed: bool,
 }
 
 impl Bullet {

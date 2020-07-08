@@ -1,6 +1,6 @@
+use super::path::Path;
 use crate::deps::config;
 use crate::deps::config::Config;
-use crate::path::Path;
 use ggez::graphics;
 use ggez::graphics::DrawParam;
 use ggez::graphics::Image;
@@ -11,12 +11,12 @@ use std::f64;
 use std::rc::Rc;
 use std::time::Instant;
 
-mod bullet;
+pub mod bullet;
 use bullet::*;
 
 #[derive(Debug)]
 pub struct TankCfgs {
-    pub cfgs: Vec<Rc<TankCfg>>,
+    cfgs: Vec<Rc<TankCfg>>,
 }
 
 impl TankCfgs {
@@ -36,6 +36,10 @@ impl TankCfgs {
             .collect();
 
         TankCfgs { cfgs }
+    }
+
+    pub fn get(&self, id: u16) -> Option<&Rc<TankCfg>> {
+        self.cfgs.get(id)
     }
 }
 
@@ -79,16 +83,12 @@ impl TankCfg {
 }
 
 pub struct Tank {
-    map: Rc<Map>,
     cfg: Rc<TankCfg>,
-
     x: u32,
     y: u32,
     path: Option<Path>,
     angle: f32,
-    barrel_angle: f32,
-    pub barrel_rotation: f32,
-    bullet: Option<Bullet>,
+    destroyed: bool,
 }
 
 impl Tank {
@@ -116,7 +116,7 @@ impl Tank {
         self.bullet = Some(Bullet::new(self.x, self.y, self.barrel_angle as f64, now));
     }
 
-    pub fn update(&mut self, now: Instant) -> bool {
+    pub fn update(&mut self, game: &Game, now: Instant) {
         self.barrel_angle += self.barrel_rotation;
 
         if let Some(ref mut b) = self.bullet {
@@ -197,5 +197,9 @@ impl Tank {
 
     pub fn y(&self) -> u32 {
         self.y
+    }
+
+    pub fn destroyed(&self) -> bool {
+        self.destroyed
     }
 }
