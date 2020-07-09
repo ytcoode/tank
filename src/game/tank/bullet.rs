@@ -1,3 +1,5 @@
+use crate::game::update::Update;
+use crate::game::Game;
 use ggez::graphics;
 use ggez::graphics::DrawParam;
 use ggez::graphics::Image;
@@ -6,8 +8,8 @@ use ggez::GameResult;
 use std::rc::Rc;
 use std::time::Instant;
 
-use crate::deps::config::Config;
 use super::Tank;
+use crate::deps::config::Config;
 
 #[derive(Debug)]
 pub struct BulletCfg {
@@ -46,7 +48,7 @@ impl Bullet {
             y,
             angle,
             time,
-	    destroyed: false,
+            destroyed: false,
         }
     }
 
@@ -73,5 +75,13 @@ impl Bullet {
         )?;
 
         Ok(())
+    }
+}
+
+impl Update for Bullet {
+    fn update(&mut self, game: &Game, now: Instant) {}
+
+    fn destroyed(&self) -> bool {
+        false
     }
 }

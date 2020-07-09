@@ -9,6 +9,7 @@ use ggez::timer;
 use ggez::Context;
 use ggez::GameResult;
 use map::Map;
+use std::cell::RefCell;
 use std::rc::Rc;
 use std::time::Instant;
 use tank::bullet::Bullet;
@@ -26,8 +27,8 @@ pub struct Game {
     cfgs: GameCfgs,
     map: Map,
 
-    tanks: Vec<Rc<Tank>>,
-    tank: Rc<Tank>, // player-controlled tank
+    tanks: Vec<Rc<RefCell<Tank>>>,
+    tank: Rc<RefCell<Tank>>, // player-controlled tank
 
     bullets: Vec<Bullet>,
     vision: Vision,
@@ -40,10 +41,10 @@ impl Game {
 
         let tanks = Vec::new();
         let tank_cfg = cfgs.tanks.get(0).expect("Tank{id: 0} not found!");
-        let tank = Rc::new(Tank::new(tank_cfg.clone(), 100, 100));
+        let tank = Rc::new(RefCell::new(Tank::new(tank_cfg.clone(), 100, 100)));
 
         let bullets = Vec::new();
-        let vision = Vision::new(tank.x(), tank.y(), &map, ctx);
+        let vision = Vision::new(tank.borrow().x(), tank.borrow().y(), &map, ctx);
 
         Ok(Game {
             cfgs,
@@ -62,22 +63,27 @@ impl EventHandler for Game {
     fn update(&mut self, _ctx: &mut Context) -> GameResult {
         let now = Instant::now();
 
-        let x = self.tank.x();
-        let y = self.tank.y();
+        for i in (0..self.tanks.len()).rev() {
+            let e = &self.tanks[i];
+            if e.borrow().destroyed() {
+                self.tanks.swap_remove(i);
+            } else {
+                e.borrow_mut().update(self, now);
+            }
+        }
 
-        //	update::update(self.)
+        // let x = self.tank.borrow().x();
+        // let y = self.tank.borrow().y();
 
-        // for i in (0..self.tanks.len()).rev() {
-        //     let tank = self.tanks[i];
-        //     if tank.destroyed() {
-        //     } else {
-        //         self.tanks[i].update(self, now);
-        //     }
-        // }
+        // update::update(&mut self.tanks, self, now);
 
         // if self.tank.update(self, now) {
         //     self.vision.update(self.tank.x(), self.tank.y(), &self.map);
         // }
+
+        // self.tank.borrow_mut().update(self, now);
+        // self.tank.borrow_mut().update(self, now);
+
         Ok(())
     }
 
@@ -95,9 +101,10 @@ impl EventHandler for Game {
         self.map
             .draw(ctx, vision.x1, vision.x2, vision.y1, vision.y2)?;
 
-        // // tank
-        // self.tank
-        //     .draw(ctx, vision.x1, vision.y1, &self.cfgs.misc.flag)?;
+        // tank
+        self.tank
+            .borrow()
+            .draw(ctx, vision.x1, vision.y1, &self.cfgs.misc.flag)?;
 
         // debug
         //        debug::draw_axis(ctx)?;

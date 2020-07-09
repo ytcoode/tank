@@ -1,6 +1,7 @@
 use crate::deps::config;
 use crate::deps::config::Config;
 use crate::game::path::Path;
+use crate::game::update::Update;
 use crate::game::Game;
 use ggez::graphics;
 use ggez::graphics::DrawParam;
@@ -135,7 +136,7 @@ impl Tank {
         };
     }
 
-    pub fn draw(&mut self, ctx: &mut Context, x1: u32, y1: u32, flag: &Image) -> GameResult {
+    pub fn draw(&self, ctx: &mut Context, x1: u32, y1: u32, flag: &Image) -> GameResult {
         let dx = self.x as f64 - x1 as f64;
         let dy = self.y as f64 - y1 as f64;
 
@@ -199,5 +200,13 @@ impl Tank {
 
     pub fn destroyed(&self) -> bool {
         self.destroyed
+    }
+}
+
+impl Update for Tank {
+    fn update(&mut self, game: &Game, now: Instant) {}
+
+    fn destroyed(&self) -> bool {
+        false
     }
 }
