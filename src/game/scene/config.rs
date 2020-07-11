@@ -28,6 +28,7 @@ impl SceneCfgs {
 
 pub struct SceneCfg {
     pub id: u32,
+    //    pub map: Ref<u32, MapCfg>,
 }
 
 impl SceneCfg {

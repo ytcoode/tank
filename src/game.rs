@@ -23,6 +23,10 @@ mod tank;
 mod update;
 mod vision;
 
+pub fn test() {
+    scene::map::MapCfgs::load();
+}
+
 pub struct Game {
     cfgs: GameCfgs,
     map: Map,

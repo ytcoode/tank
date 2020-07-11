@@ -7,6 +7,8 @@ use ggez::GameResult;
 use std::convert::TryInto;
 
 mod block;
+mod config;
+pub use config::*;
 
 pub struct Map {
     blocks: Vec<u8>,
