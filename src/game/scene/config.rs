@@ -1,9 +1,10 @@
 use crate::deps::config;
 use crate::deps::config::Config;
 use std::collections::HashMap;
+use std::rc::Rc;
 
 pub struct SceneCfgs {
-    map: HashMap<u32, SceneCfg>,
+    map: HashMap<u32, Rc<SceneCfg>>,
 }
 
 impl SceneCfgs {
@@ -12,12 +13,16 @@ impl SceneCfgs {
 
         config::load("config/scene.txt")
             .into_iter()
-            .map(|i| SceneCfg::new(i))
+            .map(|i| Rc::new(SceneCfg::new(i)))
             .map(|i| map.insert(i.id, i))
             .map(|i| i.map(|c| c.id))
             .for_each(|i| i.expect_none("Duplicate scene id"));
 
         SceneCfgs { map }
+    }
+
+    fn get(&self, id: u32) -> Option<Rc<SceneCfg>> {
+        self.map.get(&id).map(|c| c.clone())
     }
 }
 
@@ -27,7 +32,7 @@ pub struct SceneCfg {
 
 impl SceneCfg {
     fn new(c: impl Config) -> SceneCfg {
-        let id = 0;
+        let id = c.u32("id").get();
 
         SceneCfg { id }
     }
