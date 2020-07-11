@@ -9,13 +9,14 @@ pub trait Update {
     fn destroyed(&self) -> bool;
 }
 
-pub fn update<U: Update>(v: &mut Vec<Rc<RefCell<U>>>, game: &Game, now: Instant) {
-    for i in (0..v.len()).rev() {
-        let e = &v[i];
-        if e.borrow().destroyed() {
-            v.swap_remove(i);
-        } else {
-            e.borrow_mut().update(game, now);
-        }
-    }
+pub fn update<U: Update>(game: &mut Game, now: Instant) {
+
+    // for i in (0..v.len()).rev() {
+    //     let e = &v[i];
+    //     if e.borrow().destroyed() {
+    //         v.swap_remove(i);
+    //     } else {
+    //         e.borrow_mut().update(game, now);
+    //     }
+    // }
 }

@@ -117,7 +117,7 @@ impl Tank {
         //        self.bullet = Some(Bullet::new(self.x, self.y, self.barrel_angle as f64, now));
     }
 
-    pub fn update(&mut self, game: &Game, now: Instant) {
+    pub fn update(&mut self, now: Instant) {
         // if let Some(ref mut b) = self.bullet {
         //     b.update(now);
         // }

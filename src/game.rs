@@ -30,7 +30,7 @@ pub struct Game {
     tanks: Vec<Rc<RefCell<Tank>>>,
     tank: Rc<RefCell<Tank>>, // player-controlled tank
 
-    bullets: Vec<Bullet>,
+    bullets: Vec<Rc<RefCell<Bullet>>>,
     vision: Vision,
 }
 
@@ -63,14 +63,15 @@ impl EventHandler for Game {
     fn update(&mut self, _ctx: &mut Context) -> GameResult {
         let now = Instant::now();
 
-        for i in (0..self.tanks.len()).rev() {
-            let e = &self.tanks[i];
-            if e.borrow().destroyed() {
-                self.tanks.swap_remove(i);
-            } else {
-                e.borrow_mut().update(self, now);
-            }
-        }
+        // for i in (0..self.tanks.len()).rev() {
+        //     let tanks = &self.tanks;
+        //     let e = &tanks[i];
+        //     if e.borrow().destroyed() {
+        //         self.tanks.swap_remove(i);
+        //     } else {
+        //         e.borrow_mut().update(self, now);
+        //     }
+        // }
 
         // let x = self.tank.borrow().x();
         // let y = self.tank.borrow().y();
