@@ -1,4 +1,5 @@
-pub struct SceneCfgs {}
+mod config;
+pub use config::*;
 
 pub struct SceneCfg {}
 

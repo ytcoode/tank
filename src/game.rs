@@ -19,6 +19,7 @@ use vision::Vision;
 mod cfg;
 mod map;
 mod path;
+mod scene;
 mod tank;
 mod update;
 mod vision;
