@@ -8,7 +8,7 @@ pub struct SceneCfgs {
 }
 
 impl SceneCfgs {
-    fn load() -> SceneCfgs {
+    pub fn load() -> SceneCfgs {
         let mut map = HashMap::new();
 
         config::load("config/scene.txt")
@@ -21,8 +21,8 @@ impl SceneCfgs {
         SceneCfgs { map }
     }
 
-    fn get(&self, id: u32) -> Option<Rc<SceneCfg>> {
-        self.map.get(&id).map(|c| c.clone())
+    pub fn get(&self, id: u32) -> Option<&Rc<SceneCfg>> {
+        self.map.get(&id)
     }
 }
 
