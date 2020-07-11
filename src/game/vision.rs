@@ -1,4 +1,4 @@
-use super::map::Map;
+use crate::game::scene::map::Map;
 use ggez::graphics;
 use ggez::Context;
 
