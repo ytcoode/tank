@@ -17,7 +17,7 @@ impl MapCfgs {
             .filter(|p| p.is_file())
             .map(|p| {
                 (
-                    p.to_str().unwrap().to_string(),
+                    p.file_name().unwrap().to_str().unwrap().to_string(),
                     Rc::new(MapCfg::new(
                         fs::read(p.as_path())
                             .expect(format!("Failed to read file {:?}", p).as_str()),
@@ -29,9 +29,9 @@ impl MapCfgs {
         MapCfgs { map }
     }
 
-    // pub fn get(&self, id: u32) -> Option<&Rc<MapCfg>> {
-    //     self.map.get(&id)
-    // }
+    pub fn get(&self, name: &str) -> Option<&Rc<MapCfg>> {
+        self.map.get(&)
+    }
 }
 
 pub struct MapCfg {}
