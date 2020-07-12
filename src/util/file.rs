@@ -26,3 +26,13 @@ where
         .read_dir()?
         .try_for_each(|e| f(e?.path().as_ref()))
 }
+
+pub fn list2<P>(p: P) -> io::Result<Vec<std::path::PathBuf>>
+where
+    P: AsRef<Path>,
+{
+    p.as_ref()
+        .read_dir()?
+        .map(|e| e.map(|e| e.path()))
+        .collect()
+}

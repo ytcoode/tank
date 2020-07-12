@@ -11,22 +11,20 @@ pub struct MapCfgs {
 
 impl MapCfgs {
     pub fn load() -> MapCfgs {
-        let mut map = HashMap::new();
-
-        file::list("config/map/", |p| {
-            if p.is_file() {
-                fs::read("sjsifjsfi").expect("Failed to read file");
-            }
-            Ok(())
-        })
-        .expect("Failed to load config/map/");
-
-        // config::load("config/scene2.txt")
-        //     .into_iter()
-        //     .map(|i| Rc::new(SceneCfg::new(i)))
-        //     .map(|i| map.insert(i.id, i))
-        //     .map(|i| i.map(|c| c.id))
-        //     .for_each(|i| i.expect_none("Duplicate scene id"));
+        let map = file::list2("config/map/")
+            .expect("Failed to list files in directory [config/map/]")
+            .into_iter()
+            .filter(|p| p.is_file())
+            .map(|p| {
+                (
+                    p.to_str().unwrap().to_string(),
+                    Rc::new(MapCfg::new(
+                        fs::read(p.as_path())
+                            .expect(format!("Failed to read file {:?}", p).as_str()),
+                    )),
+                )
+            })
+            .collect();
 
         MapCfgs { map }
     }
@@ -36,14 +34,10 @@ impl MapCfgs {
     // }
 }
 
-pub struct MapCfg {
-    pub id: u32,
-}
+pub struct MapCfg {}
 
 impl MapCfg {
-    fn new<C: Config>(c: C) -> MapCfg {
-        let id = c.u32("id").get();
-
-        MapCfg { id }
+    fn new(v: Vec<u8>) -> MapCfg {
+        MapCfg {}
     }
 }
