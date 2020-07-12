@@ -1,4 +1,4 @@
-use super::MapCfgs;
+use super::map::{MapCfg, MapCfgs};
 use crate::deps::config;
 use crate::deps::config::Config;
 use std::collections::HashMap;
@@ -35,8 +35,16 @@ pub struct SceneCfg {
 impl SceneCfg {
     fn new<C: Config>(c: C, mapCfgs: &MapCfgs) -> SceneCfg {
         let id = c.u32("id").get();
-
-        let map = mapCfgs.get(c.str("map").not_empty().get()).clone();
+        let map = c
+            .str("map")
+            .not_empty()
+            .map(|s| {
+                mapCfgs
+                    .get(s.get())
+                    .expect(format!("{} not found", s).as_str())
+                    .clone()
+            })
+            .get();
 
         SceneCfg { id, map }
     }

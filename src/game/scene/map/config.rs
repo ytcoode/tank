@@ -30,7 +30,7 @@ impl MapCfgs {
     }
 
     pub fn get(&self, name: &str) -> Option<&Rc<MapCfg>> {
-        self.map.get(&)
+        self.map.get(name)
     }
 }
 

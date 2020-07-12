@@ -1,4 +1,4 @@
-use crate::game::scene::SceneCfgs;
+use crate::game::scene::{map::MapCfgs, SceneCfgs};
 use crate::game::tank::TankCfgs;
 use ggez::graphics::Image;
 use ggez::Context;
@@ -14,7 +14,8 @@ pub struct GameCfgs {
 
 impl GameCfgs {
     pub fn load(ctx: &mut Context) -> GameCfgs {
-        let scenes = SceneCfgs::load();
+        let maps = MapCfgs::load();
+        let scenes = SceneCfgs::load(&maps);
         let tanks = TankCfgs::load(ctx);
         let misc = MiscCfgs::load(ctx);
 
