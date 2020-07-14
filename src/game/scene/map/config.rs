@@ -39,31 +39,55 @@ impl MapCfgs {
 }
 
 pub struct MapCfg {
+    // map grid
     grid: Vec<u8>,
     grid_nx: u32,
     grid_ny: u32,
+
     scale: u32,
     width: u32,
     height: u32,
-    tiles: Vec<SpriteBatch>,
+
+    // tile grid
+    tiles: Vec<u8>,
+    tile_nx: u32,
+    tile_ny: u32,
+    tile_size: u32,
+    tile_images: Vec<Image>,
+
+    // extra tiles & positions
+    tile_extra_images: Vec<Image>,
+    tile_extra_positions: Vec<Vec<(u32, u32)>>,
 }
 
-impl MapCfg {
-    // u32: grid_nx
-    // u32: grid_ny
-    // for (grid_nx * grid_ny) {
-    //   u8: grid_data
-    // }
-    // u32: scale
-    // while (readable) {
-    //   str: tile
-    //   u32: tile_positions
-    //   for (tile_positions) {
-    //     u32: tile_x
-    //     u32: tile_y
-    //   }
-    // }
+// u32 grid_nx
+// u32 grid_ny
+// for (grid_nx * grid_ny) {
+//   u8 grid_data
+// }
+//
+// u32 scale
+//
+// u32 tile_count
+// for (tile_count) {
+//   str tile_image
+// }
+//
+// u32 tile_index_count
+// for (tile_index_count) {
+//   u8 tile_index
+// }
+//
+// while (readable) {
+//   str extra_tile
+//   u32 extra_tile_position_count
+//   for (extra_tile_position_count) {
+//     u32 extra_tile_x
+//     u32 extra_tile_y
+//   }
+// }
 
+impl MapCfg {
     fn new(name: &str, v: Vec<u8>, ctx: &mut Context) -> MapCfg {
         let mut b = v.as_slice();
 
@@ -86,7 +110,7 @@ impl MapCfg {
         let grid = (0..grid_nz).fold(Vec::with_capacity(grid_nz), |v, _| push(v, b.read_u8()));
         assert!(grid.len() == grid.capacity());
 
-        // map info
+        // scale
         let scale = b.read_u32();
         assert!(
             scale > 0,
@@ -102,6 +126,13 @@ impl MapCfg {
             let tile = b.read_str();
             let image = Image::new(ctx, tile).expect("TODO");
             let sprite = SpriteBatch::new(image);
+
+            let n = b.read_u32();
+            while n > 0 {
+                n -= 1;
+                let x = b.read_u32();
+                let y = b.read_u32();
+            }
         }
 
         MapCfg {
