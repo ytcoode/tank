@@ -68,7 +68,7 @@ pub struct MapCfg {
 //
 // u32 scale
 //
-// u32 tile_count
+// u8 tile_count
 // for (tile_count) {
 //   str tile_image
 // }
@@ -86,7 +86,6 @@ pub struct MapCfg {
 //     u32 extra_tile_y
 //   }
 // }
-
 impl MapCfg {
     fn new(name: &str, v: Vec<u8>, ctx: &mut Context) -> MapCfg {
         let mut b = v.as_slice();
@@ -122,21 +121,44 @@ impl MapCfg {
         let height = grid_ny * scale;
 
         // tiles
-        loop {
-            let tile = b.read_str();
-            let image = Image::new(ctx, tile).expect("TODO");
-            let sprite = SpriteBatch::new(image);
+        let tile_count = b.read_u8();
+        let mut tile_images = Vec::with_capacity(tile_count.into());
+        let mut tile_size = 0;
 
-            let n = b.read_u32();
-            while n > 0 {
-                n -= 1;
-                let x = b.read_u32();
-                let y = b.read_u32();
+        for i in (0..tile_count) {
+            let tile = b.read_str();
+            let image = Image::new(ctx, tile).expect("Failed to load image");
+            assert!(
+                image.width() == image.height(),
+                "The width and height of tiles must be equal! {}",
+                tile,
+            );
+            if i == 0 {
+                tile_size = image.width();
+            } else {
+                assert_eq!(
+                    tile_size,
+                    image.width(),
+                    "All tiles must be of the same size!"
+                );
             }
+            tile_images.push(image);
         }
 
+        // loop {
+        //     let tile = b.read_str();
+        //     let image = Image::new(ctx, tile).expect("TODO");
+        //     let sprite = SpriteBatch::new(image);
+
+        //     let n = b.read_u32();
+        //     while n > 0 {
+        //         n -= 1;
+        //         let x = b.read_u32();
+        //         let y = b.read_u32();
+        //     }
+        // }
+
         MapCfg {
-            name,
             grid,
             grid_nx,
             grid_ny,

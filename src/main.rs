@@ -9,7 +9,7 @@ mod game;
 pub mod util; // Same as above
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let (mut ctx, mut event_loop) = ContextBuilder::new("CrazyTank", "CrazyBunny")
+    let (mut ctx, mut event_loop) = ContextBuilder::new("CrazyTank", "wangyuntao")
         .add_resource_path("./resources")
         .build()?;
 
