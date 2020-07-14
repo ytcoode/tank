@@ -2,6 +2,8 @@ pub trait Bytes {
     fn read_u8(&mut self) -> u8;
     fn read_u16(&mut self) -> u16;
     fn read_u32(&mut self) -> u32;
+    fn read_bytes(&mut self) -> &[u8];
+    fn read_str(&mut self) -> &str;
 }
 
 impl Bytes for &[u8] {
@@ -17,6 +19,18 @@ impl Bytes for &[u8] {
 
     fn read_u32(&mut self) -> u32 {
         (self.read_u16() as u32) << 16 | self.read_u16() as u32
+    }
+
+    fn read_bytes(&mut self) -> &[u8] {
+        let l = self.read_u16().into();
+        let r = &self[..l];
+        *self = &self[l..];
+        r
+    }
+
+    fn read_str(&mut self) -> &str {
+        let b = self.read_bytes();
+        std::str::from_utf8(b).expect("Failed to read string")
     }
 }
 
