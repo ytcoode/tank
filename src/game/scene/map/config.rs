@@ -122,28 +122,62 @@ impl MapCfg {
 
         // tiles
         let tile_count = b.read_u8();
+        assert!(
+            tile_count > 0,
+            "The number of tiles must be greater than zero! {}",
+            name,
+        );
+
         let mut tile_images = Vec::with_capacity(tile_count.into());
         let mut tile_size = 0;
 
         for i in (0..tile_count) {
             let tile = b.read_str();
             let image = Image::new(ctx, tile).expect("Failed to load image");
+
             assert!(
                 image.width() == image.height(),
-                "The width and height of tiles must be equal! {}",
+                "The width and height of tiles must be equal! {}: {}",
+                name,
                 tile,
             );
+
+            assert!(
+                image.width() > 0,
+                "The tile size must be greater than zero! {}: {}",
+                name,
+                tile,
+            );
+
             if i == 0 {
-                tile_size = image.width();
+                tile_size = image.width() as u32;
             } else {
                 assert_eq!(
                     tile_size,
-                    image.width(),
-                    "All tiles must be of the same size!"
+                    image.width() as u32,
+                    "All tiles must be of the same size! {}",
+                    name
                 );
             }
+
             tile_images.push(image);
         }
+
+        assert!(tile_size > 0);
+        assert!(
+            width % tile_size == 0,
+            "The map width ({}) must be divisible by tile size ({})! {}",
+            width,
+            tile_size,
+            name
+        );
+        assert!(
+            height % tile_size == 0,
+            "The map height ({}) must be divisible by tile size ({})! {}",
+            height,
+            tile_size,
+            name
+        );
 
         // loop {
         //     let tile = b.read_str();
