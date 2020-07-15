@@ -8,7 +8,6 @@ edition = "2018"
 
 [dependencies]
 ggez = { path = "../ggez" }
-rand = "0.7"
 
 [profile.release]
 overflow-checks = true

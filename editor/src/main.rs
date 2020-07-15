@@ -1,8 +1,6 @@
-fn main() {
-    add(255);
-    println!("Hello, world!");
-}
+mod editor;
+mod style;
 
-fn add(a: u8) {
-    let b = a + 1;
+fn main() {
+    editor::start();
 }
