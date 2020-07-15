@@ -43,7 +43,6 @@ pub struct MapCfg {
     grid: Vec<u8>,
     grid_nx: u32,
     grid_ny: u32,
-
     scale: u32,
     width: u32,
     height: u32,
@@ -73,8 +72,7 @@ pub struct MapCfg {
 //   str tile_image
 // }
 //
-// u32 tile_index_count
-// for (tile_index_count) {
+// for (tile_nx * tile_ny) {
 //   u8 tile_index
 // }
 //
@@ -179,18 +177,37 @@ impl MapCfg {
             name
         );
 
-        // loop {
-        //     let tile = b.read_str();
-        //     let image = Image::new(ctx, tile).expect("TODO");
-        //     let sprite = SpriteBatch::new(image);
+        let tile_nx = width / tile_size;
+        let tile_ny = height / tile_size;
+        let tile_nz = tile_nx * tile_ny;
 
-        //     let n = b.read_u32();
-        //     while n > 0 {
-        //         n -= 1;
-        //         let x = b.read_u32();
-        //         let y = b.read_u32();
-        //     }
-        // }
+        let mut tiles = Vec::with_capacity(tile_nz.try_into().unwrap());
+        (0..tile_nz)
+            .map(|_| b.read_u8())
+            .inspect(|&i| assert!((i as usize) < tile_images.len()))
+            .for_each(|i| tiles.push(i));
+
+        // extra tiles
+        let mut tile_extra_images = Vec::new();
+        let mut tile_extra_positions = Vec::new();
+
+        loop {
+            let tile = b.read_str();
+            let image = Image::new(ctx, tile).expect("Failed to load image");
+
+            let count = b.read_u32();
+            let mut positions = Vec::with_capacity(count.try_into().unwrap());
+
+            (0..count)
+                .map(|_| (b.read_u32(), b.read_u32()))
+                .for_each(|p| positions.push(p));
+
+            tile_extra_images.push(image);
+            tile_extra_positions.push(positions);
+        }
+
+        tile_extra_images.shrink_to_fit();
+        tile_extra_positions.shrink_to_fit();
 
         MapCfg {
             grid,
@@ -199,6 +216,15 @@ impl MapCfg {
             scale,
             width,
             height,
+
+            tiles,
+            tile_nx,
+            tile_ny,
+            tile_size,
+            tile_images,
+
+            tile_extra_images,
+            tile_extra_positions,
         }
     }
 }
