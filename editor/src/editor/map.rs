@@ -1,6 +1,6 @@
+use self::grid::Grid;
 use crate::editor::style;
 use crate::editor::Msg;
-use grid::Grid;
 use iced::Column;
 use iced::Container;
 use iced::Element;
@@ -14,7 +14,7 @@ pub struct Map {
 
 impl Map {
     pub fn new() -> Map {
-        let grid = Grid::new(10, 20);
+        let grid = Grid::new(3, 3);
 
         Map { grid }
     }
@@ -22,9 +22,11 @@ impl Map {
     pub fn view(&mut self) -> Element<'_, Msg> {
         let c = Column::new().push(self.grid.view());
 
+        // TODO controls
+
         Container::new(c)
-            .width(Length::Fill)
-            .height(Length::Fill)
+            // .width(Length::Fill)
+            // .height(Length::Fill)
             .style(style::Container)
             .into()
     }

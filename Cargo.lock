@@ -753,6 +753,7 @@ name = "editor"
 version = "0.1.0"
 dependencies = [
  "iced",
+ "util",
 ]
 
 [[package]]
@@ -3467,6 +3468,10 @@ dependencies = [
  "matches",
  "percent-encoding",
 ]
+
+[[package]]
+name = "util"
+version = "0.1.0"
 
 [[package]]
 name = "uuid"

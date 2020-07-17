@@ -33,7 +33,7 @@ impl Application for Editor {
     }
 
     fn title(&self) -> String {
-        String::from("Game Editor")
+        String::from("Map Editor")
     }
 
     fn update(&mut self, _message: Msg) -> Command<Msg> {

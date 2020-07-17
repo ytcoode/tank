@@ -1,5 +1,5 @@
 [package]
-name = "tank"
+name = "util"
 version = "0.1.0"
 authors = ["wangyuntao <wyt.daily@gmail.com>"]
 edition = "2018"
@@ -7,10 +7,3 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-ggez = { path = "../ggez" }
-
-[profile.release]
-overflow-checks = true
-
-[workspace]
-members = ["editor", "util"]
