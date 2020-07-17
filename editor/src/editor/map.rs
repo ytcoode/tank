@@ -14,7 +14,7 @@ pub struct Map {
 
 impl Map {
     pub fn new() -> Map {
-        let grid = Grid::new(3, 3);
+        let grid = Grid::new(4, 3);
 
         Map { grid }
     }
@@ -25,8 +25,8 @@ impl Map {
         // TODO controls
 
         Container::new(c)
-            // .width(Length::Fill)
-            // .height(Length::Fill)
+            .width(Length::Fill)
+            .height(Length::Fill)
             .style(style::Container)
             .into()
     }

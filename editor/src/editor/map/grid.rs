@@ -1,3 +1,4 @@
+use self::tile::Tile;
 use crate::editor::Msg;
 use iced::canvas::{self, Cache, Canvas, Cursor, Event, Geometry};
 use iced::mouse;
@@ -6,8 +7,10 @@ use iced::{Color, Element, Length, Point, Rectangle, Size};
 use std::convert::TryInto;
 use util;
 
+mod tile;
+
 pub struct Grid {
-    tiles: Vec<u8>,
+    tiles: Vec<Tile>,
     tile_rows: u32,
     tile_cols: u32,
     tile_size: u32,
@@ -17,6 +20,7 @@ pub struct Grid {
 
 impl Grid {
     pub fn new(rows: u32, cols: u32) -> Grid {
+        let tiles = vec![Tile::new(); (rows * cols).try_into().unwrap()];
         let mut tile_images = Vec::new();
 
         let image = Image::new("assets/resources/a/PNG/Environment/dirt.png");
@@ -29,7 +33,7 @@ impl Grid {
         tile_images.push(image);
 
         Grid {
-            tiles: Vec::with_capacity((rows * cols).try_into().unwrap()),
+            tiles,
             tile_rows: rows,
             tile_cols: cols,
             tile_size: 128, // There is no way to get the size of tile images, so we hardcode it here.
@@ -44,11 +48,39 @@ impl Grid {
             .height(Length::Fill)
             .into()
     }
+
+    fn tile(&mut self, x: u32, y: u32) -> Option<&mut Tile> {
+        let i = x / self.tile_size;
+        let j = y / self.tile_size;
+
+        if i >= self.tile_cols || j >= self.tile_rows {
+            return None;
+        }
+
+        let k = i * self.tile_rows + j;
+        Some(&mut self.tiles[k as usize])
+    }
 }
 
 impl canvas::Program<Msg> for Grid {
-    fn update(&mut self, _event: Event, _bounds: Rectangle, _cursor: Cursor) -> Option<Msg> {
-        None
+    fn update(&mut self, event: Event, bounds: Rectangle, cursor: Cursor) -> Option<Msg> {
+        let point = cursor.position_in(&bounds)?;
+
+        match event {
+            Event::Mouse(e) => match e {
+                mouse::Event::ButtonPressed(b) => {
+                    let tile = self.tile(point.x as u32, point.y as u32)?;
+                    tile.image = 1;
+                    println!(
+                        "{} - {}",
+                        point.x as u32 / self.tile_size,
+                        point.y as u32 / self.tile_size,
+                    );
+                    None
+                }
+                _ => None,
+            },
+        }
     }
 
     fn draw(&self, bounds: Rectangle, _cursor: Cursor) -> Vec<Geometry> {
