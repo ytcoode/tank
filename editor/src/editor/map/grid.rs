@@ -1,9 +1,10 @@
 use self::tile::Tile;
 use crate::editor::Msg;
-use iced::canvas::{self, Cache, Canvas, Cursor, Event, Geometry};
+use iced::canvas::{Cache, Canvas, Cursor, Event, Geometry, Program};
 use iced::mouse;
-use iced::widget::image::Image;
+use iced::widget::image::{Handle, Image};
 use iced::{Color, Element, Length, Point, Rectangle, Size};
+use iced_graphics::Primitive;
 use std::convert::TryInto;
 use util;
 
@@ -49,7 +50,7 @@ impl Grid {
             .into()
     }
 
-    fn tile(&mut self, x: u32, y: u32) -> Option<&mut Tile> {
+    fn tile(&mut self, x: u32, y: u32) -> Option<&Tile> {
         let i = x / self.tile_size;
         let j = y / self.tile_size;
 
@@ -62,7 +63,7 @@ impl Grid {
     }
 }
 
-impl canvas::Program<Msg> for Grid {
+impl Program<Msg> for Grid {
     fn update(&mut self, event: Event, bounds: Rectangle, cursor: Cursor) -> Option<Msg> {
         let point = cursor.position_in(&bounds)?;
 
@@ -70,7 +71,7 @@ impl canvas::Program<Msg> for Grid {
             Event::Mouse(e) => match e {
                 mouse::Event::ButtonPressed(b) => {
                     let tile = self.tile(point.x as u32, point.y as u32)?;
-                    tile.image = 1;
+                    //                    tile.image = 1;
                     println!(
                         "{} - {}",
                         point.x as u32 / self.tile_size,
@@ -109,7 +110,13 @@ impl canvas::Program<Msg> for Grid {
                 .for_each(|p| frame.fill_rectangle(p, size, color));
         });
 
-        vec![grid]
+        let handle = Handle::from("assets/resources/a/PNG/Environment/dirt.png");
+        let bounds = Rectangle::new(Point::new(10.0, 10.0), Size::new(200.0, 200.0));
+
+        let prim = Primitive::Image { handle, bounds };
+        let geom = Geometry(prim);
+
+        vec![geom]
     }
 
     fn mouse_interaction(&self, _bounds: Rectangle, _cursor: Cursor) -> mouse::Interaction {
