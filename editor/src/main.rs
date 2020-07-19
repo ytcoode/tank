@@ -1,5 +1,3 @@
-mod editor;
-
 fn main() {
-    editor::start();
+    println!("Hello, world!");
 }

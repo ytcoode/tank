@@ -7,4 +7,6 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-druid = { path = "../../druid/druid" }
+iced = { path = "../../iced", features = ["canvas", "tokio", "debug"] }
+iced_graphics = { path = "../../iced/graphics" }
+util = { path = "../util" }
