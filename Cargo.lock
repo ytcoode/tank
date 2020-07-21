@@ -477,6 +477,9 @@ dependencies = [
 [[package]]
 name = "editor"
 version = "0.1.0"
+dependencies = [
+ "ggez",
+]
 
 [[package]]
 name = "error-chain"
