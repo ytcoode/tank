@@ -83,8 +83,7 @@ impl Grid {
     }
 
     fn cell_set(&mut self, i: u32, j: u32, val: u8) {
-        let idx: usize = (i * self.rows + j).try_into().unwrap();
-        self.cells[idx].val = val;
+        self.cells[self.cell_idx(i, j)].val = val;
     }
 
     fn cell(&self, i: u32, j: u32) -> &Cell {
