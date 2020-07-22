@@ -19,7 +19,7 @@ impl Map {
             "/a/PNG/Environment/grass.png",
             "/a/PNG/Environment/sand.png",
         ]
-        .into_iter()
+        .iter()
         .map(|p| Image::new(ctx, p).expect("Failed to load image"))
         .inspect(|i| println!("tile loaded: {}*{}", i.width(), i.height()))
         .collect();

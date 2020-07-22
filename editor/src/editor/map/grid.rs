@@ -28,23 +28,34 @@ impl Grid {
 
     pub fn draw(&self, ctx: &mut Context, x: u32, y: u32, width: u32, height: u32) {
         // column
-        let c1 = x / self.cell_size;
-        if c1 >= self.cols {
+        let i1 = x / self.cell_size;
+        if i1 >= self.cols {
             return;
         }
-        let c2 = ((x + width) / self.cell_size).min(self.cols - 1);
+
+        let i2 = util::div_ceil(x + width, self.cell_size).min(self.cols);
 
         // row
-        let r1 = y / self.cell_size;
-        if r1 >= self.rows {
+        let j1 = y / self.cell_size;
+        if j1 >= self.rows {
             return;
         }
-        let r2 = ((y + height) / self.cell_size).min(self.rows - 1);
+        let j2 = util::div_ceil(y + height, self.cell_size).min(self.rows);
 
-        // grid
-        (c1..=c2).for_each(|c| {
-            let cx = c * self.cell_size;
-            util::draw_line(ctx, cx, y, cx, y + height);
-        });
+        // column
+        let y1 = util::substract(j1 * self.cell_size, y);
+        let y2 = util::substract(j2 * self.cell_size, y);
+
+        (i1..=i2)
+            .map(|i| util::substract(i * self.cell_size, x))
+            .for_each(|x| util::draw_line(ctx, x, y1, x, y2));
+
+        // row
+        let x1 = util::substract(i1 * self.cell_size, x);
+        let x2 = util::substract(i2 * self.cell_size, x);
+
+        (j1..=j2)
+            .map(|j| util::substract(j * self.cell_size, y))
+            .for_each(|y| util::draw_line(ctx, x1, y, x2, y));
     }
 }
