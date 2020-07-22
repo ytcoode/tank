@@ -40,7 +40,7 @@ impl EventHandler for Map {
         let (dw, dh) = graphics::drawable_size(ctx);
 
         self.grid
-            .draw(ctx, 0, 0, dw.ceil() as u32, dw.ceil() as u32);
+            .draw(ctx, 0, 0, dw.ceil() as u32, dh.ceil() as u32);
 
         graphics::present(ctx)
     }
