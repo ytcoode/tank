@@ -48,17 +48,21 @@ impl EventHandler for Map {
 
         let (dw, dh) = graphics::drawable_size(ctx);
 
-        self.grid
-            .draw(ctx, 0, 0, dw.ceil() as u32, dh.ceil() as u32);
+        self.grid.draw(
+            ctx,
+            self.view_x,
+            self.view_y,
+            dw.ceil() as u32,
+            dh.ceil() as u32,
+            |v| self.tiles.get(v as usize),
+        );
 
         graphics::present(ctx)
     }
 
     fn mouse_button_down_event(&mut self, _ctx: &mut Context, button: MouseButton, x: f32, y: f32) {
-        let mut x = x.round() as u32;
-        let mut y = y.round() as u32;
-        x += self.view_x;
-        y += self.view_y;
+        let x = x.round() as u32 + self.view_x;
+        let y = y.round() as u32 + self.view_y;
         self.grid.set(x, y, self.tile);
     }
 }
