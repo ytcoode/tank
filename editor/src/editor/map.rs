@@ -54,7 +54,13 @@ impl EventHandler for Map {
             self.view_y,
             dw.ceil() as u32,
             dh.ceil() as u32,
-            |v| self.tiles.get(v as usize),
+            |v| {
+                if v == 0 {
+                    None
+                } else {
+                    self.tiles.get(v as usize)
+                }
+            },
         );
 
         graphics::present(ctx)
