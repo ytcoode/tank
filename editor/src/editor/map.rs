@@ -1,5 +1,5 @@
 use self::grid::Grid;
-use ggez::event::EventHandler;
+use ggez::event::{EventHandler, MouseButton};
 use ggez::graphics::{self, Image};
 use ggez::{Context, GameResult};
 
@@ -8,6 +8,9 @@ mod grid;
 pub struct Map {
     grid: Grid,
     tiles: Vec<Image>,
+    tile: u8,
+    view_x: u32,
+    view_y: u32,
 }
 
 impl Map {
@@ -24,7 +27,13 @@ impl Map {
         .inspect(|i| println!("tile loaded: {}*{}", i.width(), i.height()))
         .collect();
 
-        Map { grid, tiles }
+        Map {
+            grid,
+            tiles,
+            tile: 1,
+            view_x: 0,
+            view_y: 0,
+        }
     }
 }
 
@@ -43,5 +52,13 @@ impl EventHandler for Map {
             .draw(ctx, 0, 0, dw.ceil() as u32, dh.ceil() as u32);
 
         graphics::present(ctx)
+    }
+
+    fn mouse_button_down_event(&mut self, _ctx: &mut Context, button: MouseButton, x: f32, y: f32) {
+        let mut x = x.round() as u32;
+        let mut y = y.round() as u32;
+        x += self.view_x;
+        y += self.view_y;
+        self.grid.set(x, y, self.tile);
     }
 }

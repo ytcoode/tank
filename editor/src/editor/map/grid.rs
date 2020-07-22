@@ -58,4 +58,17 @@ impl Grid {
             .map(|j| util::substract(j * self.cell_size, y))
             .for_each(|y| util::draw_line(ctx, x1, y, x2, y));
     }
+
+    pub fn set(&mut self, x: u32, y: u32, val: u8) {
+        let i = x / self.cell_size;
+        let j = y / self.cell_size;
+        if i < self.cols && j < self.rows {
+            self.cell_set(i, j, val)
+        }
+    }
+
+    fn cell_set(&mut self, i: u32, j: u32, val: u8) {
+        let idx: usize = (i * self.rows + j).try_into().unwrap();
+        self.cells[idx].val = val;
+    }
 }

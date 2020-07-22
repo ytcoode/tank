@@ -1,4 +1,4 @@
 #[derive(Default, Clone)]
 pub struct Cell {
-    v: u8,
+    pub val: u8,
 }
