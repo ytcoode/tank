@@ -1,5 +1,5 @@
 use self::grid::Grid;
-use ggez::event::{EventHandler, MouseButton};
+use ggez::event::{self, EventHandler, KeyCode, KeyMods, MouseButton};
 use ggez::graphics::{self, Image};
 use ggez::{Context, GameResult};
 
@@ -9,8 +9,9 @@ pub struct Map {
     grid: Grid,
     tiles: Vec<Image>,
     tile: u8,
-    view_x: u32,
-    view_y: u32,
+    view_x: i32,
+    view_y: i32,
+    view_drag: bool,
 }
 
 impl Map {
@@ -33,6 +34,7 @@ impl Map {
             tile: 1,
             view_x: 0,
             view_y: 0,
+            view_drag: false,
         }
     }
 }
@@ -52,13 +54,13 @@ impl EventHandler for Map {
             ctx,
             self.view_x,
             self.view_y,
-            dw.ceil() as u32,
-            dh.ceil() as u32,
+            dw.ceil() as i32,
+            dh.ceil() as i32,
             |v| {
                 if v == 0 {
                     None
                 } else {
-                    self.tiles.get(v as usize)
+                    self.tiles.get(v as usize - 1)
                 }
             },
         );
@@ -67,8 +69,45 @@ impl EventHandler for Map {
     }
 
     fn mouse_button_down_event(&mut self, _ctx: &mut Context, button: MouseButton, x: f32, y: f32) {
-        let x = x.round() as u32 + self.view_x;
-        let y = y.round() as u32 + self.view_y;
-        self.grid.set(x, y, self.tile);
+        match button {
+            MouseButton::Left => {
+                let x = self.view_x + x.round() as i32;
+                let y = self.view_y + y.round() as i32;
+                self.grid.set(x, y, self.tile);
+            }
+            MouseButton::Right => self.view_drag = true,
+            _ => (),
+        }
+    }
+
+    fn mouse_button_up_event(&mut self, _ctx: &mut Context, button: MouseButton, _x: f32, _y: f32) {
+        match button {
+            MouseButton::Right => self.view_drag = false,
+            _ => (),
+        }
+    }
+
+    fn mouse_motion_event(&mut self, _ctx: &mut Context, _x: f32, _y: f32, dx: f32, dy: f32) {
+        if self.view_drag {
+            self.view_x -= dx.round() as i32;
+            self.view_y -= dy.round() as i32;
+        }
+    }
+
+    fn key_down_event(
+        &mut self,
+        ctx: &mut Context,
+        keycode: KeyCode,
+        _keymods: KeyMods,
+        _repeat: bool,
+    ) {
+        match keycode {
+            KeyCode::Key0 => self.tile = 0,
+            KeyCode::Key1 => self.tile = 1,
+            KeyCode::Key2 => self.tile = 2,
+            KeyCode::Key3 => self.tile = 3,
+            KeyCode::Escape => event::quit(ctx),
+            _ => (),
+        }
     }
 }
