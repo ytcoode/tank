@@ -2,12 +2,15 @@ use self::grid::Grid;
 use ggez::event::{self, EventHandler, KeyCode, KeyMods, MouseButton};
 use ggez::graphics::{self, Image};
 use ggez::{Context, GameResult};
+use std::convert::TryInto;
+use std::fs;
+use util::byte::BytesMut;
 
 mod grid;
 
 pub struct Map {
     grid: Grid,
-    tiles: Vec<Image>,
+    tiles: Vec<(String, Image)>,
     tile: u8,
     view_x: i32,
     view_y: i32,
@@ -16,7 +19,7 @@ pub struct Map {
 
 impl Map {
     pub fn new(ctx: &mut Context) -> Map {
-        let grid = Grid::new(4, 3, 128);
+        let grid = Grid::new(4, 8, 128);
 
         let tiles = [
             "/a/PNG/Environment/dirt.png",
@@ -24,8 +27,13 @@ impl Map {
             "/a/PNG/Environment/sand.png",
         ]
         .iter()
-        .map(|p| Image::new(ctx, p).expect("Failed to load image"))
-        .inspect(|i| println!("tile loaded: {}*{}", i.width(), i.height()))
+        .map(|p| {
+            (
+                p.to_string(),
+                Image::new(ctx, p).expect("Failed to load image"),
+            )
+        })
+        .inspect(|(p, i)| println!("tile loaded: {} -> {}*{}", p, i.width(), i.height()))
         .collect();
 
         Map {
@@ -36,6 +44,27 @@ impl Map {
             view_y: 0,
             view_drag: false,
         }
+    }
+
+    fn save(&mut self) {
+        let mut b = Vec::new();
+
+        // tile count
+        b.write_u8(self.tiles.len().try_into().unwrap());
+
+        // tiles
+        self.tiles
+            .iter()
+            .map(|(s, _)| s)
+            .for_each(|s| b.write_str(s));
+
+        // grid
+        self.grid.write_to(&mut b);
+
+        // write to a file
+        let path = "1.map";
+        fs::write(path, b.as_slice()).expect(format!("Could not write file: {}", path).as_str());
+        println!("map saved successfully: {}", path);
     }
 }
 
@@ -56,12 +85,9 @@ impl EventHandler for Map {
             self.view_y,
             dw.ceil() as i32,
             dh.ceil() as i32,
-            |v| {
-                if v == 0 {
-                    None
-                } else {
-                    self.tiles.get(v as usize - 1)
-                }
+            |v| match v {
+                0 => None,
+                _ => self.tiles.get(v as usize - 1).map(|t| &t.1),
             },
         );
 
@@ -106,6 +132,7 @@ impl EventHandler for Map {
             KeyCode::Key1 => self.tile = 1,
             KeyCode::Key2 => self.tile = 2,
             KeyCode::Key3 => self.tile = 3,
+            KeyCode::S => self.save(),
             KeyCode::Escape => event::quit(ctx),
             _ => (),
         }

@@ -1,5 +1,5 @@
 use self::map::Map;
-use ggez::conf::WindowSetup;
+use ggez::conf::{WindowMode, WindowSetup};
 use ggez::event;
 use ggez::ContextBuilder;
 
@@ -8,6 +8,7 @@ mod map;
 pub fn start() {
     let (mut ctx, mut event_loop) = ContextBuilder::new("map_editor", "wangyuntao")
         .window_setup(WindowSetup::default().title("Map Editor"))
+        .window_mode(WindowMode::default().dimensions(1100.0, 620.0))
         .add_resource_path("./assets/resources")
         .build()
         .unwrap();

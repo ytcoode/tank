@@ -3,6 +3,7 @@ use ggez::graphics::{self, Drawable};
 use ggez::Context;
 use std::convert::TryInto;
 use util;
+use util::byte::BytesMut;
 
 mod cell;
 
@@ -31,6 +32,18 @@ impl Grid {
             width: cols * cell_size,
             height: rows * cell_size,
         }
+    }
+
+    pub fn write_to<B: BytesMut>(&self, b: &mut B) {
+        // rows & cols
+        b.write_u32(self.rows as u32);
+        b.write_u32(self.cols as u32);
+
+        // cell size
+        b.write_u32(self.cell_size as u32);
+
+        // cells
+        self.cells.iter().map(|c| c.val).for_each(|v| b.write_u8(v));
     }
 
     pub fn draw<'a, D, F>(&self, ctx: &mut Context, x: i32, y: i32, width: i32, height: i32, f: F)
@@ -111,13 +124,13 @@ impl Grid {
         }
     }
 
+    fn cell(&self, i: i32, j: i32) -> &Cell {
+        &self.cells[self.cell_idx(i, j)]
+    }
+
     fn cell_set(&mut self, i: i32, j: i32, val: u8) {
         let idx = self.cell_idx(i, j);
         self.cells[idx].val = val;
-    }
-
-    fn cell(&self, i: i32, j: i32) -> &Cell {
-        &self.cells[self.cell_idx(i, j)]
     }
 
     fn cell_idx(&self, i: i32, j: i32) -> usize {
