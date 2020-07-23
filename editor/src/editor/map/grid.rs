@@ -39,11 +39,15 @@ impl Grid {
         b.write_u32(self.rows as u32);
         b.write_u32(self.cols as u32);
 
-        // cell size
-        b.write_u32(self.cell_size as u32);
+        // // cell size
+        // b.write_u32(self.cell_size as u32);
 
         // cells
-        self.cells.iter().map(|c| c.val).for_each(|v| b.write_u8(v));
+        self.cells
+            .iter()
+            .map(|c| c.val)
+            .inspect(|&v| assert!(v > 0, "The grid cell cannot be empty!"))
+            .for_each(|v| b.write_u8(v));
     }
 
     pub fn draw<'a, D, F>(&self, ctx: &mut Context, x: i32, y: i32, width: i32, height: i32, f: F)

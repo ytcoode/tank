@@ -19,7 +19,7 @@ pub struct Map {
 
 impl Map {
     pub fn new(ctx: &mut Context) -> Map {
-        let grid = Grid::new(4, 8, 128);
+        let grid = Grid::new(4, 8, 128); // the size of tile image is fixed, so we hardcode it here.
 
         let tiles = [
             "/a/PNG/Environment/dirt.png",

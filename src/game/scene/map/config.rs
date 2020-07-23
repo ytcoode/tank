@@ -35,84 +35,28 @@ impl MapCfgs {
 }
 
 pub struct MapCfg {
-    // map grid
+    tiles: Vec<Image>,
+    tile_size: u32,
+    rows: u32,
+    cols: u32,
     grid: Vec<u8>,
-    grid_nx: u32,
-    grid_ny: u32,
-    scale: u32,
     width: u32,
     height: u32,
-
-    // tile grid
-    tiles: Vec<u8>,
-    tile_nx: u32,
-    tile_ny: u32,
-    tile_size: u32,
-    tile_images: Vec<Image>,
-
-    // extra tiles & positions
-    tile_extra_images: Vec<Image>,
-    tile_extra_positions: Vec<Vec<(u32, u32)>>,
 }
 
-// u32 grid_nx
-// u32 grid_ny
-// for (grid_nx * grid_ny) {
-//   u8 grid_data
-// }
-//
-// u32 scale
-//
 // u8 tile_count
 // for (tile_count) {
 //   str tile_image
 // }
 //
-// for (tile_nx * tile_ny) {
-//   u8 tile_index
-// }
-//
-// while (readable) {
-//   str extra_tile
-//   u32 extra_tile_position_count
-//   for (extra_tile_position_count) {
-//     u32 extra_tile_x
-//     u32 extra_tile_y
-//   }
+// u32 rows
+// u32 cols
+// for (rows * cols) {
+//   u8 tile_idx
 // }
 impl MapCfg {
     fn new(name: &str, v: Vec<u8>, ctx: &mut Context) -> MapCfg {
         let mut b = v.as_slice();
-
-        // grid
-        let grid_nx = b.read_u32();
-        assert!(
-            grid_nx > 0,
-            "The number of columns in the map grid must be greater than zero! {}",
-            name
-        );
-
-        let grid_ny = b.read_u32();
-        assert!(
-            grid_ny > 0,
-            "The number of rows in the map grid must be greater thant zero! {}",
-            name
-        );
-
-        let grid_nz = (grid_nx * grid_ny).try_into().unwrap();
-        let grid = (0..grid_nz).fold(Vec::with_capacity(grid_nz), |v, _| push(v, b.read_u8()));
-        assert!(grid.len() == grid.capacity());
-
-        // scale
-        let scale = b.read_u32();
-        assert!(
-            scale > 0,
-            "The scale of the map must be greater than zero! {}",
-            name
-        );
-
-        let width = grid_nx * scale;
-        let height = grid_ny * scale;
 
         // tiles
         let tile_count = b.read_u8();
@@ -122,12 +66,12 @@ impl MapCfg {
             name,
         );
 
-        let mut tile_images = Vec::with_capacity(tile_count.into());
+        let mut tiles = Vec::with_capacity(tile_count.into());
         let mut tile_size = 0;
 
         for i in (0..tile_count) {
             let tile = b.read_str();
-            let image = Image::new(ctx, tile).expect("Failed to load image");
+            let image = Image::new(ctx, tile).expect("Failed to load tile image");
 
             assert!(
                 image.width() == image.height(),
@@ -154,73 +98,43 @@ impl MapCfg {
                 );
             }
 
-            tile_images.push(image);
+            tiles.push(image);
         }
 
         assert!(tile_size > 0);
+
+        // rows & cols
+        let rows = b.read_u32();
         assert!(
-            width % tile_size == 0,
-            "The map width ({}) must be divisible by tile size ({})! {}",
-            width,
-            tile_size,
-            name
-        );
-        assert!(
-            height % tile_size == 0,
-            "The map height ({}) must be divisible by tile size ({})! {}",
-            height,
-            tile_size,
+            rows > 0,
+            "The number of rows in the map grid must be greater than zero! {}",
             name
         );
 
-        let tile_nx = width / tile_size;
-        let tile_ny = height / tile_size;
-        let tile_nz = tile_nx * tile_ny;
+        let cols = b.read_u32();
+        assert!(
+            cols > 0,
+            "The number of columns in the map grid must be greater than zero! {}",
+            name
+        );
 
-        let mut tiles = Vec::with_capacity(tile_nz.try_into().unwrap());
-        (0..tile_nz)
+        let mut grid = Vec::with_capacity((rows * cols).try_into().unwrap());
+        (0..grid.capacity())
             .map(|_| b.read_u8())
             .inspect(|&i| assert!((i as usize) < tile_images.len()))
             .for_each(|i| tiles.push(i));
 
-        // extra tiles
-        let mut tile_extra_images = Vec::new();
-        let mut tile_extra_positions = Vec::new();
-
-        loop {
-            let tile = b.read_str();
-            let image = Image::new(ctx, tile).expect("Failed to load image");
-
-            let count = b.read_u32();
-            let mut positions = Vec::with_capacity(count.try_into().unwrap());
-
-            (0..count)
-                .map(|_| (b.read_u32(), b.read_u32()))
-                .for_each(|p| positions.push(p));
-
-            tile_extra_images.push(image);
-            tile_extra_positions.push(positions);
-        }
-
-        tile_extra_images.shrink_to_fit();
-        tile_extra_positions.shrink_to_fit();
+        let width = cols * tile_size;
+        let height = rows * tile_size;
 
         MapCfg {
+            tiles,
+            tile_size,
+            rows,
+            cols,
             grid,
-            grid_nx,
-            grid_ny,
-            scale,
             width,
             height,
-
-            tiles,
-            tile_nx,
-            tile_ny,
-            tile_size,
-            tile_images,
-
-            tile_extra_images,
-            tile_extra_positions,
         }
     }
 }
