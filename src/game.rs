@@ -1,20 +1,17 @@
-use crate::game::config::GameCfgs;
-use crate::game::scene::map::Map;
-use ggez::event::EventHandler;
-use ggez::event::MouseButton;
+use self::config::GameCfgs;
+use self::scene::map::Map;
+use self::tank::bullet::Bullet;
+use self::tank::Tank;
+use self::vision::Vision;
+use ggez::event::{EventHandler, MouseButton};
 use ggez::graphics;
 use ggez::graphics::spritebatch::SpriteBatch;
-use ggez::input::keyboard::KeyCode;
-use ggez::input::keyboard::KeyMods;
+use ggez::input::keyboard::{KeyCode, KeyMods};
 use ggez::timer;
-use ggez::Context;
-use ggez::GameResult;
+use ggez::{Context, GameResult};
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::time::Instant;
-use tank::bullet::Bullet;
-use tank::Tank;
-use vision::Vision;
 
 mod config;
 mod path;

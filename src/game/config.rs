@@ -1,8 +1,8 @@
+use self::misc::MiscCfgs;
 use crate::game::scene::{map::MapCfgs, SceneCfgs};
 use crate::game::tank::TankCfgs;
 use ggez::graphics::Image;
 use ggez::Context;
-use misc::MiscCfgs;
 
 pub mod misc;
 

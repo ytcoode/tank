@@ -1,13 +1,13 @@
-use crate::deps::config::{self, Config};
-use crate::util::byte::Bytes;
-use crate::util::file;
-use crate::util::push;
+use config::{self, Config};
 use ggez::graphics::{spritebatch::SpriteBatch, Image};
 use ggez::Context;
 use std::collections::HashMap;
 use std::convert::TryInto;
 use std::fs;
 use std::rc::Rc;
+use util::byte::Bytes;
+use util::file;
+use util::push;
 
 pub struct MapCfgs {
     map: HashMap<String, Rc<MapCfg>>,
@@ -15,18 +15,14 @@ pub struct MapCfgs {
 
 impl MapCfgs {
     pub fn load(ctx: &mut Context) -> MapCfgs {
-        let map = file::list2("config/map/")
-            .expect("Failed to list files in directory [config/map/]")
+        let map = file::list("config/map/")
             .into_iter()
             .filter(|p| p.is_file())
             .map(|p| {
-                let name = p.file_name().unwrap().to_str().unwrap().to_string();
-                let cfg = Rc::new(MapCfg::new(
-                    &name,
-                    fs::read(p.as_path()).expect(format!("Failed to read file {:?}", p).as_str()),
-                    ctx,
-                ));
-                (name, cfg)
+                let name = file::name(p);
+                let data =
+                    fs::read(p.as_path()).expect(format!("Failed to read file {:?}", p).as_str());
+                (name, Rc::new(MapCfg::new(&name, ctx, data)))
             })
             .collect();
 
