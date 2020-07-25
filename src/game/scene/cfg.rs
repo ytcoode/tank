@@ -1,6 +1,6 @@
 use super::map::{MapCfg, MapCfgs};
-use crate::deps::config;
-use crate::deps::config::Config;
+use config::{self, Config};
+use ggez::Context;
 use std::collections::HashMap;
 use std::rc::Rc;
 
@@ -9,7 +9,8 @@ pub struct SceneCfgs {
 }
 
 impl SceneCfgs {
-    pub fn load(mapCfgs: &MapCfgs) -> SceneCfgs {
+    pub fn load(ctx: &mut Context) -> SceneCfgs {
+        let mapCfgs = MapCfgs::load(ctx);
         let mut map = HashMap::new();
 
         config::load("config/scene.txt")

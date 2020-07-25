@@ -1,4 +1,4 @@
-use self::config::GameCfgs;
+use self::cfg::GameCfgs;
 use self::scene::map::Map;
 use self::tank::bullet::Bullet;
 use self::tank::Tank;
@@ -13,7 +13,8 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use std::time::Instant;
 
-mod config;
+mod cfg;
+mod common;
 mod path;
 mod scene;
 mod tank;

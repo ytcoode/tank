@@ -6,8 +6,7 @@ use std::convert::TryInto;
 use std::fs;
 use std::rc::Rc;
 use util::byte::Bytes;
-use util::file;
-use util::push;
+use util::{file, push};
 
 pub struct MapCfgs {
     map: HashMap<String, Rc<MapCfg>>,
@@ -46,7 +45,7 @@ pub struct MapCfg {
 
 // u8 tile_count
 // for (tile_count) {
-//   str tile_image
+//   str tiles
 // }
 //
 // u32 rows

@@ -1,8 +1,8 @@
+use self::cfg::*;
 use crate::game::tank::Tank;
 use std::rc::Rc;
 
-mod config;
-pub use config::*;
+mod cfg;
 
 pub mod map;
 use map::{Map, MapCfg};

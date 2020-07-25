@@ -1,5 +1,5 @@
-use crate::util;
 use std::time::Instant;
+use util;
 
 #[derive(Debug)]
 pub struct Path {
@@ -16,7 +16,7 @@ impl Path {
     pub fn new(x1: u32, y1: u32, x2: u32, y2: u32, speed: u16, st: Instant) -> Path {
         let dp = util::distance(x1, y1, x2, y2);
         let dt = dp / speed as f64;
-	
+
         Path {
             x1,
             y1,
@@ -28,9 +28,9 @@ impl Path {
     }
 
     pub fn angle(&self) -> f64 {
-	let dy = self.y2 as f64 - self.y1 as f64;
-	let dx = self.x2 as f64 - self.x1 as f64;
-	dy.atan2(dx)
+        let dy = self.y2 as f64 - self.y1 as f64;
+        let dx = self.x2 as f64 - self.x1 as f64;
+        dy.atan2(dx)
     }
 
     pub fn position(&self, now: Instant) -> (u32, u32) {
