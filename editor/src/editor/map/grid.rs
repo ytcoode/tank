@@ -47,7 +47,7 @@ impl Grid {
             .iter()
             .map(|c| c.val)
             .inspect(|&v| assert!(v > 0, "The grid cell cannot be empty!"))
-            .for_each(|v| b.write_u8(v));
+            .for_each(|v| b.write_u8(v - 1));
     }
 
     pub fn draw<'a, D, F>(&self, ctx: &mut Context, x: i32, y: i32, width: i32, height: i32, f: F)

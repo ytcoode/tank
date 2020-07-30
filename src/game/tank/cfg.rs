@@ -10,7 +10,7 @@ pub struct TankCfgs {
 
 impl TankCfgs {
     pub fn load(ctx: &mut Context) -> TankCfgs {
-        let cfgs = config::load("config/tank.txt")
+        let cfgs = config::load("assets/config/tank.txt")
             .into_iter()
             .map(|c| TankCfg::new(c, ctx))
             .enumerate()

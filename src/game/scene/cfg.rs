@@ -13,7 +13,7 @@ impl SceneCfgs {
         let mapCfgs = MapCfgs::load(ctx);
         let mut map = HashMap::new();
 
-        config::load("config/scene.txt")
+        config::load("assets/config/scene.txt")
             .into_iter()
             .map(|c| Rc::new(SceneCfg::new(c, &mapCfgs)))
             .map(|c| map.insert(c.id, c))

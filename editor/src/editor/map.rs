@@ -62,7 +62,7 @@ impl Map {
         self.grid.write_to(&mut b);
 
         // write to a file
-        let path = "1.map";
+        let path = "assets/config/map/1.map";
         fs::write(path, b.as_slice()).expect(format!("Could not write file: {}", path).as_str());
         println!("map saved successfully: {}", path);
     }

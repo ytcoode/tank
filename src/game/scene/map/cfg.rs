@@ -14,7 +14,7 @@ pub struct MapCfgs {
 
 impl MapCfgs {
     pub fn load(ctx: &mut Context) -> MapCfgs {
-        let map = file::list("config/map/")
+        let map = file::list("assets/config/map/")
             .into_iter()
             .filter(|p| p.is_file())
             .map(|p| {
@@ -121,7 +121,14 @@ impl MapCfg {
         let mut grid = Vec::with_capacity((rows * cols).try_into().unwrap());
         (0..grid.capacity())
             .map(|_| b.read_u8())
-            .inspect(|&i| assert!((i as usize) < tiles.len()))
+            .inspect(|&i| {
+                assert!(
+                    (i as usize) < tiles.len(),
+                    "tile index out of bound: {}, {}",
+                    i,
+                    tiles.len()
+                )
+            })
             .for_each(|i| grid.push(i));
 
         let width = cols * tile_size;
