@@ -10,12 +10,12 @@ pub struct SceneCfgs {
 
 impl SceneCfgs {
     pub fn load(ctx: &mut Context) -> SceneCfgs {
-        let mapCfgs = MapCfgs::load(ctx);
+        let map_cfgs = MapCfgs::load(ctx);
         let mut map = HashMap::new();
 
         config::load("assets/config/scene.txt")
             .into_iter()
-            .map(|c| Rc::new(SceneCfg::new(c, &mapCfgs)))
+            .map(|c| Rc::new(SceneCfg::new(c, &map_cfgs)))
             .map(|c| map.insert(c.id, c))
             .map(|o| o.map(|c| c.id))
             .for_each(|o| o.expect_none("Duplicate scene id"));
@@ -34,13 +34,13 @@ pub struct SceneCfg {
 }
 
 impl SceneCfg {
-    fn new<C: Config>(c: C, mapCfgs: &MapCfgs) -> SceneCfg {
+    fn new<C: Config>(c: C, map_cfgs: &MapCfgs) -> SceneCfg {
         let id = c.u32("id").get();
         let map = c
             .str("map")
             .not_empty()
             .map(|s| {
-                mapCfgs
+                map_cfgs
                     .get(s.get())
                     .expect(format!("{} not found", s).as_str())
                     .clone()

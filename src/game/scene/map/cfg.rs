@@ -40,8 +40,8 @@ pub struct MapCfg {
     rows: u32,
     cols: u32,
     grid: Vec<u8>,
-    width: u32,
-    height: u32,
+    pub width: u32,
+    pub height: u32,
 }
 
 // u8 tile_count

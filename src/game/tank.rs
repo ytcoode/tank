@@ -1,4 +1,5 @@
 use crate::game::common::path::Path;
+use crate::game::scene::Unit;
 use config::{self, Config};
 use ggez::graphics::{self, DrawParam, Image};
 use ggez::{Context, GameResult};
@@ -10,7 +11,9 @@ use std::time::Instant;
 mod cfg;
 pub use cfg::*;
 
+#[derive(Debug)]
 pub struct Tank {
+    id: u32,
     cfg: Rc<TankCfg>,
     x: u32,
     y: u32,
@@ -19,9 +22,24 @@ pub struct Tank {
     destroyed: bool,
 }
 
+impl Unit for Tank {
+    fn id(&self) -> u32 {
+        self.id
+    }
+
+    fn x(&self) -> u32 {
+        self.x
+    }
+
+    fn y(&self) -> u32 {
+        self.y
+    }
+}
+
 impl Tank {
     pub fn new(cfg: Rc<TankCfg>, x: u32, y: u32) -> Tank {
         Tank {
+            id: 0,
             cfg,
             x,
             y,
