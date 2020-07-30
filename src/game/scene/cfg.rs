@@ -15,7 +15,7 @@ impl SceneCfgs {
 
         config::load("config/scene.txt")
             .into_iter()
-            .map(|c| Rc::new(SceneCfg::new(c, mapCfgs)))
+            .map(|c| Rc::new(SceneCfg::new(c, &mapCfgs)))
             .map(|c| map.insert(c.id, c))
             .map(|o| o.map(|c| c.id))
             .for_each(|o| o.expect_none("Duplicate scene id"));

@@ -1,8 +1,5 @@
 use self::cfg::GameCfgs;
-use self::scene::map::Map;
-use self::tank::bullet::Bullet;
 use self::tank::Tank;
-use self::vision::Vision;
 use ggez::event::{EventHandler, MouseButton};
 use ggez::graphics;
 use ggez::graphics::spritebatch::SpriteBatch;
@@ -15,44 +12,40 @@ use std::time::Instant;
 
 mod cfg;
 mod common;
-mod path;
 mod scene;
 mod tank;
-mod update;
-mod vision;
 
 pub struct Game {
     cfgs: GameCfgs,
-    map: Map,
+    //  map: Map,
+    // tanks: Vec<Rc<RefCell<Tank>>>,
+    // tank: Rc<RefCell<Tank>>, // player-controlled tank
 
-    tanks: Vec<Rc<RefCell<Tank>>>,
-    tank: Rc<RefCell<Tank>>, // player-controlled tank
-
-    bullets: Vec<Rc<RefCell<Bullet>>>,
-    vision: Vision,
+    // bullets: Vec<Rc<RefCell<Bullet>>>,
+    // vision: Vision,
 }
 
 impl Game {
     pub fn new(ctx: &mut Context) -> GameResult<Game> {
         let cfgs = GameCfgs::load(ctx);
-        let map = Map::new(ctx)?;
+        // let map = Map::new(ctx)?;
 
-        let tanks = Vec::new();
-        let tank_cfg = cfgs.tanks.get(0).expect("Tank{id: 0} not found!");
-        let tank = Rc::new(RefCell::new(Tank::new(tank_cfg.clone(), 100, 100)));
+        // let tanks = Vec::new();
+        // let tank_cfg = cfgs.tanks.get(0).expect("Tank{id: 0} not found!");
+        // let tank = Rc::new(RefCell::new(Tank::new(tank_cfg.clone(), 100, 100)));
 
-        let bullets = Vec::new();
-        let vision = Vision::new(tank.borrow().x(), tank.borrow().y(), &map, ctx);
+        // let bullets = Vec::new();
+        // let vision = Vision::new(tank.borrow().x(), tank.borrow().y(), &map, ctx);
 
         Ok(Game {
             cfgs,
-            map,
+            // map,
 
-            tanks,
-            tank,
+            // tanks,
+            // tank,
 
-            bullets,
-            vision,
+            // bullets,
+            // vision,
         })
     }
 }
@@ -93,17 +86,17 @@ impl EventHandler for Game {
         // title
         graphics::set_window_title(ctx, &format!("Tanks - {:.0} FPS", timer::fps(ctx),));
 
-        // vision
-        let vision = &self.vision;
+        // // vision
+        // let vision = &self.vision;
 
-        // map
-        self.map
-            .draw(ctx, vision.x1, vision.x2, vision.y1, vision.y2)?;
+        // // map
+        // self.map
+        //     .draw(ctx, vision.x1, vision.x2, vision.y1, vision.y2)?;
 
-        // tank
-        self.tank
-            .borrow()
-            .draw(ctx, vision.x1, vision.y1, &self.cfgs.misc.flag)?;
+        // // tank
+        // self.tank
+        //     .borrow()
+        //     .draw(ctx, vision.x1, vision.y1, &self.cfgs.misc.flag)?;
 
         // debug
         //        debug::draw_axis(ctx)?;

@@ -18,10 +18,11 @@ impl MapCfgs {
             .into_iter()
             .filter(|p| p.is_file())
             .map(|p| {
-                let name = file::name(p);
+                let name = file::name(&p);
                 let data =
                     fs::read(p.as_path()).expect(format!("Failed to read file {:?}", p).as_str());
-                (name, Rc::new(MapCfg::new(&name, ctx, data)))
+                let cfg = Rc::new(MapCfg::new(&name, data, ctx));
+                (name, cfg)
             })
             .collect();
 
@@ -120,8 +121,8 @@ impl MapCfg {
         let mut grid = Vec::with_capacity((rows * cols).try_into().unwrap());
         (0..grid.capacity())
             .map(|_| b.read_u8())
-            .inspect(|&i| assert!((i as usize) < tile_images.len()))
-            .for_each(|i| tiles.push(i));
+            .inspect(|&i| assert!((i as usize) < tiles.len()))
+            .for_each(|i| grid.push(i));
 
         let width = cols * tile_size;
         let height = rows * tile_size;

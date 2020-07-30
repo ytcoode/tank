@@ -1,4 +1,4 @@
-#![feature(option_unwrap_none)]
+// #![feature(option_unwrap_none)]
 #![feature(option_expect_none)]
 
 use self::game::Game;

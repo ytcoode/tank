@@ -8,6 +8,8 @@ edition = "2018"
 
 [dependencies]
 ggez = { path = "../ggez" }
+config = { path = "config" }
+util = { path = "util" }
 
 [profile.release]
 overflow-checks = true

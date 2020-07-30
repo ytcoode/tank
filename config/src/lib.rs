@@ -1,3 +1,5 @@
+#![feature(option_unwrap_none)]
+
 use std::fmt;
 use std::marker::Sized;
 use std::path::Path;
