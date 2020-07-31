@@ -38,6 +38,7 @@ pub struct TankCfg {
     pub image: Image,
     pub barrel_image: Image,
     pub speed: u16,
+    pub view: u32,
 }
 
 impl TankCfg {
@@ -63,6 +64,7 @@ impl TankCfg {
             image,
             barrel_image,
             speed,
+            view: 500,
         })
     }
 }

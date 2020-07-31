@@ -4,16 +4,12 @@ use std::collections::HashMap;
 use std::fmt;
 use std::rc::Rc;
 
+pub use cfg::*;
+pub use unit::Unit;
+
 mod cfg;
 mod map;
-pub use cfg::*;
-
-pub trait Unit: fmt::Debug {
-    fn id(&self) -> u32;
-
-    fn x(&self) -> u32;
-    fn y(&self) -> u32;
-}
+mod unit;
 
 pub struct Scene {
     cfg: Rc<SceneCfg>,

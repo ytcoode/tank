@@ -13,8 +13,8 @@ pub use cfg::*;
 
 #[derive(Debug)]
 pub struct Tank {
-    id: u32,
     cfg: Rc<TankCfg>,
+    id: u32,
     x: u32,
     y: u32,
     path: Option<Path>,
@@ -33,6 +33,10 @@ impl Unit for Tank {
 
     fn y(&self) -> u32 {
         self.y
+    }
+
+    fn view(&self) -> u32 {
+        self.cfg.view
     }
 }
 
