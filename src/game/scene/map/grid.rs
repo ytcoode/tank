@@ -53,7 +53,9 @@ impl Cell {
     }
 
     fn add_viewer(&mut self, unit: Rc<dyn Unit>) {
-        self.units.values().for_each(|u| u.view_enter(unit));
+        self.units
+            .values()
+            .for_each(|u| u.view_enter(unit.as_ref()));
         self.viewers.insert(unit.id(), unit).unwrap_none();
     }
 }

@@ -44,7 +44,7 @@ impl Map {
 
             for i in i1..i2 {
                 for j in j1..j2 {
-                    self.grid.add_viewer();
+                    self.grid.add_viewer(i, j, unit.clone());
                 }
             }
 

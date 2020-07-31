@@ -10,7 +10,7 @@ pub trait Unit: fmt::Debug + fmt::Display {
     fn y(&self) -> u32;
 
     fn view(&self) -> Option<&View>;
-    fn view_enter(&self, &dyn Unit);
+    fn view_enter(&self, viewer: &dyn Unit);
 }
 
 #[derive(Debug)]

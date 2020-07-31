@@ -6,6 +6,7 @@ use ggez::{Context, GameResult};
 use std::cell::RefCell;
 use std::convert::{TryFrom, TryInto};
 use std::f64;
+use std::fmt;
 use std::ops::DerefMut;
 use std::rc::Rc;
 use std::time::Instant;
@@ -25,13 +26,19 @@ pub struct Tank {
     view: View,
 }
 
+impl fmt::Display for Tank {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "tank({}, {})", self.id, self.name())
+    }
+}
+
 impl Unit for Tank {
     fn id(&self) -> u32 {
         self.id
     }
 
     fn name(&self) -> &str {
-	"tank"
+        "tank"
     }
 
     fn x(&self) -> u32 {
@@ -46,8 +53,7 @@ impl Unit for Tank {
         Some(&self.view)
     }
 
-    fn view_enter(&self, &dyn Unit) {
-    }
+    fn view_enter(&self, viewer: &dyn Unit) {}
 }
 
 impl Tank {
