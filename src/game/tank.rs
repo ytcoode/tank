@@ -1,9 +1,9 @@
 use crate::game::common::path::Path;
-use crate::game::scene::unit::{Unit, View};
+use crate::game::scene::unit::{MapCell, Unit, View};
 use config::{self, Config};
 use ggez::graphics::{self, DrawParam, Image};
 use ggez::{Context, GameResult};
-use std::cell::RefCell;
+use std::cell::{Cell, RefCell};
 use std::convert::{TryFrom, TryInto};
 use std::f64;
 use std::fmt;
@@ -24,6 +24,7 @@ pub struct Tank {
     angle: f32,
     destroyed: bool,
     view: View,
+    map_cell: MapCell,
 }
 
 impl fmt::Display for Tank {
@@ -53,7 +54,17 @@ impl Unit for Tank {
         Some(&self.view)
     }
 
-    fn view_enter(&self, viewer: &dyn Unit) {}
+    fn view_enter(&self, viewer: &dyn Unit) {
+        println!("{} came into {}'s view", self, viewer);
+    }
+
+    fn view_leave(&self, viewer: &dyn Unit) {
+        println!("{} disapear from {}'s view", self, viewer);
+    }
+
+    fn map_cell(&self) -> &MapCell {
+        &self.map_cell
+    }
 }
 
 impl Tank {
@@ -67,6 +78,7 @@ impl Tank {
             angle: 0.0,
             destroyed: false,
             view: View::new(100),
+            map_cell: Default::default(),
         }
     }
 

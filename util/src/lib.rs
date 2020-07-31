@@ -34,3 +34,7 @@ pub fn push<T>(mut vec: Vec<T>, val: T) -> Vec<T> {
     vec.push(val);
     vec
 }
+
+pub fn is_inside_rectangle(i1: u32, i2: u32, j1: u32, j2: u32, a: u32, b: u32) -> bool {
+    a >= i1 && a < i2 && b >= j1 && b < j2
+}

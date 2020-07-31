@@ -1,6 +1,7 @@
-use std::cell::RefCell;
+use std::cell::Cell;
 use std::fmt;
 use std::ops::DerefMut;
+use std::rc::Rc;
 
 pub trait Unit: fmt::Debug + fmt::Display {
     fn id(&self) -> u32;
@@ -11,36 +12,55 @@ pub trait Unit: fmt::Debug + fmt::Display {
 
     fn view(&self) -> Option<&View>;
     fn view_enter(&self, viewer: &dyn Unit);
+    fn view_leave(&self, viewer: &dyn Unit);
+
+    fn map_cell(&self) -> &MapCell;
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct View {
     pub range: u32,
-    pub last: RefCell<Range>,
+    i1: Cell<u32>,
+    i2: Cell<u32>,
+    j1: Cell<u32>,
+    j2: Cell<u32>,
 }
 
 impl View {
     pub fn new(range: u32) -> Self {
         View {
             range,
-            last: Default::default(),
+            ..Default::default()
         }
+    }
+
+    pub fn current_update(&self, i1: u32, i2: u32, j1: u32, j2: u32) {
+        self.i1.set(i1);
+        self.i2.set(i2);
+        self.j1.set(j1);
+        self.j2.set(j2);
+    }
+
+    pub fn current(&self) -> (u32, u32, u32, u32) {
+        (self.i1.get(), self.i2.get(), self.j1.get(), self.j2.get())
     }
 }
 
 #[derive(Debug, Default)]
-pub struct Range {
-    pub i1: u32,
-    pub i2: u32,
-    pub j1: u32,
-    pub j2: u32,
+pub struct MapCell {
+    cell_idx: Cell<Option<(u32, u32)>>,
 }
 
-impl Range {
-    pub fn update(&mut self, i1: u32, i2: u32, j1: u32, j2: u32) {
-        self.i1 = i1;
-        self.i2 = i2;
-        self.j1 = j1;
-        self.j2 = j2;
+impl MapCell {
+    pub fn exists(&self) -> bool {
+        self.cell_idx.get() != None
+    }
+
+    pub fn set(&self, i: u32, j: u32) {
+        self.cell_idx.set(Some((i, j)));
+    }
+
+    pub fn get(&self) -> (u32, u32) {
+        self.cell_idx.get().unwrap()
     }
 }
