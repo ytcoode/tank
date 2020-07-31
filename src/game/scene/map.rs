@@ -1,5 +1,5 @@
 use self::grid::Grid;
-use crate::game::scene::unit::{Unit, View};
+use crate::game::scene::unit::Unit;
 use crate::game::tank::Tank;
 use std::collections::HashMap;
 use std::convert::{TryFrom, TryInto};
@@ -30,7 +30,6 @@ impl Map {
     pub fn add(&mut self, unit: Rc<dyn Unit>) {
         let x = unit.x();
         let y = unit.y();
-        let v = unit.view();
 
         if let Some(v) = unit.view() {
             let x1 = x.saturating_sub(v.range);
@@ -42,6 +41,12 @@ impl Map {
             let i2 = util::div_ceil(x2, CELL_SIZE);
             let j1 = y1 / CELL_SIZE;
             let j2 = util::div_ceil(y2, CELL_SIZE);
+
+            let mut last = v.last.borrow_mut();
+            last.i1 = i1;
+            last.i2 = i2;
+            last.j1 = j1;
+            last.j2 = j2;
         }
 
         let i = x / CELL_SIZE;

@@ -3,8 +3,10 @@ use crate::game::scene::unit::{Unit, View};
 use config::{self, Config};
 use ggez::graphics::{self, DrawParam, Image};
 use ggez::{Context, GameResult};
+use std::cell::RefCell;
 use std::convert::{TryFrom, TryInto};
 use std::f64;
+use std::ops::DerefMut;
 use std::rc::Rc;
 use std::time::Instant;
 
@@ -20,6 +22,7 @@ pub struct Tank {
     path: Option<Path>,
     angle: f32,
     destroyed: bool,
+    view: View,
 }
 
 impl Unit for Tank {
@@ -35,8 +38,8 @@ impl Unit for Tank {
         self.y
     }
 
-    fn view(&mut self) -> Option<&mut View> {
-        None
+    fn view(&self) -> Option<&View> {
+        Some(&self.view)
     }
 }
 
@@ -50,6 +53,7 @@ impl Tank {
             path: None,
             angle: 0.0,
             destroyed: false,
+            view: View::new(100),
         }
     }
 
