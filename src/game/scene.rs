@@ -1,15 +1,15 @@
 use self::map::Map;
+use self::unit::Unit;
 use crate::game::tank::Tank;
 use std::collections::HashMap;
 use std::fmt;
 use std::rc::Rc;
 
 pub use cfg::*;
-pub use unit::Unit;
 
 mod cfg;
 mod map;
-mod unit;
+pub mod unit;
 
 pub struct Scene {
     cfg: Rc<SceneCfg>,

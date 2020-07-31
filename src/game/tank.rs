@@ -1,5 +1,5 @@
 use crate::game::common::path::Path;
-use crate::game::scene::Unit;
+use crate::game::scene::unit::{Unit, View};
 use config::{self, Config};
 use ggez::graphics::{self, DrawParam, Image};
 use ggez::{Context, GameResult};
@@ -35,8 +35,8 @@ impl Unit for Tank {
         self.y
     }
 
-    fn view(&self) -> u32 {
-        self.cfg.view
+    fn view(&mut self) -> Option<&mut View> {
+        None
     }
 }
 
