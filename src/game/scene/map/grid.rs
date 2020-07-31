@@ -22,6 +22,12 @@ impl Grid {
         self.cell_mut(i, j).add(unit);
     }
 
+    pub fn remove(&mut self, i: u32, j: u32, id: u32) -> Rc<dyn Unit> {
+        let unit = self.cell_mut(i, j).remove(id);
+        unit.map_cell().clear();
+        unit
+    }
+
     pub fn add_viewer(&mut self, i: u32, j: u32, unit: Rc<dyn Unit>) {
         self.cell_mut(i, j).add_viewer(unit);
     }
@@ -46,6 +52,7 @@ impl Grid {
             .filter(|u| u.id() != unit.id() && !c1.viewers.contains_key(&u.id()))
             .for_each(|v| unit.view_enter(v.as_ref()));
 
+        unit.map_cell().set(i2, j2);
         self.cell_mut(i2, j2).add_silently(unit);
     }
 
@@ -80,6 +87,15 @@ impl Cell {
 
     fn add_silently(&mut self, unit: Rc<dyn Unit>) {
         self.units.insert(unit.id(), unit).unwrap_none();
+    }
+
+    fn remove(&mut self, id: u32) -> Rc<dyn Unit> {
+        let unit = self.remove_silently(id);
+        self.viewers
+            .values()
+            .filter(|u| u.id() != unit.id())
+            .for_each(|v| unit.view_leave(v.as_ref()));
+        unit
     }
 
     fn remove_silently(&mut self, id: u32) -> Rc<dyn Unit> {

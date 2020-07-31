@@ -56,11 +56,15 @@ impl MapCell {
         self.cell_idx.get() != None
     }
 
+    pub fn get(&self) -> (u32, u32) {
+        self.cell_idx.get().unwrap()
+    }
+
     pub fn set(&self, i: u32, j: u32) {
         self.cell_idx.set(Some((i, j)));
     }
 
-    pub fn get(&self) -> (u32, u32) {
-        self.cell_idx.get().unwrap()
+    pub fn clear(&self) {
+        self.cell_idx.set(None);
     }
 }

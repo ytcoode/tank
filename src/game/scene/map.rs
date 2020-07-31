@@ -56,6 +56,20 @@ impl Map {
         }
     }
 
+    pub fn remove(&mut self, unit: &Rc<dyn Unit>) {
+        let (i, j) = unit.map_cell().get();
+        self.grid.remove(i, j, unit.id());
+
+        if let Some(v) = unit.view() {
+            let (i1, i2, j1, j2) = v.current();
+            for i in i1..i2 {
+                for j in j1..j2 {
+                    self.grid.remove_viewer(i, j, unit.id());
+                }
+            }
+        }
+    }
+
     pub fn unit_moved(&mut self, unit: &Rc<dyn Unit>) {
         let x = unit.x();
         let y = unit.y();
