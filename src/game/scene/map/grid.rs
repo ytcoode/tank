@@ -20,6 +20,10 @@ impl Grid {
         self.cell_mut(i, j).add(unit);
     }
 
+    pub fn add_viewer(&mut self, i: u32, j: u32, unit: Rc<dyn Unit>) {
+        self.cell_mut(i, j).add_viewer(unit);
+    }
+
     fn cell(&self, i: u32, j: u32) -> &Cell {
         &self.cells[self.cell_idx(i, j)]
     }
@@ -46,5 +50,10 @@ impl Cell {
         //     .values()
         //     .for_each(|viewer| unit.view_enter(viewer.as_ref()));
         self.units.insert(unit.id(), unit).unwrap_none();
+    }
+
+    fn add_viewer(&mut self, unit: Rc<dyn Unit>) {
+        self.units.values().for_each(|u| u.view_enter(unit));
+        self.viewers.insert(unit.id(), unit).unwrap_none();
     }
 }

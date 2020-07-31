@@ -30,6 +30,10 @@ impl Unit for Tank {
         self.id
     }
 
+    fn name(&self) -> &str {
+	"tank"
+    }
+
     fn x(&self) -> u32 {
         self.x
     }
@@ -40,6 +44,9 @@ impl Unit for Tank {
 
     fn view(&self) -> Option<&View> {
         Some(&self.view)
+    }
+
+    fn view_enter(&self, &dyn Unit) {
     }
 }
 

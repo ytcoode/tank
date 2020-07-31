@@ -42,6 +42,12 @@ impl Map {
             let j1 = y1 / CELL_SIZE;
             let j2 = util::div_ceil(y2, CELL_SIZE);
 
+            for i in i1..i2 {
+                for j in j1..j2 {
+                    self.grid.add_viewer();
+                }
+            }
+
             let mut last = v.last.borrow_mut();
             last.i1 = i1;
             last.i2 = i2;

@@ -2,13 +2,15 @@ use std::cell::RefCell;
 use std::fmt;
 use std::ops::DerefMut;
 
-pub trait Unit: fmt::Debug {
+pub trait Unit: fmt::Debug + fmt::Display {
     fn id(&self) -> u32;
+    fn name(&self) -> &str;
 
     fn x(&self) -> u32;
     fn y(&self) -> u32;
 
     fn view(&self) -> Option<&View>;
+    fn view_enter(&self, &dyn Unit);
 }
 
 #[derive(Debug)]
