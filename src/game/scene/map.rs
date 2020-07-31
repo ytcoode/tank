@@ -31,6 +31,11 @@ impl Map {
         let x = unit.x();
         let y = unit.y();
 
+        let i = x / CELL_SIZE;
+        let j = y / CELL_SIZE;
+
+        self.grid.add(i, j, unit);
+
         if let Some(v) = unit.view() {
             let x1 = x.saturating_sub(v.range);
             let x2 = (x + v.range).max(self.cfg.width);
@@ -47,17 +52,7 @@ impl Map {
                     self.grid.add_viewer(i, j, unit.clone());
                 }
             }
-
-            let mut last = v.last.borrow_mut();
-            last.i1 = i1;
-            last.i2 = i2;
-            last.j1 = j1;
-            last.j2 = j2;
+            v.last.borrow_mut().update(i1, i2, j1, j2);
         }
-
-        let i = x / CELL_SIZE;
-        let j = y / CELL_SIZE;
-
-        self.grid.add(i, j, unit);
     }
 }

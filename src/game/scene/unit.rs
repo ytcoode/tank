@@ -35,3 +35,12 @@ pub struct Range {
     pub j1: u32,
     pub j2: u32,
 }
+
+impl Range {
+    pub fn update(&mut self, i1: u32, i2: u32, j1: u32, j2: u32) {
+        self.i1 = i1;
+        self.i2 = i2;
+        self.j1 = j1;
+        self.j2 = j2;
+    }
+}

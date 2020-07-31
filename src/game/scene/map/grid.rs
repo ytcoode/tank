@@ -46,15 +46,17 @@ pub struct Cell {
 
 impl Cell {
     fn add(&mut self, unit: Rc<dyn Unit>) {
-        // self.viewers
-        //     .values()
-        //     .for_each(|viewer| unit.view_enter(viewer.as_ref()));
+        self.viewers
+            .values()
+            .filter(|u| u.id() != unit.id())
+            .for_each(|v| unit.view_enter(v.as_ref()));
         self.units.insert(unit.id(), unit).unwrap_none();
     }
 
     fn add_viewer(&mut self, unit: Rc<dyn Unit>) {
         self.units
             .values()
+            .filter(|u| u.id() != unit.id())
             .for_each(|u| u.view_enter(unit.as_ref()));
         self.viewers.insert(unit.id(), unit).unwrap_none();
     }
