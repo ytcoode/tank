@@ -2,7 +2,7 @@ use self::grid::Grid;
 use crate::game::common::view::View;
 use crate::game::scene::unit::Unit;
 use crate::game::tank::Tank;
-use ggez::graphics::spritebatch::SpriteBatch;
+use ggez::graphics::{self, spritebatch::SpriteBatch};
 use ggez::Context;
 use std::collections::HashMap;
 use std::convert::{TryFrom, TryInto};
@@ -127,5 +127,28 @@ impl Map {
         }
     }
 
-    pub fn draw(&self, ctx: &mut Context, view: &View) {}
+    pub fn draw(&mut self, ctx: &mut Context, view: &View) {
+        // tiles
+        let tile_size = self.cfg.tile_size;
+
+        let i1 = view.x / tile_size;
+        let i2 = util::div_ceil(view.x + view.width, tile_size).min(self.cfg.tile_cols);
+
+        let j1 = view.y / tile_size;
+        let j2 = util::div_ceil(view.y + view.height, tile_size).min(self.cfg.tile_rows);
+
+        for i in i1..i2 {
+            let x = ((i * tile_size) as f64 - view.x as f64) as f32;
+            for j in j1..j2 {
+                let y = ((j * tile_size) as f64 - view.y as f64) as f32;
+                let tile_idx = self.cfg.tile_idx(i, j);
+                self.tiles[tile_idx].add(([x, y],));
+            }
+        }
+
+        for t in &mut self.tiles {
+            graphics::draw(ctx, t, util::DRAW_PARAM_ZERO).unwrap();
+            t.clear();
+        }
+    }
 }

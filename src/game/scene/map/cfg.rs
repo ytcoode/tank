@@ -144,4 +144,12 @@ impl MapCfg {
             height,
         }
     }
+
+    pub fn tile_idx(&self, i: u32, j: u32) -> usize {
+        self.tile_grid[self.grid_idx(i, j)] as usize
+    }
+
+    fn grid_idx(&self, i: u32, j: u32) -> usize {
+        (i * self.tile_rows + j).try_into().unwrap()
+    }
 }

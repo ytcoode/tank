@@ -40,7 +40,7 @@ impl Scene {
         self.map.add(tank);
     }
 
-    pub fn draw(&self, ctx: &mut Context) {
+    pub fn draw(&mut self, ctx: &mut Context) {
         self.map.draw(ctx, &self.view);
     }
 }
