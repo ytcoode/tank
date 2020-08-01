@@ -35,7 +35,7 @@ impl<'a, C: Config> Str<'a, C> {
     pub fn not_empty(self) -> Self {
         assert!(
             self.val.len() > 0,
-            "The value of [{}:{}] must not be empty!",
+            "The field [{}:{}] must not be empty!",
             self.cfg,
             self.key
         );

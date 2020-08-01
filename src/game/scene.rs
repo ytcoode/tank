@@ -43,4 +43,14 @@ impl Scene {
     pub fn draw(&mut self, ctx: &mut Context) {
         self.map.draw(ctx, &self.view);
     }
+
+    pub fn update_view(&mut self, x: u32, y: u32) {
+        let map = &self.cfg.map;
+        let view = &mut self.view;
+        view.update(
+            (view.x + x).min(map.width - 1),
+            (view.y + y).min(map.height - 1),
+            map,
+        );
+    }
 }

@@ -152,6 +152,8 @@ impl EventHandler for Game {
         x: f32,
         y: f32,
     ) {
+        self.scene.update_view(x as u32, y as u32);
+
         // let x = self.vision.x1 + x as u32;
         // let y = self.vision.y1 + y as u32;
         // self.tank.move_to(x, y, Instant::now());

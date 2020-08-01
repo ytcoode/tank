@@ -32,7 +32,7 @@ impl SceneCfgs {
 pub struct SceneCfg {
     pub id: u32,
     pub map: Rc<MapCfg>,
-    pub tanks: Vec<(u32, u32, Rc<TankCfg>)>,
+    pub tanks: Vec<(Rc<TankCfg>, u32, u32)>,
 }
 
 impl SceneCfg {
@@ -72,8 +72,14 @@ impl SceneCfg {
 
                         assert!(a.len() == 3, "Failed to parse {}: invalid format!", s);
 
-                        let x = a[0];
-                        let y = a[1];
+                        let tank_id = a[0];
+                        let tank_cfg = tank_cfgs.get(tank_id).expect(
+                            format!("Failed to parse {}: invalid tank id: {}!", s, tank_id)
+                                .as_str(),
+                        );
+
+                        let x = a[1];
+                        let y = a[2];
 
                         assert!(
                             map.is_walkable(x, y),
@@ -83,13 +89,7 @@ impl SceneCfg {
                             y
                         );
 
-                        let tank_id = a[2];
-                        let tank_cfg = tank_cfgs.get(tank_id).expect(
-                            format!("Failed to parse {}: invalid tank id: {}!", s, tank_id)
-                                .as_str(),
-                        );
-
-                        (x, y, tank_cfg.clone())
+                        (tank_cfg.clone(), x, y)
                     })
                     .collect()
             })

@@ -1,3 +1,3 @@
-scene id	scene map
-id	map
-1	1.map
+scene id	scene map	tanks
+id	map	tanks
+1	1.map	0=50=50_0=100=100
