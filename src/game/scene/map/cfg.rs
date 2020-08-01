@@ -37,9 +37,9 @@ impl MapCfgs {
 pub struct MapCfg {
     pub tiles: Vec<Image>,
     pub tile_size: u32,
-    pub rows: u32,
-    pub cols: u32,
-    pub grid: Vec<u8>, // tile index
+    pub tile_rows: u32,
+    pub tile_cols: u32,
+    pub tile_grid: Vec<u8>, // tile index
     pub width: u32,
     pub height: u32,
 }
@@ -104,22 +104,22 @@ impl MapCfg {
         assert!(tile_size > 0);
 
         // rows & cols
-        let rows = b.read_u32();
+        let tile_rows = b.read_u32();
         assert!(
-            rows > 0,
+            tile_rows > 0,
             "The number of rows in the map grid must be greater than zero! {}",
             name
         );
 
-        let cols = b.read_u32();
+        let tile_cols = b.read_u32();
         assert!(
-            cols > 0,
+            tile_cols > 0,
             "The number of columns in the map grid must be greater than zero! {}",
             name
         );
 
-        let mut grid = Vec::with_capacity((rows * cols).try_into().unwrap());
-        (0..grid.capacity())
+        let mut tile_grid = Vec::with_capacity((tile_rows * tile_cols).try_into().unwrap());
+        (0..tile_grid.capacity())
             .map(|_| b.read_u8())
             .inspect(|&i| {
                 assert!(
@@ -129,17 +129,17 @@ impl MapCfg {
                     tiles.len()
                 )
             })
-            .for_each(|i| grid.push(i));
+            .for_each(|i| tile_grid.push(i));
 
-        let width = cols * tile_size;
-        let height = rows * tile_size;
+        let width = tile_cols * tile_size;
+        let height = tile_rows * tile_size;
 
         MapCfg {
             tiles,
             tile_size,
-            rows,
-            cols,
-            grid,
+            tile_rows,
+            tile_cols,
+            tile_grid,
             width,
             height,
         }
