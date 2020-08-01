@@ -150,5 +150,7 @@ impl Map {
             graphics::draw(ctx, t, util::DRAW_PARAM_ZERO).unwrap();
             t.clear();
         }
+
+        // units
     }
 }

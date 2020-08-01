@@ -44,6 +44,12 @@ pub struct MapCfg {
     pub height: u32,
 }
 
+impl MapCfg {
+    pub fn is_walkable(&self, x: u32, y: u32) -> bool {
+        x < self.width && y < self.height
+    }
+}
+
 // u8 tile_count
 // for (tile_count) {
 //   str tiles

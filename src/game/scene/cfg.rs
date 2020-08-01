@@ -1,4 +1,5 @@
 use super::map::{MapCfg, MapCfgs};
+use crate::game::tank::{TankCfg, TankCfgs};
 use config::{self, Config};
 use ggez::Context;
 use std::collections::HashMap;
@@ -9,13 +10,13 @@ pub struct SceneCfgs {
 }
 
 impl SceneCfgs {
-    pub fn load(ctx: &mut Context) -> SceneCfgs {
+    pub fn load(ctx: &mut Context, tank_cfgs: &TankCfgs) -> SceneCfgs {
         let map_cfgs = MapCfgs::load(ctx);
         let mut map = HashMap::new();
 
         config::load("assets/config/scene.txt")
             .into_iter()
-            .map(|c| Rc::new(SceneCfg::new(c, &map_cfgs)))
+            .map(|c| Rc::new(SceneCfg::new(c, &map_cfgs, tank_cfgs)))
             .map(|c| map.insert(c.id, c))
             .map(|o| o.map(|c| c.id))
             .for_each(|o| o.expect_none("Duplicate scene id"));
@@ -31,10 +32,11 @@ impl SceneCfgs {
 pub struct SceneCfg {
     pub id: u32,
     pub map: Rc<MapCfg>,
+    pub tanks: Vec<(u32, u32, Rc<TankCfg>)>,
 }
 
 impl SceneCfg {
-    fn new<C: Config>(c: C, map_cfgs: &MapCfgs) -> SceneCfg {
+    fn new<C: Config>(c: C, map_cfgs: &MapCfgs, tank_cfgs: &TankCfgs) -> SceneCfg {
         let id = c.u32("id").get();
         let map = c
             .str("map")
@@ -47,6 +49,52 @@ impl SceneCfg {
             })
             .get();
 
-        SceneCfg { id, map }
+        // x=y=tankid_x=y=tankid ...
+        let tanks = c
+            .str("tanks")
+            .not_empty()
+            .map(|s| {
+                s.get()
+                    .split("_")
+                    .map(|s| {
+                        let a: Vec<u32> = s
+                            .split("=")
+                            .map(|s| {
+                                s.parse().expect(
+                                    format!(
+                                        "Failed to parse {}: invalid digit found in string!",
+                                        s
+                                    )
+                                    .as_str(),
+                                )
+                            })
+                            .collect();
+
+                        assert!(a.len() == 3, "Failed to parse {}: invalid format!", s);
+
+                        let x = a[0];
+                        let y = a[1];
+
+                        assert!(
+                            map.is_walkable(x, y),
+                            "Failed to parse {}: tank's position is not walkable: {}-{}!",
+                            s,
+                            x,
+                            y
+                        );
+
+                        let tank_id = a[2];
+                        let tank_cfg = tank_cfgs.get(tank_id).expect(
+                            format!("Failed to parse {}: invalid tank id: {}!", s, tank_id)
+                                .as_str(),
+                        );
+
+                        (x, y, tank_cfg.clone())
+                    })
+                    .collect()
+            })
+            .get();
+
+        SceneCfg { id, map, tanks }
     }
 }

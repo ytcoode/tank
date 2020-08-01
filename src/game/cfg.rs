@@ -13,8 +13,8 @@ pub struct GameCfgs {
 
 impl GameCfgs {
     pub fn load(ctx: &mut Context) -> GameCfgs {
-        let scenes = SceneCfgs::load(ctx);
         let tanks = TankCfgs::load(ctx);
+        let scenes = SceneCfgs::load(ctx, &tanks);
         let misc = MiscCfgs::load(ctx);
 
         GameCfgs {

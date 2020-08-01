@@ -1,11 +1,12 @@
 use config::{self, Config};
 use ggez::graphics::Image;
 use ggez::Context;
+use std::convert::TryFrom;
 use std::rc::Rc;
 
 #[derive(Debug)]
 pub struct TankCfgs {
-    pub cfgs: Vec<Rc<TankCfg>>,
+    cfgs: Vec<Rc<TankCfg>>,
 }
 
 impl TankCfgs {
@@ -16,7 +17,7 @@ impl TankCfgs {
             .enumerate()
             .map(|(i, t)| {
                 assert_eq!(
-                    usize::from(t.id),
+                    usize::try_from(t.id).unwrap(),
                     i,
                     "Tank id must start at zero and increase sequentially!"
                 );
@@ -27,14 +28,14 @@ impl TankCfgs {
         TankCfgs { cfgs }
     }
 
-    pub fn get(&self, id: u16) -> Option<&Rc<TankCfg>> {
-        self.cfgs.get(usize::from(id))
+    pub fn get(&self, id: u32) -> Option<&Rc<TankCfg>> {
+        self.cfgs.get(usize::try_from(id).unwrap())
     }
 }
 
 #[derive(Debug)]
 pub struct TankCfg {
-    pub id: u16,
+    pub id: u32,
     pub image: Image,
     pub barrel_image: Image,
     pub speed: u16,
@@ -43,7 +44,7 @@ pub struct TankCfg {
 
 impl TankCfg {
     fn new(c: impl Config, ctx: &mut Context) -> Rc<TankCfg> {
-        let id = c.u16("id").get();
+        let id = c.u32("id").get();
 
         let image = c
             .str("image")
