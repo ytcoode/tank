@@ -35,11 +35,11 @@ impl MapCfgs {
 }
 
 pub struct MapCfg {
-    tiles: Vec<Image>,
-    tile_size: u32,
-    rows: u32,
-    cols: u32,
-    grid: Vec<u8>,
+    pub tiles: Vec<Image>,
+    pub tile_size: u32,
+    pub rows: u32,
+    pub cols: u32,
+    pub grid: Vec<u8>, // tile index
     pub width: u32,
     pub height: u32,
 }
@@ -69,7 +69,7 @@ impl MapCfg {
         let mut tiles = Vec::with_capacity(tile_count.into());
         let mut tile_size = 0;
 
-        for i in (0..tile_count) {
+        for i in 0..tile_count {
             let tile = b.read_str();
             let image = Image::new(ctx, tile).expect("Failed to load tile image");
 

@@ -1,4 +1,5 @@
 use self::cfg::GameCfgs;
+use self::scene::Scene;
 use self::tank::Tank;
 use ggez::event::{EventHandler, MouseButton};
 use ggez::graphics;
@@ -17,6 +18,7 @@ mod tank;
 
 pub struct Game {
     cfgs: GameCfgs,
+    scene: Scene,
     //  map: Map,
     // tanks: Vec<Rc<RefCell<Tank>>>,
     // tank: Rc<RefCell<Tank>>, // player-controlled tank
@@ -28,6 +30,14 @@ pub struct Game {
 impl Game {
     pub fn new(ctx: &mut Context) -> GameResult<Game> {
         let cfgs = GameCfgs::load(ctx);
+
+        let scene_cfg = cfgs
+            .scenes
+            .get(1)
+            .expect(format!("The scene config with an ID of {} not found!", 1).as_str());
+
+        let scene = Scene::new(scene_cfg.clone(), ctx);
+
         // let map = Map::new(ctx)?;
 
         // let tanks = Vec::new();
@@ -39,6 +49,7 @@ impl Game {
 
         Ok(Game {
             cfgs,
+            scene,
             // map,
 
             // tanks,
@@ -85,6 +96,9 @@ impl EventHandler for Game {
 
         // title
         graphics::set_window_title(ctx, &format!("Tanks - {:.0} FPS", timer::fps(ctx),));
+
+        // scene
+        self.scene.draw(ctx);
 
         // // vision
         // let vision = &self.vision;

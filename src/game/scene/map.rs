@@ -1,6 +1,9 @@
 use self::grid::Grid;
+use crate::game::common::view::View;
 use crate::game::scene::unit::Unit;
 use crate::game::tank::Tank;
+use ggez::graphics::spritebatch::SpriteBatch;
+use ggez::Context;
 use std::collections::HashMap;
 use std::convert::{TryFrom, TryInto};
 use std::rc::Rc;
@@ -11,20 +14,27 @@ pub use cfg::*;
 
 mod grid;
 
-const CELL_SIZE: u32 = 256;
+const CELL_SIZE: u32 = 128;
 
 pub struct Map {
     cfg: Rc<MapCfg>,
+    tiles: Vec<SpriteBatch>,
     grid: Grid,
 }
 
 impl Map {
     pub fn new(cfg: Rc<MapCfg>) -> Self {
+        let tiles = cfg
+            .tiles
+            .iter()
+            .map(|i| SpriteBatch::new(i.clone()))
+            .collect();
+
         let rows = util::div_ceil(cfg.height, CELL_SIZE);
         let cols = util::div_ceil(cfg.width, CELL_SIZE);
         let grid = Grid::new(rows, cols);
 
-        Map { cfg, grid }
+        Map { cfg, tiles, grid }
     }
 
     pub fn add(&mut self, unit: Rc<dyn Unit>) {
@@ -78,7 +88,7 @@ impl Map {
         let j = y / CELL_SIZE;
 
         match unit.map_cell().get() {
-            (i, j) => return, // position not changed
+            (i, j) => return, // not changed
             (li, lj) => self.grid.unit_moved(li, lj, i, j, unit.id()),
         }
 
@@ -116,4 +126,6 @@ impl Map {
             }
         }
     }
+
+    pub fn draw(&self, ctx: &mut Context, view: &View) {}
 }
