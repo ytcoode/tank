@@ -1,17 +1,17 @@
 use crate::game::scene::map::MapCfg;
 use ggez::{graphics, Context};
 
-pub struct View {
+pub struct PlayerView {
     pub x: u32,
     pub y: u32,
     pub width: u32,
     pub height: u32,
 }
 
-impl View {
+impl PlayerView {
     pub fn new(x: u32, y: u32, ctx: &mut Context, map: &MapCfg) -> Self {
         let (width, height) = Self::size(ctx);
-        let mut view = View {
+        let mut view = Self {
             x: 0,
             y: 0,
             width,

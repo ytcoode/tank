@@ -1,3 +1,5 @@
+use crate::game::common::view::PlayerView;
+use ggez::Context;
 use std::cell::Cell;
 use std::fmt;
 use std::ops::DerefMut;
@@ -15,6 +17,7 @@ pub trait Unit: fmt::Debug + fmt::Display {
     fn view_leave(&self, viewer: &dyn Unit);
 
     fn map_cell(&self) -> &MapCell;
+    fn draw(&self, ctx: &mut Context, view: &PlayerView);
 }
 
 #[derive(Debug, Default)]

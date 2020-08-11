@@ -1,4 +1,4 @@
-use crate::game::common::path::Path;
+use crate::game::common::{path::Path, view::PlayerView};
 use crate::game::scene::unit::{MapCell, Unit, View};
 use config::{self, Config};
 use ggez::graphics::{self, DrawParam, Image};
@@ -29,7 +29,7 @@ pub struct Tank {
 
 impl fmt::Display for Tank {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "tank({}, {})", self.id, self.name())
+        write!(f, "tank({})", self.id)
     }
 }
 
@@ -64,6 +64,33 @@ impl Unit for Tank {
 
     fn map_cell(&self) -> &MapCell {
         &self.map_cell
+    }
+
+    fn draw(&self, ctx: &mut Context, view: &PlayerView) {
+        let dx = self.x as f64 - view.x as f64;
+        let dy = self.y as f64 - view.y as f64;
+
+        // tank
+        graphics::draw(
+            ctx,
+            &self.cfg.image,
+            DrawParam::new()
+                .dest([dx as f32, dy as f32])
+                .offset([0.5, 0.5])
+                .rotation(self.angle),
+        )
+        .unwrap();
+
+        // barrel
+        graphics::draw(
+            ctx,
+            &self.cfg.barrel_image,
+            DrawParam::new()
+                .dest([dx as f32, dy as f32])
+                .offset([0.5, 0.1])
+                .rotation(self.angle),
+        )
+        .unwrap();
     }
 }
 

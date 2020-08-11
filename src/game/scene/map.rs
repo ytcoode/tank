@@ -1,5 +1,5 @@
 use self::grid::Grid;
-use crate::game::common::view::View;
+use crate::game::common::view::PlayerView;
 use crate::game::scene::unit::Unit;
 use crate::game::tank::Tank;
 use ggez::graphics::{self, spritebatch::SpriteBatch};
@@ -94,9 +94,9 @@ impl Map {
 
         if let Some(v) = unit.view() {
             let x1 = x.saturating_sub(v.range);
-            let x2 = (x + v.range).max(self.cfg.width);
+            let x2 = (x + v.range).min(self.cfg.width);
             let y1 = y.saturating_sub(v.range);
-            let y2 = (y + v.range).max(self.cfg.height);
+            let y2 = (y + v.range).min(self.cfg.height);
 
             let i1 = x1 / CELL_SIZE;
             let i2 = util::div_ceil(x2, CELL_SIZE);
@@ -127,7 +127,7 @@ impl Map {
         }
     }
 
-    pub fn draw(&mut self, ctx: &mut Context, view: &View) {
+    pub fn draw(&mut self, ctx: &mut Context, view: &PlayerView) {
         // tiles
         let tile_size = self.cfg.tile_size;
 
@@ -152,5 +152,16 @@ impl Map {
         }
 
         // units
+        let i1 = view.x / CELL_SIZE;
+        let i2 = util::div_ceil(view.x + view.width, CELL_SIZE).min(self.grid.cols);
+
+        let j1 = view.y / CELL_SIZE;
+        let j2 = util::div_ceil(view.y + view.height, CELL_SIZE).min(self.grid.rows);
+
+        for i in i1..i2 {
+            for j in j1..j2 {
+                self.grid.draw(i, j, ctx, view);
+            }
+        }
     }
 }

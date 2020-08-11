@@ -1,12 +1,14 @@
+use crate::game::common::view::PlayerView;
 use crate::game::scene::unit::Unit;
+use ggez::Context;
 use std::collections::HashMap;
 use std::convert::TryInto;
 use std::ops::{Deref, DerefMut};
 use std::rc::Rc;
 
 pub struct Grid {
-    rows: u32,
-    cols: u32,
+    pub rows: u32,
+    pub cols: u32,
     cells: Vec<Cell>,
 }
 
@@ -54,6 +56,10 @@ impl Grid {
 
         unit.map_cell().set(i2, j2);
         self.cell_mut(i2, j2).add_silently(unit);
+    }
+
+    pub fn draw(&self, i: u32, j: u32, ctx: &mut Context, view: &PlayerView) {
+        self.cell(i, j).draw(ctx, view);
     }
 
     fn cell(&self, i: u32, j: u32) -> &Cell {
@@ -116,5 +122,9 @@ impl Cell {
             .values()
             .filter(|u| u.id() != unit.id())
             .for_each(|u| u.view_leave(unit.as_ref()));
+    }
+
+    fn draw(&self, ctx: &mut Context, view: &PlayerView) {
+        self.units.values().for_each(|u| u.draw(ctx, view));
     }
 }
