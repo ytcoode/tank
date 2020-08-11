@@ -6,6 +6,7 @@ use ggez::Context;
 use std::collections::HashMap;
 use std::fmt;
 use std::rc::Rc;
+use std::time::Instant;
 
 pub use cfg::*;
 
@@ -43,6 +44,11 @@ impl Scene {
         scene
     }
 
+    fn next_unit_id(&mut self) -> u32 {
+        self.id_counter += 1;
+        self.id_counter
+    }
+
     fn add_tank(&mut self, tank: Tank) {
         let tank = Rc::new(tank);
         self.tanks
@@ -55,18 +61,28 @@ impl Scene {
         self.map.draw(ctx, &self.view);
     }
 
-    pub fn update_view(&mut self, x: u32, y: u32) {
-        let map = &self.cfg.map;
-        let view = &mut self.view;
-        view.update(
-            (view.x + x).min(map.width - 1),
-            (view.y + y).min(map.height - 1),
-            map,
-        );
+    pub fn update(&mut self, now: Instant) {
+        self.tanks.values().for_each(|t| t.update(now));
+
+        let (x, y) = {
+            let p = self.player_tank().position();
+            (p.x(), p.y())
+        };
+
+        // let p = self.player_tank().position();
+        // let x = p.x();
+        // let y = p.y();
+
+        self.view.update(x, y, &self.cfg.map);
     }
 
-    pub fn next_unit_id(&mut self) -> u32 {
-        self.id_counter += 1;
-        self.id_counter
+    pub fn player_tank_move_to(&self, x: u32, y: u32, now: Instant) {
+        let x = self.view.x + x;
+        let y = self.view.y + y;
+        self.player_tank().move_to(x, y, now);
+    }
+
+    fn player_tank(&self) -> &Rc<Tank> {
+        self.tanks.get(&1).unwrap()
     }
 }

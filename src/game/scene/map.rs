@@ -38,8 +38,9 @@ impl Map {
     }
 
     pub fn add(&mut self, unit: Rc<dyn Unit>) {
-        let x = unit.x();
-        let y = unit.y();
+        let position = unit.position();
+        let x = position.x();
+        let y = position.y();
 
         let i = x / CELL_SIZE;
         let j = y / CELL_SIZE;
@@ -81,8 +82,9 @@ impl Map {
     }
 
     pub fn unit_moved(&mut self, unit: &Rc<dyn Unit>) {
-        let x = unit.x();
-        let y = unit.y();
+        let position = unit.position();
+        let x = position.x();
+        let y = position.y();
 
         let i = x / CELL_SIZE;
         let j = y / CELL_SIZE;

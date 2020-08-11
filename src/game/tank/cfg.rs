@@ -38,7 +38,7 @@ pub struct TankCfg {
     pub id: u32,
     pub image: Image,
     pub barrel_image: Image,
-    pub speed: u16,
+    pub speed: u32,
     pub view: u32,
 }
 
@@ -58,7 +58,7 @@ impl TankCfg {
             .map(|s| Image::new(ctx, s.get()).expect(format!("{} not found", s).as_str()))
             .get();
 
-        let speed = c.u16("speed").ge(1).get();
+        let speed = c.u32("speed").ge(1).get();
 
         Rc::new(TankCfg {
             id,
