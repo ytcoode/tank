@@ -48,9 +48,9 @@ impl Map {
 
         if let Some(v) = unit.view() {
             let x1 = x.saturating_sub(v.range);
-            let x2 = (x + v.range).max(self.cfg.width);
+            let x2 = (x + v.range).min(self.cfg.width);
             let y1 = y.saturating_sub(v.range);
-            let y2 = (y + v.range).max(self.cfg.height);
+            let y2 = (y + v.range).min(self.cfg.height);
 
             let i1 = x1 / CELL_SIZE;
             let i2 = util::div_ceil(x2, CELL_SIZE);

@@ -5,7 +5,7 @@ pub mod debug;
 pub mod file;
 
 pub fn div_ceil(a: u32, b: u32) -> u32 {
-    a + b - 1 / b
+    (a + b - 1) / b
 }
 
 pub fn substract(a: u32, b: u32) -> f32 {

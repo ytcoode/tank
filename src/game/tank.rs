@@ -16,8 +16,8 @@ pub use cfg::*;
 
 #[derive(Debug)]
 pub struct Tank {
-    cfg: Rc<TankCfg>,
     id: u32,
+    cfg: Rc<TankCfg>,
     x: u32,
     y: u32,
     path: Option<Path>,
@@ -39,7 +39,7 @@ impl Unit for Tank {
     }
 
     fn name(&self) -> &str {
-        "tank"
+        "crazy tank"
     }
 
     fn x(&self) -> u32 {
@@ -68,9 +68,9 @@ impl Unit for Tank {
 }
 
 impl Tank {
-    pub fn new(cfg: Rc<TankCfg>, x: u32, y: u32) -> Tank {
+    pub fn new(id: u32, cfg: Rc<TankCfg>, x: u32, y: u32) -> Tank {
         Tank {
-            id: 0,
+            id,
             cfg,
             x,
             y,

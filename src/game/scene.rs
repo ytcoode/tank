@@ -18,25 +18,36 @@ pub struct Scene {
     map: Map,
     tanks: HashMap<u32, Rc<Tank>>,
     view: View,
+    id_counter: u32,
 }
 
 impl Scene {
     pub fn new(cfg: Rc<SceneCfg>, ctx: &mut Context) -> Self {
         let map = Map::new(cfg.map.clone());
         let tanks = HashMap::new();
-
         let view = View::new(0, 0, ctx, &cfg.map);
 
-        Scene {
-            cfg,
+        let mut scene = Scene {
+            cfg: cfg.clone(),
             map,
             tanks,
             view,
-        }
+            id_counter: 0,
+        };
+
+        cfg.tanks.iter().for_each(|(tank_cfg, x, y)| {
+            let t = Tank::new(scene.next_unit_id(), tank_cfg.clone(), *x, *y);
+            scene.add_tank(t)
+        });
+
+        scene
     }
 
-    fn add_tank(&mut self, tank: Rc<Tank>) {
-        self.tanks.insert(tank.id(), tank.clone()).unwrap();
+    fn add_tank(&mut self, tank: Tank) {
+        let tank = Rc::new(tank);
+        self.tanks
+            .insert(tank.id(), tank.clone())
+            .expect_none("Duplicate tank id");
         self.map.add(tank);
     }
 
@@ -52,5 +63,10 @@ impl Scene {
             (view.y + y).min(map.height - 1),
             map,
         );
+    }
+
+    pub fn next_unit_id(&mut self) -> u32 {
+        self.id_counter += 1;
+        self.id_counter
     }
 }
