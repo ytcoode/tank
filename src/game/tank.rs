@@ -178,16 +178,15 @@ impl Tank {
         if self.position.borrow_mut().update(now) {
             self.scene.map().unit_moved(self.clone())
         } else {
-            if self.id != 1 {
-                // player-controlled tank
-                let (width, height) = self.scene.size();
+            //  if self.id != 1 {
+            let (width, height) = self.scene.size();
 
-                let mut rng = rand::thread_rng();
-                let x = rng.gen_range(0, width);
-                let y = rng.gen_range(0, height);
+            let mut rng = rand::thread_rng();
+            let x = rng.gen_range(0, width);
+            let y = rng.gen_range(0, height);
 
-                self.move_to(x, y, now)
-            }
+            self.move_to(x, y, now)
+            //            }
         }
     }
 }
