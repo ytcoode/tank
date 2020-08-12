@@ -3,7 +3,6 @@ use crate::game::scene::unit::Unit;
 use ggez::Context;
 use std::collections::HashMap;
 use std::convert::TryInto;
-use std::ops::{Deref, DerefMut};
 use std::rc::Rc;
 
 pub struct Grid {

@@ -1,11 +1,10 @@
 use crate::game::bullet::Bullet;
-use crate::game::common::{path::Path, position::Position, view::PlayerView};
+use crate::game::common::{position::Position, view::PlayerView};
 use crate::game::scene::unit::{MapCell, Unit, View};
 use crate::game::scene::Scene;
-use config::Config;
-use ggez::graphics::{self, DrawParam, Image};
-use ggez::{Context, GameResult};
-use rand::{thread_rng, Rng};
+use ggez::graphics::{self, DrawParam};
+use ggez::Context;
+use rand::Rng;
 use std::cell::{Cell, RefCell};
 use std::f64;
 use std::fmt;
@@ -55,11 +54,11 @@ impl Unit for Tank {
         Some(&self.view)
     }
 
-    fn view_enter(&self, viewer: &dyn Unit) {
+    fn view_enter(&self, _viewer: &dyn Unit) {
         //        println!("{} came into {}'s view", self, viewer);
     }
 
-    fn view_leave(&self, viewer: &dyn Unit) {
+    fn view_leave(&self, _viewer: &dyn Unit) {
         //        println!("{} disapear from {}'s view", self, viewer);
     }
 

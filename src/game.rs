@@ -1,13 +1,10 @@
 use self::cfg::GameCfgs;
 use self::scene::Scene;
-use self::tank::Tank;
 use ggez::event::{EventHandler, MouseButton};
 use ggez::graphics;
-use ggez::graphics::spritebatch::SpriteBatch;
 use ggez::input::keyboard::{KeyCode, KeyMods};
 use ggez::timer;
 use ggez::{Context, GameResult};
-use std::cell::RefCell;
 use std::rc::Rc;
 use std::time::Instant;
 
@@ -18,7 +15,7 @@ mod scene;
 mod tank;
 
 pub struct Game {
-    cfgs: GameCfgs,
+    _cfgs: GameCfgs,
     scene: Rc<Scene>,
 }
 
@@ -33,7 +30,7 @@ impl Game {
 
         let scene = Scene::new(scene_cfg.clone(), ctx);
 
-        Ok(Game { cfgs, scene })
+        Ok(Game { _cfgs: cfgs, scene })
     }
 }
 

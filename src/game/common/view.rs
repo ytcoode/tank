@@ -32,14 +32,14 @@ impl PlayerView {
         let vy = self.height / 2;
 
         let mut x1 = if x <= vx { 0 } else { x - vx };
-        let mut x2 = x1 + self.width;
+        let x2 = x1 + self.width;
 
         if x2 > map_width {
             x1 -= (x2 - map_width).min(x1);
         }
 
         let mut y1 = if y <= vy { 0 } else { y - vy };
-        let mut y2 = y1 + self.height;
+        let y2 = y1 + self.height;
 
         if y2 > map_height {
             y1 -= (y2 - map_height).min(y1);

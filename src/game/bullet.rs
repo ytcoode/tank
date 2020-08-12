@@ -155,9 +155,9 @@ impl Unit for Bullet {
         None
     }
 
-    fn view_enter(&self, viewer: &dyn Unit) {}
+    fn view_enter(&self, _viewer: &dyn Unit) {}
 
-    fn view_leave(&self, viewer: &dyn Unit) {}
+    fn view_leave(&self, _viewer: &dyn Unit) {}
 
     fn map_cell(&self) -> &MapCell {
         &self.map_cell

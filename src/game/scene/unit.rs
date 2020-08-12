@@ -1,7 +1,7 @@
 use crate::game::bullet::Bullet;
 use crate::game::common::view::PlayerView;
 use ggez::Context;
-use std::cell::{Cell, Ref};
+use std::cell::Cell;
 use std::fmt;
 use std::rc::Rc;
 

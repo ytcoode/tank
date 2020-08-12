@@ -6,7 +6,6 @@ use crate::game::tank::Tank;
 use ggez::Context;
 use std::cell::{Cell, RefCell, RefMut};
 use std::collections::HashMap;
-use std::fmt;
 use std::rc::Rc;
 use std::time::Instant;
 

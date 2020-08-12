@@ -1,11 +1,8 @@
 use self::grid::Grid;
 use crate::game::common::view::PlayerView;
 use crate::game::scene::unit::Unit;
-use crate::game::tank::Tank;
 use ggez::graphics::{self, spritebatch::SpriteBatch};
 use ggez::Context;
-use std::collections::HashMap;
-use std::convert::{TryFrom, TryInto};
 use std::rc::Rc;
 use util;
 
@@ -103,27 +100,27 @@ impl Map {
             let j1 = y1 / CELL_SIZE;
             let j2 = util::div_ceil(y2, CELL_SIZE);
 
-            match v.current() {
-                (i1, i2, j1, j2) => (), // not changed
-                (a1, a2, b1, b2) => {
-                    for a in a1..a2 {
-                        for b in b1..b2 {
-                            if !util::is_inside_rectangle(i1, i2, j1, j2, a, b) {
-                                self.grid.remove_viewer(i, j, unit.id());
-                            }
-                        }
-                    }
+            let (a1, a2, b1, b2) = v.current();
+            if a1 == i1 && a2 == i2 && b1 == j1 && b2 == j2 {
+                return; // not changed
+            }
 
-                    for i in i1..i2 {
-                        for j in j1..j2 {
-                            if !util::is_inside_rectangle(a1, a2, b1, b2, i, j) {
-                                self.grid.add_viewer(i, j, unit.clone());
-                            }
-                        }
+            for a in a1..a2 {
+                for b in b1..b2 {
+                    if !util::is_inside_rectangle(i1, i2, j1, j2, a, b) {
+                        self.grid.remove_viewer(i, j, unit.id());
                     }
-                    v.current_update(i1, i2, j1, j2);
                 }
             }
+
+            for i in i1..i2 {
+                for j in j1..j2 {
+                    if !util::is_inside_rectangle(a1, a2, b1, b2, i, j) {
+                        self.grid.add_viewer(i, j, unit.clone());
+                    }
+                }
+            }
+            v.current_update(i1, i2, j1, j2);
         }
     }
 

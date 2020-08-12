@@ -1,12 +1,11 @@
-use config::{self, Config};
-use ggez::graphics::{spritebatch::SpriteBatch, Image};
+use ggez::graphics::Image;
 use ggez::Context;
 use std::collections::HashMap;
 use std::convert::TryInto;
 use std::fs;
 use std::rc::Rc;
 use util::byte::Bytes;
-use util::{file, push};
+use util::file;
 
 pub struct MapCfgs {
     map: HashMap<String, Rc<MapCfg>>,
