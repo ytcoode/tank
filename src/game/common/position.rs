@@ -26,7 +26,7 @@ impl Position {
         self.angle = angle as f32;
     }
 
-    pub fn update(&mut self, now: Instant) {
+    pub fn update(&mut self, now: Instant) -> bool {
         match self.path {
             Some(ref p) => {
                 let (x, y) = p.position(now);
@@ -35,8 +35,9 @@ impl Position {
                 if p.is_destination(x, y) {
                     self.path = None;
                 }
+                true
             }
-            None => (),
+            None => false,
         }
     }
 

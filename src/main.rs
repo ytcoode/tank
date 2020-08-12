@@ -1,5 +1,6 @@
 #![feature(option_unwrap_none)]
 #![feature(option_expect_none)]
+#![feature(cell_update)]
 
 use self::game::Game;
 use ggez::conf::{WindowMode, WindowSetup};

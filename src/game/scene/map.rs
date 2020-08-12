@@ -81,7 +81,7 @@ impl Map {
         }
     }
 
-    pub fn unit_moved(&mut self, unit: &Rc<dyn Unit>) {
+    pub fn unit_moved(&mut self, unit: Rc<dyn Unit>) {
         let position = unit.position();
         let x = position.x();
         let y = position.y();
@@ -89,10 +89,12 @@ impl Map {
         let i = x / CELL_SIZE;
         let j = y / CELL_SIZE;
 
-        match unit.map_cell().get() {
-            (i, j) => return, // not changed
-            (li, lj) => self.grid.unit_moved(li, lj, i, j, unit.id()),
+        let (li, lj) = unit.map_cell().get();
+        if li == i && lj == j {
+            return; // not changed
         }
+
+        self.grid.unit_moved(li, lj, i, j, unit.id());
 
         if let Some(v) = unit.view() {
             let x1 = x.saturating_sub(v.range);

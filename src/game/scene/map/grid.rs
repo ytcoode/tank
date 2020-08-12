@@ -40,7 +40,6 @@ impl Grid {
 
     pub fn unit_moved(&mut self, i1: u32, j1: u32, i2: u32, j2: u32, id: u32) {
         let unit = self.cell_mut(i1, j1).remove_silently(id);
-
         let c1 = self.cell(i1, j1);
         let c2 = self.cell(i2, j2);
 

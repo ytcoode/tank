@@ -1,8 +1,12 @@
 use crate::game::common::{path::Path, position::Position, view::PlayerView};
-use crate::game::scene::unit::{MapCell, Unit, View};
-use config::{self, Config};
+use crate::game::scene::{
+    unit::{MapCell, Unit, View},
+    Scene,
+};
+use config::Config;
 use ggez::graphics::{self, DrawParam, Image};
 use ggez::{Context, GameResult};
+use rand::{self, thread_rng, Rng};
 use std::cell::{Cell, Ref, RefCell};
 use std::convert::{TryFrom, TryInto};
 use std::f64;
@@ -13,7 +17,6 @@ use std::time::Instant;
 mod cfg;
 pub use cfg::*;
 
-#[derive(Debug)]
 pub struct Tank {
     id: u32,
     cfg: Rc<TankCfg>,
@@ -21,9 +24,16 @@ pub struct Tank {
     destroyed: bool,
     view: View,
     map_cell: MapCell,
+    scene: Rc<Scene>,
 }
 
 impl fmt::Display for Tank {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "tank({})", self.id)
+    }
+}
+
+impl fmt::Debug for Tank {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "tank({})", self.id)
     }
@@ -47,11 +57,11 @@ impl Unit for Tank {
     }
 
     fn view_enter(&self, viewer: &dyn Unit) {
-        println!("{} came into {}'s view", self, viewer);
+        //        println!("{} came into {}'s view", self, viewer);
     }
 
     fn view_leave(&self, viewer: &dyn Unit) {
-        println!("{} disapear from {}'s view", self, viewer);
+        //        println!("{} disapear from {}'s view", self, viewer);
     }
 
     fn map_cell(&self) -> &MapCell {
@@ -140,7 +150,7 @@ impl Unit for Tank {
 }
 
 impl Tank {
-    pub fn new(id: u32, cfg: Rc<TankCfg>, x: u32, y: u32) -> Tank {
+    pub fn new(id: u32, cfg: Rc<TankCfg>, x: u32, y: u32, scene: Rc<Scene>) -> Tank {
         let position = RefCell::new(Position::new(x, y, 0.0));
 
         Tank {
@@ -150,6 +160,7 @@ impl Tank {
             destroyed: false,
             view: View::new(100),
             map_cell: Default::default(),
+            scene,
         }
     }
 
@@ -163,7 +174,20 @@ impl Tank {
         //        self.bullet = Some(Bullet::new(self.x, self.y, self.barrel_angle as f64, now));
     }
 
-    pub fn update(&self, now: Instant) {
-        self.position.borrow_mut().update(now);
+    pub fn update(self: &Rc<Self>, now: Instant) {
+        if self.position.borrow_mut().update(now) {
+            self.scene.map().unit_moved(self.clone())
+        } else {
+            if self.id != 1 {
+                // player-controlled tank
+                let (width, height) = self.scene.size();
+
+                let mut rng = rand::thread_rng();
+                let x = rng.gen_range(0, width);
+                let y = rng.gen_range(0, height);
+
+                self.move_to(x, y, now)
+            }
+        }
     }
 }

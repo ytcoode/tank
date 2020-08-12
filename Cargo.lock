@@ -2021,6 +2021,7 @@ version = "0.1.0"
 dependencies = [
  "config",
  "ggez",
+ "rand 0.7.3",
  "util",
 ]
 

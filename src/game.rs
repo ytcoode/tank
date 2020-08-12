@@ -18,7 +18,7 @@ mod tank;
 
 pub struct Game {
     cfgs: GameCfgs,
-    scene: Scene,
+    scene: Rc<Scene>,
 }
 
 impl Game {
