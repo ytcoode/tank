@@ -11,26 +11,6 @@ use std::time::Instant;
 use super::Tank;
 use crate::deps::config::Config;
 
-#[derive(Debug)]
-pub struct BulletCfg {
-    image: Image,
-    speed: u16,
-}
-
-impl BulletCfg {
-    pub fn new<C: Config>(c: &C, ctx: &mut Context) -> BulletCfg {
-        let image = c
-            .str("bullet_image")
-            .not_empty()
-            .map(|s| Image::new(ctx, s.get()).expect(format!("{} not found", s).as_str()))
-            .get();
-
-        let speed = c.u16("bullet_speed").ge(1).get();
-
-        BulletCfg { image, speed }
-    }
-}
-
 pub struct Bullet {
     tank: Rc<Tank>,
     x: u32,

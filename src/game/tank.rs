@@ -1,14 +1,11 @@
 use crate::game::common::{path::Path, position::Position, view::PlayerView};
-use crate::game::scene::{
-    unit::{MapCell, Unit, View},
-    Scene,
-};
+use crate::game::scene::unit::{MapCell, Unit, View};
+use crate::game::scene::Scene;
 use config::Config;
 use ggez::graphics::{self, DrawParam, Image};
 use ggez::{Context, GameResult};
-use rand::{self, thread_rng, Rng};
-use std::cell::{Cell, Ref, RefCell};
-use std::convert::{TryFrom, TryInto};
+use rand::{thread_rng, Rng};
+use std::cell::{Cell, RefCell};
 use std::f64;
 use std::fmt;
 use std::rc::Rc;
@@ -24,7 +21,7 @@ pub struct Tank {
     destroyed: bool,
     view: View,
     map_cell: MapCell,
-    scene: Rc<Scene>,
+    pub scene: Rc<Scene>,
 }
 
 impl fmt::Display for Tank {
@@ -48,8 +45,9 @@ impl Unit for Tank {
         "crazy tank"
     }
 
-    fn position(&self) -> Ref<'_, Position> {
-        self.position.borrow()
+    fn position(&self) -> (u32, u32) {
+        let p = self.position.borrow();
+        (p.x(), p.y())
     }
 
     fn view(&self) -> Option<&View> {
@@ -96,56 +94,6 @@ impl Unit for Tank {
                 .rotation(angle),
         )
         .unwrap();
-
-        // let dx = self.x as f64 - x1 as f64;
-        // let dy = self.y as f64 - y1 as f64;
-
-        // self.batch.add(
-        //     DrawParam::new()
-        //         .dest([dx as f32, dy as f32])
-        //         .offset([0.5, 0.5]),
-        // );
-
-        // // tank
-        // graphics::draw(
-        //     ctx,
-        //     &self.cfg.image,
-        //     DrawParam::new()
-        //         .dest([dx as f32, dy as f32])
-        //         .offset([0.5, 0.5])
-        //         .rotation(self.angle),
-        // )?;
-
-        // // barrel
-        // graphics::draw(
-        //     ctx,
-        //     &self.cfg.image_barrel,
-        //     DrawParam::new()
-        //         .dest([dx as f32, dy as f32])
-        //         .offset([0.5, 0.1])
-        //         .rotation(self.angle),
-        // )?;
-
-        // bullet
-        // if let Some(ref mut b) = self.bullet {
-        //     b.draw(ctx, x1, y1, &self.cfg.bullet)?;
-        // }
-
-        //        crate::util::debug::draw_circle(ctx, dx as f32, dy as f32, 1.0)?;
-
-        // // flag
-        // if let Some(p) = &self.path {
-        //     let fx = p.x2 as f64 - x1 as f64;
-        //     let fy = p.y2 as f64 - y1 as f64;
-
-        //     graphics::draw(
-        //         ctx,
-        //         flag,
-        //         DrawParam::new()
-        //             .dest([fx as f32, fy as f32])
-        //             .offset([0.5, 0.5]),
-        //     )?;
-        // }
     }
 }
 
@@ -178,15 +126,11 @@ impl Tank {
         if self.position.borrow_mut().update(now) {
             self.scene.map().unit_moved(self.clone())
         } else {
-            //  if self.id != 1 {
             let (width, height) = self.scene.size();
-
             let mut rng = rand::thread_rng();
             let x = rng.gen_range(0, width);
             let y = rng.gen_range(0, height);
-
             self.move_to(x, y, now)
-            //            }
         }
     }
 }

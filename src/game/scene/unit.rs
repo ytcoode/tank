@@ -1,4 +1,4 @@
-use crate::game::common::{position::Position, view::PlayerView};
+use crate::game::common::view::PlayerView;
 use ggez::Context;
 use std::cell::{Cell, Ref};
 use std::fmt;
@@ -7,7 +7,7 @@ use std::rc::Rc;
 pub trait Unit: fmt::Debug + fmt::Display {
     fn id(&self) -> u32;
     fn name(&self) -> &str;
-    fn position(&self) -> Ref<'_, Position>;
+    fn position(&self) -> (u32, u32);
 
     fn view(&self) -> Option<&View>;
     fn view_enter(&self, viewer: &dyn Unit);

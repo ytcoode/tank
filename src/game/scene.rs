@@ -1,5 +1,6 @@
 use self::map::Map;
 use self::unit::Unit;
+use crate::game::bullet::Bullet;
 use crate::game::common::view::PlayerView;
 use crate::game::tank::Tank;
 use ggez::Context;
@@ -21,6 +22,9 @@ pub struct Scene {
     cfg: Rc<SceneCfg>,
     map: RefCell<Map>,
     tanks: RefCell<HashMap<u32, Rc<Tank>>>,
+    bullets: RefCell<HashMap<u32, Rc<Bullet>>>,
+    pub destroyed_tanks: RefCell<Vec<u32>>,
+    pub destroyed_bullets: RefCell<Vec<u32>>,
     view: RefCell<PlayerView>,
     id_counter: Cell<u32>,
 }
@@ -29,14 +33,21 @@ impl Scene {
     pub fn new(cfg: Rc<SceneCfg>, ctx: &mut Context) -> Rc<Self> {
         let map = RefCell::new(Map::new(cfg.map.clone()));
         let tanks = RefCell::new(HashMap::new());
+        let bullets = RefCell::new(HashMap::new());
+        let destroyed_tanks = RefCell::new(Vec::new());
+        let destroyed_bullets = RefCell::new(Vec::new());
         let view = RefCell::new(PlayerView::new(0, 0, ctx, &cfg.map));
+        let id_counter = Cell::new(0);
 
         let scene = Rc::new(Scene {
             cfg,
             map,
             tanks,
+            bullets,
+            destroyed_tanks,
+            destroyed_bullets,
             view,
-            id_counter: Cell::new(0),
+            id_counter,
         });
 
         scene.cfg.tanks.iter().for_each(|(tank_cfg, x, y)| {
@@ -66,21 +77,40 @@ impl Scene {
         self.map.borrow_mut().add(tank);
     }
 
+    fn remove_tank(&self, id: u32) {
+        let unit = self.tanks.borrow_mut().remove(&id).unwrap();
+        self.map.borrow_mut().remove(unit);
+    }
+
+    fn add_bullet(&self, bullet: Bullet) {
+        let bullet = Rc::new(bullet);
+        self.bullets
+            .borrow_mut()
+            .insert(bullet.id(), bullet.clone())
+            .expect_none("Duplicate tank id");
+        self.map.borrow_mut().add(bullet);
+    }
+
+    fn remove_bullet(&self, id: u32) {
+        let unit = self.bullets.borrow_mut().remove(&id).unwrap();
+        self.map.borrow_mut().remove(unit);
+    }
+
     pub fn draw(&self, ctx: &mut Context) {
         self.map.borrow_mut().draw(ctx, &self.view.borrow());
     }
 
     pub fn update(&self, now: Instant) {
+        // tanks
         let tanks = self.tanks.borrow();
         tanks.values().for_each(|t| t.update(now));
 
         let t = tanks.get(&PLAYER_TANK_ID).unwrap();
-        let p = t.position();
-
-        let x = p.x();
-        let y = p.y();
-
+        let (x, y) = t.position();
         self.view.borrow_mut().update(x, y, &self.cfg.map);
+
+        // bullets
+        self.bullets.borrow().values().for_each(|b| b.update(now));
     }
 
     pub fn player_tank_move_to(&self, x: u32, y: u32, now: Instant) {

@@ -1,3 +1,4 @@
+use crate::game::bullet::BulletCfg;
 use config::{self, Config};
 use ggez::graphics::Image;
 use ggez::Context;
@@ -40,6 +41,7 @@ pub struct TankCfg {
     pub barrel_image: Image,
     pub speed: u32,
     pub view: u32,
+    pub bullet: Rc<BulletCfg>,
 }
 
 impl TankCfg {
@@ -60,12 +62,15 @@ impl TankCfg {
 
         let speed = c.u32("speed").ge(1).get();
 
+        let bullet = Rc::new(BulletCfg::new(&c, ctx));
+
         Rc::new(TankCfg {
             id,
             image,
             barrel_image,
             speed,
-            view: 500,
+            view: 200,
+            bullet,
         })
     }
 }

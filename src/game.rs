@@ -11,6 +11,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use std::time::Instant;
 
+mod bullet;
 mod cfg;
 mod common;
 mod scene;

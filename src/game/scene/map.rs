@@ -38,9 +38,7 @@ impl Map {
     }
 
     pub fn add(&mut self, unit: Rc<dyn Unit>) {
-        let position = unit.position();
-        let x = position.x();
-        let y = position.y();
+        let (x, y) = unit.position();
 
         let i = x / CELL_SIZE;
         let j = y / CELL_SIZE;
@@ -67,7 +65,7 @@ impl Map {
         }
     }
 
-    pub fn remove(&mut self, unit: &Rc<dyn Unit>) {
+    pub fn remove(&mut self, unit: Rc<dyn Unit>) {
         let (i, j) = unit.map_cell().get();
         self.grid.remove(i, j, unit.id());
 
@@ -82,9 +80,7 @@ impl Map {
     }
 
     pub fn unit_moved(&mut self, unit: Rc<dyn Unit>) {
-        let position = unit.position();
-        let x = position.x();
-        let y = position.y();
+        let (x, y) = unit.position();
 
         let i = x / CELL_SIZE;
         let j = y / CELL_SIZE;

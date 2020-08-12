@@ -1,7 +1,7 @@
-tank id	tank image	tank barrel image	tank bullet	movement speed
-id	image	barrel_image	bullet	speed
-0	/a/PNG/Tanks/tankBeige.png	/a/PNG/Tanks/barrelBeige.png	/a/PNG/Bullets/bulletBeige.png	250
-1	/a/PNG/Tanks/tankBlack.png	/a/PNG/Tanks/barrelBlack.png	/a/PNG/Bullets/bulletBlack.png	250
-2	/a/PNG/Tanks/tankBlue.png	/a/PNG/Tanks/barrelBlue.png	/a/PNG/Bullets/bulletBlue.png	250
-3	/a/PNG/Tanks/tankGreen.png	/a/PNG/Tanks/barrelGreen.png	/a/PNG/Bullets/bulletGreen.png	250
-4	/a/PNG/Tanks/tankRed.png	/a/PNG/Tanks/barrelRed.png	/a/PNG/Bullets/bulletRed.png	250
+tank id	tank image	tank barrel image	tank speed	tank bullet	bullet speed
+id	image	barrel_image	speed	bullet_image	bullet_speed
+0	/a/PNG/Tanks/tankBeige.png	/a/PNG/Tanks/barrelBeige.png	250	/a/PNG/Bullets/bulletBeige.png	400
+1	/a/PNG/Tanks/tankBlack.png	/a/PNG/Tanks/barrelBlack.png	250	/a/PNG/Bullets/bulletYellow.png	400
+2	/a/PNG/Tanks/tankBlue.png	/a/PNG/Tanks/barrelBlue.png	250	/a/PNG/Bullets/bulletBlue.png	400
+3	/a/PNG/Tanks/tankGreen.png	/a/PNG/Tanks/barrelGreen.png	250	/a/PNG/Bullets/bulletGreen.png	400
+4	/a/PNG/Tanks/tankRed.png	/a/PNG/Tanks/barrelRed.png	250	/a/PNG/Bullets/bulletRed.png	400
