@@ -1,3 +1,4 @@
+use crate::game::bullet::Bullet;
 use crate::game::common::{path::Path, position::Position, view::PlayerView};
 use crate::game::scene::unit::{MapCell, Unit, View};
 use crate::game::scene::Scene;
@@ -118,8 +119,12 @@ impl Tank {
             .move_to(x, y, self.cfg.speed, now);
     }
 
-    pub fn fire(&mut self, now: Instant) {
-        //        self.bullet = Some(Bullet::new(self.x, self.y, self.barrel_angle as f64, now));
+    pub fn fire(self: &Rc<Tank>, now: Instant) {
+        let id = self.scene.next_unit_id();
+        let (x, y) = self.position();
+        let angle = self.position.borrow().angle();
+        let bullet = Bullet::new(id, x, y, angle, now, self.cfg.bullet, self.clone());
+        self.scene.add_bullet(bullet);
     }
 
     pub fn update(self: &Rc<Self>, now: Instant) {

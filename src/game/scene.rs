@@ -64,7 +64,7 @@ impl Scene {
         scene
     }
 
-    fn next_unit_id(&self) -> u32 {
+    pub fn next_unit_id(&self) -> u32 {
         self.id_counter.update(|x| x + 1)
     }
 
