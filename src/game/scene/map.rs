@@ -127,6 +127,14 @@ impl Map {
         }
     }
 
+    pub fn for_each<F>(&self, unit: &dyn Unit, f: F)
+    where
+        F: FnMut(&Rc<dyn Unit>),
+    {
+        let (i, j) = unit.map_cell().get();
+        self.grid.for_each(i, j, f);
+    }
+
     pub fn draw(&mut self, ctx: &mut Context, view: &PlayerView) {
         // tiles
         let tile_size = self.cfg.tile_size;

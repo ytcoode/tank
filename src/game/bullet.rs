@@ -38,8 +38,9 @@ pub struct Bullet {
     angle: f64,
     time: Instant, // start time
     cfg: Rc<BulletCfg>,
-    tank: Rc<Tank>,
+    pub tank: Rc<Tank>,
     map_cell: MapCell,
+    destroyed: Cell<bool>,
 }
 
 impl Bullet {
@@ -63,10 +64,15 @@ impl Bullet {
             cfg,
             tank,
             map_cell: Default::default(),
+            destroyed: Cell::new(false),
         }
     }
 
-    pub fn update(&self, now: Instant) {
+    pub fn update(self: &Rc<Self>, now: Instant) {
+        if self.destroyed.get() {
+            return;
+        }
+
         let dt = now.duration_since(self.time).as_secs_f64();
         let dt = dt * self.cfg.speed as f64;
 
@@ -79,7 +85,7 @@ impl Bullet {
         let scene = &self.tank.scene;
 
         if x < 0.0 || y < 0.0 {
-            scene.destroyed_bullets.borrow_mut().push(self.id);
+            scene.destroy_bullet(self.id);
             return;
         }
 
@@ -89,12 +95,34 @@ impl Bullet {
         let (width, height) = scene.size();
 
         if x >= width || y >= height {
-            scene.destroyed_bullets.borrow_mut().push(self.id);
+            scene.destroy_bullet(self.id);
             return;
         }
 
         self.x.set(x as u32);
         self.y.set(y as u32);
+
+        let scene = &self.tank.scene;
+        let mut map = scene.map();
+        map.unit_moved(self.clone());
+
+        let (x, y) = self.position();
+
+        map.for_each(self.as_ref(), |u| {
+            if !u.is_destroyed() && u.can_be_destroyed(self) {
+                let (ux, uy) = u.position();
+                let dx = x as f64 - ux as f64;
+                let dy = y as f64 - uy as f64;
+                if dx * dx + dy * dy <= 10.0 * 10.0 {
+                    u.destroy();
+                    self.destroyed.set(true);
+                }
+            }
+        });
+
+        if self.destroyed.get() {
+            self.destroy();
+        }
     }
 }
 
@@ -149,5 +177,18 @@ impl Unit for Bullet {
                 .rotation(angle),
         )
         .unwrap();
+    }
+
+    fn can_be_destroyed(&self, bullet: &Rc<Bullet>) -> bool {
+        self.id != bullet.id && self.tank.id() != bullet.tank.id()
+    }
+
+    fn destroy(&self) {
+        self.destroyed.set(true);
+        self.tank.scene.destroy_bullet(self.id);
+    }
+
+    fn is_destroyed(&self) -> bool {
+        self.destroyed.get()
     }
 }

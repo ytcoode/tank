@@ -19,7 +19,7 @@ pub struct Tank {
     id: u32,
     cfg: Rc<TankCfg>,
     position: RefCell<Position>,
-    destroyed: bool,
+    destroyed: Cell<bool>,
     view: View,
     map_cell: MapCell,
     pub scene: Rc<Scene>,
@@ -96,6 +96,19 @@ impl Unit for Tank {
         )
         .unwrap();
     }
+
+    fn can_be_destroyed(&self, bullet: &Rc<Bullet>) -> bool {
+        self.id != bullet.tank.id()
+    }
+
+    fn destroy(&self) {
+        self.destroyed.set(true);
+        self.scene.destroy_tank(self.id);
+    }
+
+    fn is_destroyed(&self) -> bool {
+        self.destroyed.get()
+    }
 }
 
 impl Tank {
@@ -106,7 +119,7 @@ impl Tank {
             id,
             cfg,
             position,
-            destroyed: false,
+            destroyed: Cell::new(false),
             view: View::new(100),
             map_cell: Default::default(),
             scene,
@@ -136,6 +149,10 @@ impl Tank {
     }
 
     pub fn update(self: &Rc<Self>, now: Instant) {
+        if self.destroyed.get() {
+            return;
+        }
+
         if self.position.borrow_mut().update(now) {
             self.scene.map().unit_moved(self.clone())
         } else {

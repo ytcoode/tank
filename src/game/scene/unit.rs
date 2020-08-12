@@ -1,3 +1,4 @@
+use crate::game::bullet::Bullet;
 use crate::game::common::view::PlayerView;
 use ggez::Context;
 use std::cell::{Cell, Ref};
@@ -15,6 +16,10 @@ pub trait Unit: fmt::Debug + fmt::Display {
 
     fn map_cell(&self) -> &MapCell;
     fn draw(&self, ctx: &mut Context, view: &PlayerView);
+
+    fn can_be_destroyed(&self, bullet: &Rc<Bullet>) -> bool;
+    fn destroy(&self);
+    fn is_destroyed(&self) -> bool;
 }
 
 #[derive(Debug, Default)]

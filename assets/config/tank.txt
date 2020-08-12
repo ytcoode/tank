@@ -1,6 +1,6 @@
 tank id	tank image	tank barrel image	tank speed	tank bullet	bullet speed
 id	image	barrel_image	speed	bullet_image	bullet_speed
-0	/a/PNG/Tanks/tankBeige.png	/a/PNG/Tanks/barrelBeige.png	250	/a/PNG/Bullets/bulletBeige.png	400
+0	/a/PNG/Tanks/tankBeige.png	/a/PNG/Tanks/barrelBeige.png	250	/a/PNG/Bullets/bulletBeige.png	500
 1	/a/PNG/Tanks/tankBlack.png	/a/PNG/Tanks/barrelBlack.png	250	/a/PNG/Bullets/bulletYellow.png	400
 2	/a/PNG/Tanks/tankBlue.png	/a/PNG/Tanks/barrelBlue.png	250	/a/PNG/Bullets/bulletBlue.png	400
 3	/a/PNG/Tanks/tankGreen.png	/a/PNG/Tanks/barrelGreen.png	250	/a/PNG/Bullets/bulletGreen.png	400

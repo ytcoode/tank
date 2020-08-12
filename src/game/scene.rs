@@ -23,8 +23,8 @@ pub struct Scene {
     map: RefCell<Map>,
     tanks: RefCell<HashMap<u32, Rc<Tank>>>,
     bullets: RefCell<HashMap<u32, Rc<Bullet>>>,
-    pub destroyed_tanks: RefCell<Vec<u32>>,
-    pub destroyed_bullets: RefCell<Vec<u32>>,
+    destroyed_tanks: RefCell<Vec<u32>>,
+    destroyed_bullets: RefCell<Vec<u32>>,
     view: RefCell<PlayerView>,
     id_counter: Cell<u32>,
 }
@@ -92,8 +92,18 @@ impl Scene {
     }
 
     fn remove_bullet(&self, id: u32) {
+        //        println!("remove_bullet: {}", id);
         let unit = self.bullets.borrow_mut().remove(&id).unwrap();
         self.map.borrow_mut().remove(unit);
+    }
+
+    pub fn destroy_tank(&self, id: u32) {
+        self.destroyed_tanks.borrow_mut().push(id);
+    }
+
+    pub fn destroy_bullet(&self, id: u32) {
+        //        println!("destroy_bullet: {}", id);
+        self.destroyed_bullets.borrow_mut().push(id);
     }
 
     pub fn draw(&self, ctx: &mut Context) {

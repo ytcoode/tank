@@ -57,6 +57,13 @@ impl Grid {
         self.cell_mut(i2, j2).add_silently(unit);
     }
 
+    pub fn for_each<F>(&self, i: u32, j: u32, f: F)
+    where
+        F: FnMut(&Rc<dyn Unit>),
+    {
+        self.cell(i, j).for_each(f);
+    }
+
     pub fn draw(&self, i: u32, j: u32, ctx: &mut Context, view: &PlayerView) {
         self.cell(i, j).draw(ctx, view);
     }
@@ -121,6 +128,13 @@ impl Cell {
             .values()
             .filter(|u| u.id() != unit.id())
             .for_each(|u| u.view_leave(unit.as_ref()));
+    }
+
+    fn for_each<F>(&self, f: F)
+    where
+        F: FnMut(&Rc<dyn Unit>),
+    {
+        self.units.values().for_each(f);
     }
 
     fn draw(&self, ctx: &mut Context, view: &PlayerView) {
