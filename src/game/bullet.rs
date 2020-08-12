@@ -113,7 +113,7 @@ impl Bullet {
                 let (ux, uy) = u.position();
                 let dx = x as f64 - ux as f64;
                 let dy = y as f64 - uy as f64;
-                if dx * dx + dy * dy <= 10.0 * 10.0 {
+                if dx * dx + dy * dy <= 50.0 * 50.0 {
                     u.destroy();
                     self.destroyed.set(true);
                 }

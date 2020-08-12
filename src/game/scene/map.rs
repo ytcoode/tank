@@ -108,7 +108,7 @@ impl Map {
             for a in a1..a2 {
                 for b in b1..b2 {
                     if !util::is_inside_rectangle(i1, i2, j1, j2, a, b) {
-                        self.grid.remove_viewer(i, j, unit.id());
+                        self.grid.remove_viewer(a, b, unit.id());
                     }
                 }
             }
