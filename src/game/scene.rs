@@ -82,7 +82,7 @@ impl Scene {
         self.map.borrow_mut().remove(unit);
     }
 
-    fn add_bullet(&self, bullet: Bullet) {
+    pub fn add_bullet(&self, bullet: Bullet) {
         let bullet = Rc::new(bullet);
         self.bullets
             .borrow_mut()
@@ -101,6 +101,8 @@ impl Scene {
     }
 
     pub fn update(&self, now: Instant) {
+        self.remove_destroyed_units();
+
         // tanks
         let tanks = self.tanks.borrow();
         tanks.values().for_each(|t| t.update(now));
@@ -113,6 +115,18 @@ impl Scene {
         self.bullets.borrow().values().for_each(|b| b.update(now));
     }
 
+    fn remove_destroyed_units(&self) {
+        // tanks
+        let mut v = self.destroyed_tanks.borrow_mut();
+        v.iter().copied().for_each(|id| self.remove_tank(id));
+        v.clear();
+
+        // bullets
+        let mut v = self.destroyed_bullets.borrow_mut();
+        v.iter().copied().for_each(|id| self.remove_bullet(id));
+        v.clear();
+    }
+
     pub fn player_tank_move_to(&self, x: u32, y: u32, now: Instant) {
         let v = self.view.borrow();
         let x = v.x + x;
@@ -121,6 +135,10 @@ impl Scene {
         let tanks = self.tanks.borrow();
         let t = tanks.get(&PLAYER_TANK_ID).unwrap();
         t.move_to(x, y, now);
+    }
+
+    pub fn player_tank_fire(&self, now: Instant) {
+        self.tanks.borrow().get(&PLAYER_TANK_ID).unwrap().fire(now);
     }
 
     pub fn map(&self) -> RefMut<'_, Map> {

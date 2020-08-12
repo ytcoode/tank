@@ -123,7 +123,15 @@ impl Tank {
         let id = self.scene.next_unit_id();
         let (x, y) = self.position();
         let angle = self.position.borrow().angle();
-        let bullet = Bullet::new(id, x, y, angle, now, self.cfg.bullet, self.clone());
+        let bullet = Bullet::new(
+            id,
+            x,
+            y,
+            angle as f64,
+            now,
+            self.cfg.bullet.clone(),
+            self.clone(),
+        );
         self.scene.add_bullet(bullet);
     }
 
@@ -131,11 +139,13 @@ impl Tank {
         if self.position.borrow_mut().update(now) {
             self.scene.map().unit_moved(self.clone())
         } else {
-            let (width, height) = self.scene.size();
-            let mut rng = rand::thread_rng();
-            let x = rng.gen_range(0, width);
-            let y = rng.gen_range(0, height);
-            self.move_to(x, y, now)
+            if self.id != 1 {
+                let (width, height) = self.scene.size();
+                let mut rng = rand::thread_rng();
+                let x = rng.gen_range(0, width);
+                let y = rng.gen_range(0, height);
+                self.move_to(x, y, now);
+            }
         }
     }
 }
