@@ -138,6 +138,7 @@ impl Unit for Bullet {
     fn draw(&self, ctx: &mut Context, view: &PlayerView) {
         let dx = self.x.get() as f64 - view.x as f64;
         let dy = self.y.get() as f64 - view.y as f64;
+        let angle = self.angle as f32 + std::f32::consts::FRAC_PI_2;
 
         graphics::draw(
             ctx,
@@ -145,7 +146,7 @@ impl Unit for Bullet {
             DrawParam::new()
                 .dest([dx as f32, dy as f32])
                 .offset([0.5, 0.5])
-                .rotation(self.angle as f32),
+                .rotation(angle),
         )
         .unwrap();
     }
